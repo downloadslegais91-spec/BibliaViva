@@ -28,15 +28,14 @@
     }
 
     html, body {
-      height: 100%;
+      min-height: 100vh;
+      /* Para mobile moderno */
+      min-height: 100dvh;
     }
 
     body {
       background: linear-gradient(160deg, #0d1117 0%, #161b2e 45%, #1a1040 100%);
       color: #fff;
-      overflow-x: hidden;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
       position: relative;
     }
 
