@@ -1,0 +1,4332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BíbliaViva — Aprenda a Bíblia</title>
+<meta name="description" content="Estude a Bíblia de forma interativa com gamificação, quiz, assistente IA e leitura offline.">
+<meta name="theme-color" content="#7C6FE4">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BíbliaViva">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Spiritual Dark Glass Design Tokens */
+    --bg: #0A0C10; /* Sacred deep obsidian-midnight background */
+    --surface: rgba(255, 255, 255, 0.08); /* Default card glass surface */
+    --surface2: rgba(255, 255, 255, 0.04); /* Subtle nested glass surface */
+    --separator: rgba(255, 255, 255, 0.08); /* Thin premium glass borders */
+    
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.70);
+    --text-tertiary: rgba(255, 255, 255, 0.45);
+    
+    /* Legacy variables mapped to dark spiritual design tokens */
+    --label: var(--text-primary);
+    --label2: var(--text-secondary);
+    --label3: var(--text-tertiary);
+    
+    /* Custom brand accents */
+    --accent-blue: #4F8EF7; /* Deep heavenly blue */
+    --accent-purple: #7C6FE4; /* Regal spiritual violet-indigo */
+    --accent-gold: #F5A623; /* Warm holy gold glow */
+    
+    /* Legacy accent colors mapped to premium spiritual values */
+    --blue: var(--accent-blue);
+    --purple: var(--accent-purple);
+    --green: #34C759; /* Spiritual Emerald */
+    --orange: var(--accent-gold);
+    --red: #FF3B30;
+    --teal: #5AC8FA;
+    --gold: var(--accent-gold);
+    
+    --radius-sm: 12px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+    
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  }
+
+  * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding-bottom: 110px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* DECORATIVE AMBIENT GLOW ORBS */
+  .orb-1 {
+    position: fixed;
+    top: -15%;
+    left: -15%;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(124, 111, 224, 0.22) 0%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: -10;
+  }
+  
+  .orb-2 {
+    position: fixed;
+    bottom: 15%;
+    right: -15%;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(79, 142, 247, 0.18) 0%, transparent 70%);
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: -10;
+  }
+
+  /* HIGH-BLUR GLASS NAVIGATION HEADER */
+  .nav-header {
+    background: rgba(10, 12, 16, 0.5) !important;
+    backdrop-filter: blur(25px) saturate(190%);
+    -webkit-backdrop-filter: blur(25px) saturate(190%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+  
+  .nav-title { 
+    font-size: 20px; 
+    font-weight: 700; 
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+  }
+  
+  .nav-icon { 
+    width: 36px; 
+    height: 36px; 
+    border-radius: 50%; 
+    background: rgba(255, 255, 255, 0.08); 
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: transform 120ms ease;
+  }
+  
+  .nav-icon:active { 
+    transform: scale(0.9);
+  }
+
+  /* DYNAMIC SCREEN TRANSITIONS */
+  @keyframes pageEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .page { 
+    display: none; 
+    padding: 0 0 20px; 
+  }
+  
+  .page.active { 
+    display: block !important; 
+    animation: pageEntrance 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* SECTION HEADERS */
+  .section { 
+    margin: 24px 16px 0; 
+  }
+  
+  .section-label {
+    font-size: 12px; /* Caption style 12pt */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  /* METHODOLOGY SELECTOR WITH PREMIUM GLASSMORPHISM */
+  .methodology-selector-wrapper {
+    margin: 20px 16px 8px;
+    padding: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .methodology-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 44px;
+  }
+  
+  .methodology-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: calc(100% - 4px);
+    width: calc(50% - 4px);
+    background: linear-gradient(135deg, rgba(124, 111, 224, 0.35) 0%, rgba(79, 142, 247, 0.35) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+  }
+  
+  .methodology-btn {
+    flex: 1;
+    height: 100%;
+    background: transparent;
+    border: none;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 250ms ease, transform 150ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    outline: none;
+  }
+  
+  .methodology-btn:active {
+    transform: scale(0.97);
+  }
+  
+  .methodology-btn.active {
+    color: #FFFFFF;
+  }
+  
+  .methodology-btn .btn-icon {
+    font-size: 14px;
+  }
+
+  /* CARD SYSTEM WITH GLASSMORPHISM */
+  .card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  .card-row {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: background 120ms ease;
+  }
+  
+  .card-row:last-child { 
+    border-bottom: none; 
+  }
+  
+  .card-row:active { 
+    background: rgba(255, 255, 255, 0.08); 
+  }
+
+  /* EXPLORE BOOK CHIPS */
+  .book-chip {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    flex-shrink: 0;
+    width: 140px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: transform 120ms ease-out;
+  }
+  
+  .book-chip:active {
+    transform: scale(0.96);
+  }
+  
+  .book-chip-icon { 
+    font-size: 32px; 
+    margin-bottom: 10px; 
+    display: block; 
+  }
+  
+  .book-chip-name { 
+    font-size: 15px; 
+    font-weight: 600; 
+    margin-bottom: 4px; 
+    color: var(--text-primary); 
+  }
+  
+  .book-chip-count { 
+    font-size: 12px; 
+    color: var(--text-secondary); 
+  }
+  
+  .book-chip-bar { 
+    background: rgba(255, 255, 255, 0.15); 
+    border-radius: 99px; 
+    height: 5px; 
+    margin-top: 10px; 
+  }
+  
+  .book-chip-fill { 
+    height: 5px; 
+    border-radius: 99px; 
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); 
+    box-shadow: 0 0 6px rgba(124, 111, 224, 0.4);
+  }
+
+  /* PREMIUM HERO READING CARD */
+  .hero-card {
+    margin: 16px;
+    border-radius: var(--radius-xl);
+    background: rgba(25, 28, 36, 0.45) !important;
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+  
+  /* Purple/Indigo spiritual light orb in the top right */
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(124, 111, 224, 0.4) 0%, rgba(79, 142, 247, 0.1) 55%, transparent 70%);
+    filter: blur(20px);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .hero-card::after {
+    display: none; /* Deletes legacy flat border visual */
+  }
+  
+  .hero-title { 
+    font-size: 28px; 
+    font-weight: 700; 
+    line-height: 1.25; 
+    margin-bottom: 8px; 
+    letter-spacing: -0.5px; 
+    position: relative; 
+    z-index: 2; 
+  }
+  
+  .hero-sub { 
+    font-size: 15px; 
+    color: var(--text-secondary); 
+    margin-bottom: 24px; 
+    position: relative; 
+    z-index: 2; 
+  }
+  
+  .hero-progress-label { 
+    font-size: 13px; 
+    color: var(--text-tertiary); 
+    margin-bottom: 8px; 
+    position: relative; 
+    z-index: 2; 
+  }
+  
+  .progress-bar-bg { 
+    background: rgba(255, 255, 255, 0.12); 
+    border-radius: 99px; 
+    height: 8px; 
+    margin-bottom: 24px; 
+    overflow: hidden; 
+    position: relative; 
+    z-index: 2; 
+  }
+  
+  .progress-bar-fill { 
+    height: 8px; 
+    border-radius: 99px; 
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)) !important; 
+    box-shadow: 0 0 10px rgba(124, 111, 224, 0.5);
+  }
+  
+  .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%) !important;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font);
+    box-shadow: 0 4px 15px rgba(124, 111, 224, 0.3);
+    position: relative;
+    z-index: 2;
+    transition: transform 120ms ease;
+  }
+  
+  .hero-btn:active { 
+    transform: scale(0.96); 
+    opacity: 0.9; 
+  }
+
+  /* PREMIUM GLASS STREAK BADGE */
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(245, 166, 35, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid var(--accent-gold);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    margin-bottom: 16px;
+    box-shadow: 0 0 10px rgba(245, 166, 35, 0.2);
+  }
+
+  /* XP STRIP PROGRESS */
+  .xp-strip {
+    margin: 0 16px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  .xp-icon { 
+    font-size: 24px; 
+  }
+  
+  .xp-info { 
+    flex: 1; 
+  }
+  
+  .xp-label { 
+    font-size: 12px; 
+    color: var(--text-secondary); 
+    margin-bottom: 6px; 
+  }
+  
+  .xp-bar-bg { 
+    background: rgba(255, 255, 255, 0.12) !important; 
+    border-radius: 99px; 
+    height: 7px; 
+    overflow: hidden; 
+  }
+  
+  .xp-bar-fill { 
+    height: 7px; 
+    border-radius: 99px; 
+    background: linear-gradient(90deg, var(--accent-gold), #FFB940) !important; 
+    box-shadow: 0 0 8px var(--accent-gold);
+  }
+  
+  .xp-level { 
+    font-size: 13px; 
+    font-weight: 700; 
+    color: var(--accent-gold) !important; 
+  }
+
+  /* SCREEN 2: MISSÕES (QUESTS) */
+  .quest-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: transform 120ms ease-out;
+  }
+  
+  .quest-card:active { 
+    transform: scale(0.97); 
+  }
+  
+  .quest-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 12px; 
+  }
+  
+  .quest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 20px; /* high pill radius */
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .quest-badge.weekly { 
+    background: rgba(124, 111, 224, 0.2); 
+    border-color: rgba(124, 111, 224, 0.3); 
+    color: var(--accent-purple); 
+  }
+  
+  .quest-badge.daily { 
+    background: rgba(79, 142, 247, 0.2); 
+    border-color: rgba(79, 142, 247, 0.3); 
+    color: var(--accent-blue); 
+  }
+  
+  .quest-badge.challenge { 
+    background: rgba(255, 59, 48, 0.2); 
+    border-color: rgba(255, 59, 48, 0.3); 
+    color: var(--red); 
+  }
+  
+  .quest-title { 
+    font-size: 17px; 
+    font-weight: 600; 
+    margin-bottom: 6px; 
+    color: var(--text-primary); 
+  }
+  
+  .quest-sub { 
+    font-size: 13px; 
+    color: var(--text-secondary); 
+    margin-bottom: 14px; 
+    line-height: 1.4; 
+  }
+  
+  .quest-footer { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+  }
+  
+  .quest-xp { 
+    font-size: 13px; 
+    font-weight: 600 !important; 
+    color: var(--accent-gold); 
+  }
+  
+  .quest-progress-mini { 
+    font-size: 13px; 
+    color: var(--text-tertiary); 
+  }
+  
+  .quest-bar-bg { 
+    background: rgba(255, 255, 255, 0.12); 
+    border-radius: 99px; 
+    height: 6px; 
+    margin: 10px 0; 
+    overflow: hidden; 
+  }
+  
+  .quest-bar-fill { 
+    height: 6px; 
+    border-radius: 99px; 
+    position: relative;
+  }
+  
+  /* Dynamic glowing overrides targeting quest fill background elements */
+  .quest-bar-fill[style*="background: var(--purple)"] {
+    background: linear-gradient(90deg, var(--accent-purple), #C084FC) !important;
+    box-shadow: 0 0 8px rgba(124, 111, 224, 0.6);
+  }
+  
+  .quest-bar-fill[style*="background: var(--blue)"] {
+    background: linear-gradient(90deg, var(--accent-blue), #60A5FA) !important;
+    box-shadow: 0 0 8px rgba(79, 142, 247, 0.6);
+  }
+  
+  .quest-bar-fill[style*="background: var(--red)"] {
+    background: linear-gradient(90deg, #FF3B30, #FCA5A5) !important;
+    box-shadow: 0 0 8px rgba(255, 59, 48, 0.6);
+  }
+
+  /* HOME WEEK STATS CARDS */
+  .stats-row { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    gap: 12px; 
+    margin: 0 16px; 
+  }
+  
+  .stat-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    padding: 16px 12px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+    transition: transform 120ms ease-out;
+  }
+  
+  .stat-card:active {
+    transform: scale(0.97);
+  }
+  
+  .stat-icon { 
+    font-size: 28px; 
+    margin-bottom: 8px; 
+    display: block; 
+  }
+  
+  .stat-number { 
+    font-size: 28px; /* Apple Title 1 standard */
+    font-weight: 700; 
+    color: var(--text-primary); 
+    line-height: 1.2; 
+  }
+  
+  .stat-label { 
+    font-size: 12px; /* Apple Caption standard */
+    color: var(--text-secondary); 
+    margin-top: 4px; 
+  }
+
+  /* SCREEN 4: ASSISTENTE IA (CHAT) */
+  .chat-area {
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .chat-bubble {
+    max-width: 80%;
+    padding: 12px 18px;
+    font-size: 15px;
+    line-height: 1.5;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .bubble-ai {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 18px 18px 18px 4px !important; /* Apple Chat standard */
+    color: var(--text-primary) !important;
+    align-self: flex-start;
+  }
+  
+  .bubble-user {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%) !important;
+    border-radius: 18px 18px 4px 18px !important; /* Apple Chat standard */
+    color: white !important;
+    align-self: flex-end;
+    box-shadow: 0 4px 15px rgba(79, 142, 247, 0.25);
+  }
+  
+  .bubble-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  
+  .ai-avatar {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--accent-purple), #C084FC) !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+    box-shadow: 0 0 10px rgba(124, 111, 224, 0.5);
+  }
+  
+  .chat-input-row {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px 10px 18px;
+    background: rgba(25, 28, 36, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    position: fixed;
+    bottom: 95px; /* Clear height for the 83px bottom tab bar */
+    left: 16px; 
+    right: 16px;
+    border-radius: 30px; /* high pill shapes */
+    z-index: 900;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  #page-ia.active ~ .chat-input-row {
+    display: flex !important;
+  }
+
+  .suggestion-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: var(--accent-blue);
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 0.2s;
+  }
+  
+  .suggestion-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  #page-ia {
+    padding-bottom: 180px !important;
+  }
+  
+  .chat-input {
+    flex: 1;
+    background: transparent !important;
+    border: none;
+    padding: 8px 0;
+    font-size: 15px;
+    font-family: var(--font);
+    outline: none;
+    color: var(--text-primary) !important;
+  }
+  
+  .chat-send {
+    width: 38px; 
+    height: 38px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) !important;
+    border: none;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(124, 111, 224, 0.4);
+    transition: transform 120ms ease;
+  }
+  
+  .chat-send:active { 
+    transform: scale(0.9); 
+  }
+
+  /* SCREEN 5: QUIZ */
+  .quiz-container { 
+    padding: 0 16px; 
+  }
+  
+  .quiz-header {
+    text-align: center;
+    padding: 20px 0 16px;
+  }
+  
+  .quiz-progress-dots { 
+    display: flex; 
+    gap: 8px; 
+    justify-content: center; 
+    margin-bottom: 16px; 
+  }
+  
+  .dot { 
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%; 
+    background: rgba(255, 255, 255, 0.15) !important; 
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 200ms ease;
+  }
+  
+  .dot.done { 
+    background: var(--accent-blue) !important; 
+    box-shadow: 0 0 6px var(--accent-blue);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .dot.current { 
+    background: var(--accent-purple) !important; 
+    box-shadow: 0 0 8px var(--accent-purple);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2); 
+  }
+  
+  .quiz-question-card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  }
+  
+  .quiz-tag {
+    display: inline-block;
+    background: rgba(79, 142, 247, 0.2) !important;
+    color: var(--accent-blue) !important;
+    border: 1px solid rgba(79, 142, 247, 0.2);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  
+  .quiz-q { 
+    font-size: 19px; 
+    font-weight: 600; 
+    line-height: 1.45; 
+  }
+  
+  .quiz-options { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    margin-bottom: 20px; 
+  }
+  
+  .quiz-option {
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 16px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 120ms ease;
+    font-family: var(--font);
+    text-align: left;
+    color: var(--text-primary) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  
+  .quiz-option:active { 
+    transform: scale(0.98); 
+    background: rgba(255, 255, 255, 0.12) !important;
+  }
+  
+  .quiz-option.selected { 
+    border-color: var(--accent-blue) !important; 
+    background: rgba(79, 142, 247, 0.15) !important; 
+    box-shadow: 0 0 12px rgba(79, 142, 247, 0.25) !important;
+  }
+  
+  .quiz-option.correct { 
+    border-color: var(--green) !important; 
+    background: rgba(52, 199, 89, 0.15) !important; 
+    color: #D1FAE5 !important; 
+    box-shadow: 0 0 15px rgba(52, 199, 89, 0.3) !important;
+  }
+  
+  .quiz-option.correct .option-letter {
+    background: var(--green) !important;
+    color: white !important;
+  }
+  
+  .quiz-option.wrong { 
+    border-color: var(--red) !important; 
+    background: rgba(255, 59, 48, 0.15) !important; 
+    color: #FEE2E2 !important; 
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.3) !important;
+  }
+  
+  .quiz-option.wrong .option-letter {
+    background: var(--red) !important;
+    color: white !important;
+  }
+  
+  .option-letter {
+    width: 28px; 
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1) !important;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--text-secondary) !important;
+  }
+  
+  .quiz-result {
+    background: rgba(52, 199, 89, 0.15) !important;
+    border: 1px solid rgba(52, 199, 89, 0.3) !important;
+    border-radius: var(--radius-md);
+    padding: 18px;
+    text-align: center;
+    display: none;
+    box-shadow: 0 8px 24px rgba(52, 199, 89, 0.15);
+  }
+  
+  .quiz-result.show { 
+    display: block; 
+  }
+  
+  .result-emoji { 
+    font-size: 36px; 
+    margin-bottom: 8px; 
+  }
+  
+  .result-text { 
+    font-size: 17px; 
+    font-weight: 600; 
+    color: var(--green) !important; 
+    margin-bottom: 4px; 
+  }
+  
+  .result-sub { 
+    font-size: 14px; 
+    color: var(--text-secondary) !important; 
+  }
+
+  /* SCREEN 3: LEITURA BÍBLICA */
+  .reading-header {
+    background: linear-gradient(180deg, rgba(25, 28, 36, 0.5) 0%, rgba(13, 17, 23, 0.3) 100%) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 24px 20px;
+    color: white;
+  }
+  
+  .reading-book { 
+    font-size: 13px; 
+    color: var(--text-secondary); 
+    margin-bottom: 4px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.8px;
+  }
+  
+  .reading-chapter { 
+    font-size: 28px; 
+    font-weight: 700; 
+    margin-bottom: 8px; 
+    letter-spacing: -0.5px;
+  }
+  
+  .reading-meta { 
+    display: flex; 
+    gap: 16px; 
+    flex-wrap: wrap;
+  }
+  
+  .reading-meta span { 
+    font-size: 13px; 
+    color: var(--text-tertiary); 
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .audio-player {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    margin: 16px;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  }
+  
+  .audio-label { 
+    font-size: 13px; 
+    color: var(--text-secondary) !important; 
+    margin-bottom: 12px; 
+  }
+  
+  .audio-controls { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 14px; 
+  }
+  
+  .audio-play {
+    width: 44px; 
+    height: 44px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%) !important;
+    border-radius: 50%;
+    border: none;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    color: white !important;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(124, 111, 224, 0.4);
+    transition: transform 120ms ease;
+  }
+  
+  .audio-play:active {
+    transform: scale(0.92);
+  }
+  
+  .audio-timeline { 
+    flex: 1; 
+  }
+  
+  .timeline-bar { 
+    background: rgba(255, 255, 255, 0.15) !important; 
+    border-radius: 99px; 
+    height: 6px; 
+    margin-bottom: 6px; 
+    overflow: hidden;
+  }
+  
+  .timeline-fill { 
+    width: 30%; 
+    height: 6px; 
+    border-radius: 99px; 
+    background: linear-gradient(90deg, var(--accent-gold), #FFB940) !important; 
+    box-shadow: 0 0 8px var(--accent-gold);
+  }
+  
+  .timeline-times { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 11px; 
+    color: var(--text-tertiary) !important; 
+  }
+  
+  .reading-text { 
+    padding: 16px 24px; 
+    line-height: 1.6; /* 1.6 line-height standard */
+    font-size: 17px; /* 17px Body standard */
+    color: var(--text-primary) !important; 
+  }
+  
+  .verse { 
+    margin-bottom: 16px; 
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background-color 150ms ease;
+  }
+  
+  .verse-num { 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: var(--accent-blue) !important; 
+    margin-right: 8px; 
+  }
+  
+  .verse.highlight { 
+    background: rgba(245, 158, 11, 0.15) !important; /* amber tint glass rgba(245,158,11,0.15) */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-left: 3px solid var(--accent-gold) !important; /* gold left border */
+    border-radius: 0 8px 8px 0;
+    padding-left: 12px;
+    margin-left: -12px;
+    color: #FEE2E2 !important; /* beautiful glowing reddish text */
+  }
+  
+  .ai-summary-card {
+    margin: 16px;
+    background: rgba(124, 111, 224, 0.1) !important; /* purple/indigo glass panel */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(124, 111, 224, 0.25) !important;
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .ai-sum-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-bottom: 10px; 
+  }
+  
+  .ai-sum-icon { 
+    font-size: 20px; 
+  }
+  
+  .ai-sum-title { 
+    font-size: 15px; 
+    font-weight: 600; 
+    color: var(--text-primary);
+  }
+  
+  .ai-sum-text { 
+    font-size: 14px; 
+    color: var(--text-secondary) !important; 
+    line-height: 1.5; 
+  }
+
+  /* PROFILE / BACKEND CONFIG CHIPS */
+  .profile-hero {
+    background: linear-gradient(180deg, #1C1C1E, #2C2C2E);
+    padding: 30px 20px 24px;
+    color: white;
+    text-align: center;
+  }
+  
+  .avatar-ring {
+    width: 84px; 
+    height: 84px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    margin: 0 auto 14px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.1);
+  }
+
+  /* GLOBAL BOTTOM TAB BAR */
+  .tab-bar {
+    position: fixed;
+    bottom: 0; 
+    left: 0; 
+    right: 0;
+    height: 83px; /* Exact Apple HIG height */
+    background: rgba(10, 12, 16, 0.45) !important;
+    backdrop-filter: blur(25px) saturate(190%);
+    -webkit-backdrop-filter: blur(25px) saturate(190%);
+    border-top: 1px solid rgba(255, 255, 255, 0.10) !important; /* thin glass top border */
+    display: flex;
+    padding: 6px 0 20px; /* perfect safe-area height */
+    z-index: 1000;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+  }
+  
+  .tab-item {
+    flex: 1;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    position: relative;
+    padding: 4px 0;
+    color: var(--text-tertiary) !important;
+    transition: color 120ms ease;
+  }
+  
+  .tab-icon { 
+    font-size: 22px; 
+    transition: transform 120ms ease;
+  }
+  
+  .tab-item:active .tab-icon {
+    transform: scale(0.85);
+  }
+  
+  .tab-label { 
+    font-size: 10px; 
+    font-weight: 500; 
+    color: inherit; 
+  }
+  
+  .tab-item.active { 
+    color: var(--accent-blue) !important; 
+  }
+  
+  /* Glowing bottom dot active indicator */
+  .tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    box-shadow: 0 0 6px var(--accent-blue);
+  }
+
+  /* PREMIUM PILL BUTTONS */
+  .pill-btn {
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%) !important;
+    color: white !important;
+    border: none;
+    border-radius: var(--radius-md) !important;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font);
+    width: 100%;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(124, 111, 224, 0.35);
+    transition: transform 120ms ease, opacity 120ms ease;
+  }
+  
+  .pill-btn:active { 
+    transform: scale(0.97); 
+    opacity: 0.9; 
+  }
+  
+  .pill-btn.secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: none;
+  }
+  
+  .pill-btn.secondary:active { 
+    background: rgba(255, 255, 255, 0.12) !important; 
+  }
+
+  .chevron { 
+    color: var(--text-tertiary); 
+    font-size: 14px; 
+    margin-left: auto; 
+  }
+
+  .icon-circle {
+    width: 36px; 
+    height: 36px;
+    border-radius: 10px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .scroll-x {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 8px 16px;
+    scrollbar-width: none;
+  }
+  
+  .scroll-x::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  .divider { 
+    height: 1px; 
+    background: var(--separator); 
+    margin: 0 16px; 
+  }
+  
+  .spacer-sm { height: 8px; }
+  .spacer-md { height: 20px; }
+  .text-blue { color: var(--accent-blue); }
+  .fw6 { font-weight: 600; }
+  .fs15 { font-size: 15px; }
+  .fs13 { font-size: 13px; }
+  .col2 { color: var(--text-secondary); }
+
+  /* BIBLE SELECTOR STYLING */
+  .bible-selector-panel {
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: var(--radius-lg) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 12px 16px !important;
+    margin: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+  
+  .selector-row {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .selector-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .selector-field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  
+  .selector-field select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-bottom: 2px solid var(--accent-blue) !important; /* bottom highlight accent-blue */
+    border-radius: 20px !important; /* glass pill select standard */
+    color: var(--text-primary) !important;
+    padding: 10px 14px !important;
+    font-size: 14px;
+    font-weight: 550;
+    outline: none;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 120ms ease;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    padding-right: 32px !important;
+  }
+  
+  .selector-field select:focus {
+    border-bottom-color: var(--accent-purple) !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  /* CUSTOM SELECT TRIGGERS AND APPLE MODAL */
+  .custom-select-trigger {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-bottom: 2px solid var(--accent-blue) !important;
+    border-radius: 20px !important;
+    color: var(--text-primary) !important;
+    padding: 10px 14px !important;
+    font-size: 14px;
+    font-weight: 550;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 120ms ease;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    padding-right: 32px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .custom-select-trigger:active {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    transform: scale(0.98);
+  }
+  
+  /* APPLE HIG BOTTOM SHEET MODAL */
+  .ios-sheet-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+  }
+  
+  .ios-sheet-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .ios-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(13, 17, 23, 0.82) !important;
+    backdrop-filter: blur(40px) saturate(210%);
+    -webkit-backdrop-filter: blur(40px) saturate(210%);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px 24px 0 0;
+    height: 70vh;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  .ios-sheet-overlay.active .ios-sheet {
+    transform: translateY(0);
+  }
+  
+  .ios-sheet-grabber {
+    width: 36px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 99px;
+    margin: 8px auto 4px;
+    flex-shrink: 0;
+  }
+  
+  .ios-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+  
+  .ios-sheet-btn {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent-blue);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0;
+    font-family: var(--font);
+  }
+  
+  .ios-sheet-btn.cancel {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .ios-sheet-btn:active {
+    opacity: 0.7;
+  }
+  
+  .ios-sheet-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  /* Segmented Control */
+  .ios-segmented-control {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 9px;
+    padding: 2px;
+    display: flex;
+    margin: 16px 20px 8px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  
+  .ios-segment {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 7px;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .ios-segment.active {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  
+  .ios-sheet-content {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0 20px 30px;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Grouped Category Sections */
+  .ios-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin: 18px 0 8px 4px;
+    letter-spacing: 0.6px;
+  }
+  
+  .ios-group-list {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  
+  .ios-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  
+  .ios-row:last-child {
+    border-bottom: none;
+  }
+  
+  .ios-row:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .ios-row-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .ios-row-icon {
+    font-size: 18px;
+  }
+  
+  .ios-row-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  
+  .ios-row-meta {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+  
+  .ios-row-check {
+    color: var(--accent-blue);
+    font-size: 16px;
+    font-weight: bold;
+    display: none;
+    text-shadow: 0 0 8px rgba(79, 142, 247, 0.5);
+  }
+  
+  .ios-row.selected .ios-row-check {
+    display: block;
+  }
+  
+  /* Chapter Grid */
+  .ios-chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    padding: 18px 0;
+  }
+  
+  .ios-chapter-btn {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .ios-chapter-btn:active {
+    transform: scale(0.9);
+  }
+  
+  .ios-chapter-btn.selected {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%) !important;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 14px rgba(124, 111, 224, 0.5);
+  }
+
+  /* APPLE POP-OVER FLOATING MENU */
+  .apple-popover {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 170px;
+    background: rgba(20, 24, 33, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10005;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.95);
+    transform-origin: top right;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+  
+  .apple-popover.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+  
+  .apple-popover-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 150ms ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .apple-popover-item:last-child {
+    border-bottom: none;
+  }
+  
+  .apple-popover-item:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .apple-popover-item.logout {
+    color: #FF453A; /* Red semantic Apple value */
+  }
+  
+  .apple-popover-icon {
+    font-size: 16px;
+  }
+
+  /* APPLE FORM STYLING */
+  .ios-input-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ios-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .ios-input-row:last-child {
+    border-bottom: none;
+  }
+
+  .ios-label {
+    font-size: 15px;
+    color: var(--text-primary);
+    font-weight: 500;
+    min-width: 100px;
+  }
+
+  .ios-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 15px;
+    text-align: right;
+    padding: 0;
+  }
+
+  .ios-input::placeholder {
+    color: var(--label2);
+  }
+
+  /* Range Slider Custom Styling */
+  .ios-slider-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .ios-slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .ios-slider-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .ios-slider-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-blue);
+  }
+
+  .ios-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .ios-slider-icon {
+    font-size: 16px;
+    color: var(--label2);
+  }
+
+  .ios-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+  }
+
+  .ios-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  .ios-slider::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+  }
+
+  /* iOS Switch Toggle Component */
+  .ios-switch {
+    position: relative;
+    display: inline-block;
+    width: 51px;
+    height: 31px;
+  }
+
+  .ios-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .ios-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: .3s;
+    border-radius: 34px;
+  }
+
+  .ios-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 27px;
+    width: 27px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  input:checked + .ios-switch-slider {
+    background-color: #34C759; /* Apple green */
+  }
+
+  input:checked + .ios-switch-slider:before {
+    transform: translateX(20px);
+  }
+
+  /* iOS Select Dropdown style */
+  .ios-select {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 15px;
+    text-align: right;
+    cursor: pointer;
+    padding-right: 8px;
+    direction: rtl; /* Align options right */
+  }
+
+  /* ========================================== */
+  /* PREMIUM LIGHT MODE GLASSMORPHISM THEME    */
+  /* ========================================== */
+  
+  :root.light-theme,
+  .light-theme {
+    --bg: #F2F4F7; /* Soft Apple light gray background */
+    --text-primary: #1C1C1E; /* iOS dark primary text */
+    --text-secondary: rgba(28, 28, 30, 0.65); /* iOS secondary text */
+    --text-tertiary: rgba(28, 28, 30, 0.45); /* iOS tertiary text */
+    
+    --label: var(--text-primary);
+    --label2: var(--text-secondary);
+    --label3: var(--text-tertiary);
+    
+    --separator: rgba(0, 0, 0, 0.08);
+    --surface: rgba(255, 255, 255, 0.75);
+    --surface2: rgba(255, 255, 255, 0.5);
+    
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Decorative Background Orbs */
+  .light-theme .orb-1 {
+    background: radial-gradient(circle, rgba(124, 111, 224, 0.06) 0%, transparent 70%) !important;
+  }
+  .light-theme .orb-2 {
+    background: radial-gradient(circle, rgba(0, 122, 255, 0.04) 0%, transparent 70%) !important;
+  }
+
+  /* Navigation Header and Icons */
+  .light-theme .nav-header {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  }
+  .light-theme .nav-icon {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    color: #1C1C1E !important;
+  }
+
+  /* Cards and General Containers */
+  .light-theme .card,
+  .light-theme .book-chip,
+  .light-theme .xp-strip,
+  .light-theme .quest-card,
+  .light-theme .stat-card,
+  .light-theme .quiz-question-card,
+  .light-theme .audio-player,
+  .light-theme .bible-selector-panel {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    color: #1C1C1E !important;
+  }
+
+  .light-theme .card-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  }
+  .light-theme .card-row:active {
+    background: rgba(0, 0, 0, 0.03) !important;
+  }
+  .light-theme .book-chip-bar {
+    background: rgba(0, 0, 0, 0.06) !important;
+  }
+  
+  /* Hero Card styling */
+  .light-theme .hero-card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  }
+  .light-theme .hero-title {
+    color: #1C1C1E !important;
+  }
+  .light-theme .hero-sub {
+    color: rgba(28, 28, 30, 0.7) !important;
+  }
+  .light-theme .progress-bar-bg {
+    background: rgba(0, 0, 0, 0.06) !important;
+  }
+  .light-theme .xp-bar-bg {
+    background: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .light-theme .quest-badge {
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background: rgba(0, 0, 0, 0.02) !important;
+  }
+  .light-theme .quest-bar-bg {
+    background: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Chat Bubble & Global Assistant UI */
+  .light-theme .bubble-ai {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    color: #1C1C1E !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+  }
+  .light-theme .chat-input-row {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+  }
+  .light-theme .chat-input-row input {
+    color: #1C1C1E !important;
+  }
+  .light-theme .chat-input-row input::placeholder {
+    color: rgba(28, 28, 30, 0.5) !important;
+  }
+  
+  .light-theme .suggestion-chip {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  .light-theme .suggestion-chip:hover {
+    background: rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Quiz and Option Buttons */
+  .light-theme .dot {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+  }
+  .light-theme .dot.done {
+    border-color: rgba(0, 122, 255, 0.3) !important;
+  }
+  .light-theme .dot.current {
+    border-color: rgba(124, 111, 224, 0.4) !important;
+  }
+
+  .light-theme .quiz-tag {
+    background: rgba(0, 122, 255, 0.1) !important;
+    color: #007AFF !important;
+  }
+  .light-theme .quiz-option {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    color: #1C1C1E !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  }
+  .light-theme .quiz-option:active {
+    background: rgba(0, 0, 0, 0.03) !important;
+  }
+  .light-theme .quiz-option.selected {
+    border-color: #007AFF !important;
+    background: rgba(0, 122, 255, 0.08) !important;
+    color: #007AFF !important;
+  }
+  .light-theme .quiz-option.correct {
+    border-color: #34C759 !important;
+    background: rgba(52, 199, 89, 0.08) !important;
+    color: #15803d !important;
+  }
+  .light-theme .quiz-option.wrong {
+    border-color: #FF3B30 !important;
+    background: rgba(255, 59, 48, 0.08) !important;
+    color: #b91c1c !important;
+  }
+  .light-theme .option-letter {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: rgba(28, 28, 30, 0.7) !important;
+  }
+  .light-theme .quiz-result {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+  }
+  .light-theme #quiz-summary-state {
+    color: #1C1C1E !important;
+  }
+
+  /* Reading Mode and Highlighting */
+  .light-theme .reading-header {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(240, 242, 245, 0.6) 100%) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    color: #1C1C1E !important;
+  }
+  .light-theme .reading-book {
+    color: rgba(28, 28, 30, 0.6) !important;
+  }
+  .light-theme .reading-chapter {
+    color: #1C1C1E !important;
+  }
+  .light-theme .reading-meta span {
+    color: rgba(28, 28, 30, 0.5) !important;
+  }
+  .light-theme .verse {
+    color: #1C1C1E !important;
+  }
+  .light-theme .verse.highlight {
+    background: rgba(245, 158, 11, 0.08) !important;
+    color: #b45309 !important;
+  }
+
+  /* Timeline Indicator */
+  .light-theme .timeline-bar {
+    background: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* AI Summary Card */
+  .light-theme .ai-summary-card {
+    background: rgba(124, 111, 224, 0.05) !important;
+    border: 1px solid rgba(124, 111, 224, 0.15) !important;
+    box-shadow: 0 8px 20px rgba(124, 111, 224, 0.02) !important;
+  }
+
+  /* Bottom Tab Bar */
+  .light-theme .tab-bar {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.03) !important;
+  }
+  .light-theme .tab-item {
+    color: rgba(28, 28, 30, 0.4) !important;
+  }
+  .light-theme .tab-item.active {
+    color: #007AFF !important;
+  }
+
+  /* Buttons and Interaction Pills */
+  .light-theme .pill-btn.secondary {
+    background: rgba(0, 0, 0, 0.04) !important;
+    color: #1C1C1E !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  .light-theme .pill-btn.secondary:active {
+    background: rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Dropdown selects and styling */
+  .light-theme .selector-field select {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-bottom: 2px solid #007AFF !important;
+    color: #1C1C1E !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.6)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+  }
+  .light-theme .selector-field select option {
+    background: #FFFFFF !important;
+    color: #1C1C1E !important;
+  }
+  .light-theme .selector-field select:focus {
+    border-bottom-color: #5856D6 !important;
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .light-theme .custom-select-trigger {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-bottom: 2px solid #007AFF !important;
+    color: #1C1C1E !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.6)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+  }
+  .light-theme .custom-select-trigger:active {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* iOS HIG Bottom Sheets */
+  .light-theme .ios-sheet {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.06) !important;
+  }
+  .light-theme .ios-sheet-grabber {
+    background: rgba(0, 0, 0, 0.15) !important;
+  }
+  .light-theme .ios-sheet-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-sheet-title {
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-sheet-btn.cancel {
+    color: rgba(28, 28, 30, 0.6) !important;
+  }
+  .light-theme .ios-segmented-control {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.02) !important;
+  }
+  .light-theme .ios-segment {
+    color: rgba(28, 28, 30, 0.6) !important;
+  }
+  .light-theme .ios-segment.active {
+    color: #1C1C1E !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+  }
+  
+  /* iOS Form Group Lists */
+  .light-theme .ios-group-title {
+    color: rgba(28, 28, 30, 0.5) !important;
+  }
+  .light-theme .ios-group-list {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  }
+  .light-theme .ios-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  }
+  .light-theme .ios-row:active {
+    background: rgba(0, 0, 0, 0.02) !important;
+  }
+  .light-theme .ios-row-name {
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-row-meta {
+    color: rgba(28, 28, 30, 0.5) !important;
+  }
+  .light-theme .ios-chapter-btn {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-chapter-btn:active {
+    background: rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Popover Floating Menus */
+  .light-theme .apple-popover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  }
+  .light-theme .apple-popover-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+    color: #1C1C1E !important;
+  }
+  .light-theme .apple-popover-item:active {
+    background: rgba(0, 0, 0, 0.02) !important;
+  }
+
+  /* iOS Inputs and controls */
+  .light-theme .ios-input-row {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  }
+  .light-theme .ios-label {
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-input {
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-input::placeholder {
+    color: rgba(28, 28, 30, 0.3) !important;
+  }
+  .light-theme .ios-slider-container {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+  .light-theme .ios-slider-title {
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-slider-value {
+    color: rgba(28, 28, 30, 0.6) !important;
+  }
+  .light-theme .ios-slider {
+    background: rgba(0, 0, 0, 0.06) !important;
+  }
+  .light-theme .ios-slider::-webkit-slider-thumb {
+    background: #FFFFFF !important;
+    border: 0.5px solid rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+  }
+  .light-theme .ios-switch-slider {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+  }
+  .light-theme .ios-switch-slider:before {
+    background-color: #FFFFFF !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+  }
+  .light-theme .ios-select {
+    color: #1C1C1E !important;
+  }
+  .light-theme .ios-select option {
+    background: #FFFFFF !important;
+    color: #1C1C1E !important;
+  }
+</style>
+
+</head>
+<body>
+
+
+
+<!-- NAV HEADER -->
+<div class="nav-header">
+  <div style="width:32px"></div>
+  <div class="nav-title" id="nav-title">Início</div>
+  <div style="position: relative;">
+    <div class="nav-icon" id="profile-trigger" onclick="toggleProfilePopover(event)">👤</div>
+    <!-- FLOATING POPOVER -->
+    <div class="apple-popover" id="profile-popover" onclick="event.stopPropagation()">
+      <div class="apple-popover-item" onclick="openAppleProfileModal(event)">
+        <span class="apple-popover-icon">👤</span> Meu Perfil
+      </div>
+      <div class="apple-popover-item logout" onclick="triggerLogout(event)">
+        <span class="apple-popover-icon">🚪</span> Sair
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK POP -->
+<div class="feedback-pop" id="feedbackPop"></div>
+
+<!-- ========== PAGE: HOME ========== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <div class="hero-card">
+    <div class="streak-badge" id="home-streak">🔥 0 dias seguidos</div>
+    <div class="hero-title" id="home-hero-title">Carregando...</div>
+    <div class="hero-sub" id="home-hero-sub">Inicie sua leitura diária</div>
+    <div class="hero-progress-label">Progresso do capítulo</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="home-hero-progress" style="width:0%"></div></div>
+    <button class="hero-btn" id="home-hero-btn" onclick="switchPage('leitura')">▶ Continuar leitura</button>
+  </div>
+
+  <!-- XP -->
+  <div style="margin: 12px 16px 0;">
+    <div class="xp-strip">
+      <div class="xp-icon">⚡</div>
+      <div class="xp-info">
+        <div class="xp-label" id="home-xp-label">Nível 1 · Iniciante</div>
+        <div class="xp-bar-bg"><div class="xp-bar-fill" id="home-xp-bar" style="width:0%"></div></div>
+      </div>
+      <div class="xp-level" id="home-xp-level">0/1000 XP</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section">
+    <div class="section-label">Sua semana</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon">📖</div>
+      <div class="stat-number" id="stat-chapters-read">0</div>
+      <div class="stat-label">Cap. lidos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-number" id="stat-streak-days">0</div>
+      <div class="stat-label">Dias seguidos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-number" id="stat-xp-week">0</div>
+      <div class="stat-label">XP Total</div>
+    </div>
+  </div>
+
+  <!-- QUESTS -->
+  <div class="section">
+    <div class="section-label">Missões ativas</div>
+    <div id="home-active-quests">
+      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando missões...</div>
+    </div>
+  </div>
+
+  <!-- LIVROS -->
+  <div class="section">
+    <div class="section-label">Explorar livros</div>
+  </div>
+  <div class="scroll-x" id="explore-books-container">
+    <div style="padding: 16px; text-align: center; color: var(--label2); width: 100%;">Carregando livros...</div>
+  </div>
+  <div class="spacer-md"></div>
+</div>
+
+<!-- ========== PAGE: QUESTS ========== -->
+<div class="page" id="page-quests">
+  <!-- APPLE PREMIUM METHODOLOGY SELECTOR -->
+  <div class="methodology-selector-wrapper">
+    <div class="methodology-selector">
+      <div class="methodology-slider" id="methodology-slider"></div>
+      <button class="methodology-btn active" id="methodology-btn-canon" onclick="setMethodology('canon')">
+        <span class="btn-icon">📜</span> Cânone Tradicional
+      </button>
+      <button class="methodology-btn" id="methodology-btn-chronological" onclick="setMethodology('chronological')">
+        <span class="btn-icon">⏳</span> Ordem Cronológica
+      </button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Esta semana</div>
+    <div id="quests-weekly-container">
+      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Hoje</div>
+    <div id="quests-daily-container">
+      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Especiais</div>
+    <div id="quests-challenge-container">
+      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
+    </div>
+  </div>
+  <div class="spacer-md"></div>
+</div>
+
+
+<!-- ========== PAGE: LEITURA ========== -->
+<div class="page" id="page-leitura">
+
+  <!-- PREMIUM SELECTOR PANEL -->
+  <div class="bible-selector-panel">
+    <div class="selector-row">
+      <div class="selector-field" onclick="openAppleBibleSelectorModal('book')">
+        <label>Livro</label>
+        <div class="custom-select-trigger" id="custom-book-trigger">Mateus</div>
+      </div>
+      <div class="selector-field" onclick="openAppleBibleSelectorModal('chapter')">
+        <label>Capítulo</label>
+        <div class="custom-select-trigger" id="custom-chapter-trigger">Capítulo 5</div>
+      </div>
+    </div>
+    <!-- Hidden native inputs to maintain 100% logic integrity -->
+    <div style="display: none;">
+      <select id="select-book" onchange="onBookChange()"></select>
+      <select id="select-chapter" onchange="onChapterChange()"></select>
+    </div>
+  </div>
+
+  <!-- NON-CANONICAL WARNING BANNER -->
+  <div id="canonical-warning-banner" style="display: none; background: #FFF9E6; border: 1px solid #FFE599; border-radius: 12px; padding: 12px 16px; margin: 16px 16px 0; color: #7A5C00; font-size: 13px; font-weight: 500; align-items: flex-start; gap: 8px;">
+    <span style="font-size: 16px;">⚠️</span>
+    <div>
+      <strong>Livro Apócrifo / Não Canônico:</strong>
+      <span style="display: block; margin-top: 2px; font-weight: 400; opacity: 0.9;">Este livro está disponível apenas para fins de curiosidade histórica, pesquisa acadêmica e estudo cultural. Ele não faz parte do cânone oficial bíblico.</span>
+    </div>
+  </div>
+
+  <div class="reading-header" style="margin-top: 10px;">
+    <div class="reading-book" id="reading-category-display">Novo Testamento · Evangelhos</div>
+    <div class="reading-chapter" id="reading-title-display">Mateus 5</div>
+    <div class="reading-meta" id="reading-meta-display">
+      <span>📖 Carregando...</span>
+    </div>
+  </div>
+
+  <!-- AUDIO PLAYER -->
+  <div class="audio-player">
+    <div class="audio-label">🎧 Narração por IA · Leitura dramática</div>
+    <div class="audio-controls">
+      <span style="font-size:13px; color:var(--label2)" onclick="if(window.currentAudio) window.currentAudio.currentTime -= 10;">◁◁</span>
+      <button class="audio-play" id="btn-audio-play" onclick="playChapterAudio()">▶</button>
+      <div class="audio-timeline">
+        <div class="timeline-bar"><div class="timeline-fill" id="audio-progress" style="width:0%"></div></div>
+        <div class="timeline-times"><span id="audio-time">0:00</span><span>--:--</span></div>
+      </div>
+      <span style="font-size:13px; color:var(--label2)" onclick="if(window.currentAudio) window.currentAudio.currentTime += 10;">▷▷</span>
+    </div>
+  </div>
+
+
+  <!-- AI SUMMARY -->
+  <div class="ai-summary-card">
+    <div class="ai-sum-header">
+      <div class="ai-avatar">✦</div>
+      <div class="ai-sum-title">Resumo da IA · Mateus 5</div>
+    </div>
+    <div class="ai-sum-text">Este capítulo contém o famoso <strong>Sermão do Monte</strong>, onde Jesus apresenta as Bem-aventuranças — bênçãos para os humildes, misericordiosos e pacificadores. Jesus também aprofunda a Lei de Moisés, mostrando que a verdadeira obediência vai além do ato externo e alcança o coração.</div>
+  </div>
+
+  <!-- TEXT -->
+  <div class="reading-text">
+    <p class="verse"><span class="verse-num">1</span>Vendo Jesus as multidões, subiu ao monte e, depois de se sentar, os seus discípulos se aproximaram dele.</p>
+    <p class="verse"><span class="verse-num">2</span>E ele passou a ensiná-los, dizendo:</p>
+    <p class="verse highlight"><span class="verse-num">3</span>"Bem-aventurados os pobres em espírito, porque deles é o reino dos céus.</p>
+    <p class="verse"><span class="verse-num">4</span>Bem-aventurados os que choram, porque serão consolados.</p>
+    <p class="verse highlight"><span class="verse-num">5</span>Bem-aventurados os humildes, porque herdarão a terra.</p>
+    <p class="verse"><span class="verse-num">6</span>Bem-aventurados os que têm fome e sede de justiça, porque serão saciados.</p>
+    <p class="verse"><span class="verse-num">7</span>Bem-aventurados os misericordiosos, porque obterão misericórdia.</p>
+    <p class="verse"><span class="verse-num">8</span>Bem-aventurados os puros de coração, porque verão a Deus.</p>
+    <p class="verse highlight"><span class="verse-num">9</span>Bem-aventurados os pacificadores, porque serão chamados filhos de Deus.</p>
+    <p class="verse"><span class="verse-num">10</span>Bem-aventurados os perseguidos por causa da justiça, porque deles é o reino dos céus.</p>
+  </div>
+
+  <div style="padding: 0 16px 20px; display:flex; flex-direction:column; gap:10px;">
+    <button class="pill-btn" id="btn-concluir-leitura" onclick="concluirLeitura()" style="font-size:15px; padding:12px 16px;">✓ Concluir Leitura (+50 XP)</button>
+    <div style="display:flex; gap:10px;">
+      <button class="pill-btn secondary" onclick="switchPage('ia')" style="font-size:15px; padding:12px 16px; flex:1">💬 Perguntar à IA</button>
+      <button class="pill-btn secondary" onclick="switchPage('quiz')" style="font-size:15px; padding:12px 16px; flex:1">⚡ Fazer quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE: IA ========== -->
+<div class="page" id="page-ia">
+  <div class="section" style="margin-bottom: 8px;">
+    <div class="section-label" id="ia-section-label">Assistente Bíblico · Mateus 5</div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <!-- Os balões de conversa serão carregados dinamicamente via JS -->
+  </div>
+
+  <div class="spacer-md"></div>
+  <div class="spacer-md"></div>
+  <div class="spacer-md"></div>
+</div>
+
+<!-- ========== PAGE: QUIZ ========== -->
+<div class="page" id="page-quiz">
+  <div class="quiz-container">
+    
+    <!-- LOADING STATE -->
+    <div id="quiz-loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--label2); text-align: center;">
+      <div class="ai-avatar" style="font-size: 32px; animation: pulse 2s infinite; margin-bottom: 16px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%;">✦</div>
+      <div style="font-size: 16px; font-weight: 600; color: var(--text-primary);">Carregando perguntas sagradas...</div>
+      <div style="font-size: 13px; margin-top: 6px; opacity: 0.8;">Buscando sabedoria teológica para você.</div>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="quiz-error-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--red); text-align: center;">
+      <div style="font-size: 40px; margin-bottom: 16px;">⚠️</div>
+      <div style="font-size: 16px; font-weight: 600; color: var(--text-primary);">Não foi possível carregar o Quiz</div>
+      <div style="font-size: 13px; margin-top: 6px; color: var(--label2); margin-bottom: 20px;" id="quiz-error-msg">Erro na conexão com o servidor.</div>
+      <button class="pill-btn" onclick="startQuizFlow()" style="font-size: 14px; padding: 8px 16px;">Tentar Novamente</button>
+    </div>
+
+    <!-- WIZARD PLAYING STATE -->
+    <div id="quiz-wizard-state" style="display: none;">
+      <div class="quiz-header">
+        <div style="font-size:13px; color:var(--label2); margin-bottom:8px;" id="quiz-title-info">Carregando livro...</div>
+        <div class="quiz-progress-dots" id="quiz-progress-dots">
+          <!-- 10 dots generated dynamically -->
+        </div>
+        <div style="font-size:13px; color:var(--accent-blue); font-weight:600;" id="quiz-counter-info">Pergunta 1 de 10</div>
+      </div>
+
+      <div class="quiz-question-card">
+        <div class="quiz-tag" id="quiz-question-tag">📖 Carregando</div>
+        <div class="quiz-q" id="quiz-question-text">Pergunta...</div>
+      </div>
+
+      <div class="quiz-options" id="quizOptions">
+        <!-- 4 buttons generated dynamically -->
+      </div>
+
+      <div class="quiz-result" id="quizResult">
+        <div class="result-emoji" id="quiz-result-emoji">🎉</div>
+        <div class="result-text" id="quiz-result-text">Correto! +20 XP</div>
+        <div class="result-sub" id="quiz-result-explanation">Justificativa...</div>
+        <div style="margin-top:16px;">
+          <button class="pill-btn" onclick="goToNextQuestion()" id="btn-next-question" style="font-size:16px;">Próxima pergunta →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY REWARDS STATE -->
+    <div id="quiz-summary-state" style="display: none; text-align: center; padding: 24px 16px;">
+      <div style="font-size: 64px; margin-bottom: 16px; animation: pulse 2s infinite; display: inline-block;">🏆</div>
+      <h2 style="font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Quiz Concluído!</h2>
+      <p style="font-size: 14px; color: var(--label2); margin-bottom: 24px;">Você respondeu a todas as 10 perguntas sobre <strong id="summary-book">livro</strong>.</p>
+      
+      <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 24px; display: flex; justify-content: space-around; align-items: center;">
+        <div>
+          <div style="font-size: 28px; font-weight: 800; color: var(--accent-blue);" id="summary-correct-count">0/10</div>
+          <div style="font-size: 12px; color: var(--label2); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Acertos</div>
+        </div>
+        <div style="width: 1px; height: 40px; background: rgba(255, 255, 255, 0.1);"></div>
+        <div>
+          <div style="font-size: 28px; font-weight: 800; color: #f59e0b;" id="summary-xp-earned">+0 XP</div>
+          <div style="font-size: 12px; color: var(--label2); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">XP Obtido</div>
+        </div>
+      </div>
+
+      <div id="summary-level-up-badge" style="display: none; background: linear-gradient(135deg, var(--accent-purple), #f59e0b); border-radius: 12px; padding: 12px; margin-bottom: 24px; color: white; font-weight: 600; font-size: 14px; box-shadow: 0 4px 15px rgba(124, 111, 224, 0.3);">
+        🌟 PARABÉNS! Você subiu de nível!
+      </div>
+
+      <button class="pill-btn" onclick="claimQuizRewards()" id="btn-claim-rewards" style="font-size: 16px; padding: 14px 28px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); border: none; box-shadow: 0 4px 20px rgba(124, 111, 224, 0.4); width: 100%;">
+        Resgatar Recompensas
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="chat-input-row">
+  <input class="chat-input" placeholder="Faça uma pergunta sobre Mateus 5…" id="chatInput" />
+  <button class="chat-send" onclick="sendChat()">↑</button>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab-item active" id="tab-home" onclick="switchPage('home')">
+    <div class="tab-icon">🏠</div>
+    <div class="tab-label">Início</div>
+  </div>
+  <div class="tab-item" id="tab-quests" onclick="switchPage('quests')">
+    <div class="tab-icon">🎯</div>
+    <div class="tab-label">Missões</div>
+  </div>
+  <div class="tab-item" id="tab-leitura" onclick="switchPage('leitura')">
+    <div class="tab-icon">📖</div>
+    <div class="tab-label">Leitura</div>
+  </div>
+  <div class="tab-item" id="tab-ia" onclick="switchPage('ia')">
+    <div class="tab-icon">✦</div>
+    <div class="tab-label">IA</div>
+  </div>
+  <div class="tab-item" id="tab-quiz" onclick="switchPage('quiz')">
+    <div class="tab-icon">⚡</div>
+    <div class="tab-label">Quiz</div>
+  </div>
+</div>
+
+<!-- ========== APPLE HIG BOTTOM SHEET MODAL ========== -->
+<div class="ios-sheet-overlay" id="apple-bible-selector-modal" onclick="closeAppleBibleSelectorModal()">
+  <div class="ios-sheet" onclick="event.stopPropagation()">
+    <div class="ios-sheet-grabber"></div>
+    <div class="ios-sheet-header">
+      <button class="ios-sheet-btn cancel" onclick="closeAppleBibleSelectorModal()">Cancelar</button>
+      <span class="ios-sheet-title">Seletor Bíblico</span>
+      <button class="ios-sheet-btn" onclick="confirmAppleBibleSelection()">Confirmar</button>
+    </div>
+    
+    <!-- Segmented Control -->
+    <div class="ios-segmented-control">
+      <div class="ios-segment active" id="segment-book" onclick="switchSelectorSegment('book')">Livro</div>
+      <div class="ios-segment" id="segment-chapter" onclick="switchSelectorSegment('chapter')">Capítulo</div>
+    </div>
+    
+    <!-- Dynamic Content List -->
+    <div class="ios-sheet-content">
+      <!-- Books Scroll List Container -->
+      <div id="selector-books-container"></div>
+      
+      <!-- Chapters Grid Container -->
+      <div id="selector-chapters-container" style="display: none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== APPLE HIG PROFILE SHEET MODAL ========== -->
+<div class="ios-sheet-overlay" id="apple-profile-modal" onclick="closeAppleProfileModal()">
+  <div class="ios-sheet" onclick="event.stopPropagation()" style="height: 80vh; max-height: 85vh;">
+    <div class="ios-sheet-grabber"></div>
+    <div class="ios-sheet-header">
+      <button class="ios-sheet-btn cancel" onclick="closeAppleProfileModal()">Cancelar</button>
+      <span class="ios-sheet-title">Meu Perfil</span>
+      <button class="ios-sheet-btn" id="btn-save-profile" onclick="saveAppleProfileData()">Salvar</button>
+    </div>
+    
+    <div class="ios-sheet-content" style="padding-top: 16px;">
+      <!-- Dados do Perfil Section -->
+      <div class="ios-group-title">Dados do Perfil</div>
+      <div class="ios-group-list">
+        <div class="ios-input-row">
+          <span class="ios-label">Nome</span>
+          <input type="text" id="profile-name-input" class="ios-input" placeholder="Seu nome">
+        </div>
+        <div class="ios-input-row">
+          <span class="ios-label">E-mail</span>
+          <input type="email" id="profile-email-input" class="ios-input" placeholder="Seu e-mail">
+        </div>
+      </div>
+
+      <!-- Voz e Áudio Section -->
+      <div class="ios-group-title">Voz e Áudio</div>
+      <div class="ios-group-list">
+        <div class="ios-slider-container">
+          <div class="ios-slider-header">
+            <span class="ios-slider-title">Velocidade da Voz</span>
+            <span class="ios-slider-value" id="profile-voice-speed-val">1.0x (Padrão)</span>
+          </div>
+          <div class="ios-slider-row">
+            <span class="ios-slider-icon">🐢</span>
+            <input type="range" id="profile-voice-speed" min="0.5" max="2.0" step="0.25" value="1.0" class="ios-slider" oninput="updateVoiceSpeedLabel(this.value)">
+            <span class="ios-slider-icon">🐇</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferências Section -->
+      <div class="ios-group-title">Preferências</div>
+      <div class="ios-group-list">
+        <div class="ios-row" style="cursor: default;">
+          <div class="ios-row-left">
+            <span class="ios-row-icon">🎯</span>
+            <span class="ios-row-name">Meta Diária</span>
+          </div>
+          <select class="ios-select" id="profile-daily-goal">
+            <option value="50">50 XP (Básico)</option>
+            <option value="100">100 XP (Médio)</option>
+            <option value="200">200 XP (Avançado)</option>
+            <option value="500">500 XP (Devoto)</option>
+          </select>
+        </div>
+        
+        <div class="ios-row" style="cursor: default;">
+          <div class="ios-row-left">
+            <span class="ios-row-icon">🔔</span>
+            <span class="ios-row-name">Notificações</span>
+          </div>
+          <label class="ios-switch">
+            <input type="checkbox" id="profile-notifications" checked>
+            <span class="ios-switch-slider"></span>
+          </label>
+        </div>
+
+        <div class="ios-row" style="cursor: default;">
+          <div class="ios-row-left">
+            <span class="ios-row-icon">🌓</span>
+            <span class="ios-row-name">Aparência</span>
+          </div>
+          <select class="ios-select" id="profile-theme" onchange="toggleSystemTheme(this.value)">
+            <option value="dark">Escuro Glassmorphism</option>
+            <option value="light">Claro Elegante</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Guard de Autenticação - Redireciona para o login se não estiver autenticado
+if (localStorage.getItem('isLoggedIn') !== 'true') {
+  window.location.replace('/');
+}
+
+// Carrega o tema imediatamente para evitar flash visual
+(function() {
+  const savedTheme = localStorage.getItem('systemTheme');
+  if (savedTheme === 'light') {
+    document.documentElement.classList.add('light-theme');
+  }
+})();
+
+const API_URL = 'http://localhost:3000/api';
+const pages = ['home','quests','leitura','ia','quiz'];
+const titles = { home:'Início', quests:'Missões', leitura:'Leitura Bíblica', ia:'Assistente IA', quiz:'Quiz do Dia' };
+let currentUser = null;
+let bibleBooks = [];
+let currentBook = localStorage.getItem('lastReadBook') || 'Mateus';
+let currentChapter = parseInt(localStorage.getItem('lastReadChapter'), 10) || 1;
+
+function saveReadingState() {
+  localStorage.setItem('lastReadBook', currentBook);
+  localStorage.setItem('lastReadChapter', currentChapter);
+}
+let preloadedQuizzes = {};
+let preloadedPromises = {};
+
+const categoryIcons = {
+  'Pentateuco': '📜',
+  'Históricos (AT)': '🛡️',
+  'Poéticos': '🌿',
+  'Profetas Maiores': '🦅',
+  'Profetas Menores': '🎺',
+  'Evangelhos': '✝️',
+  'Histórico (NT)': '⚓',
+  'Cartas Paulinas': '✉️',
+  'Cartas Gerais': '✉️',
+  'Profecia (NT)': '👑',
+  'Apócrifos (Não Canônico)': '🔍'
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  initApp();
+});
+
+async function initApp() {
+  await loadUserStats();
+  await loadQuests();
+  await loadChatHistory();
+  
+  if (bibleBooks.length === 0) {
+    await initBibleSelector();
+  } else {
+    loadActiveChapter();
+  }
+  
+  renderExploreBooks();
+  
+  // Prefetch quiz for the default active book
+  if (currentBook) {
+    prefetchQuizForBook(currentBook);
+  }
+}
+
+function renderExploreBooks() {
+  const container = document.getElementById('explore-books-container');
+  if (!container || !currentUser || bibleBooks.length === 0) return;
+
+  const progressList = currentUser.readingProgress || [];
+  
+  container.innerHTML = bibleBooks.map(b => {
+    // Get unique completed chapters for this book
+    const completedChapters = [...new Set(progressList.filter(p => p.book === b.name && p.completed).map(p => p.chapter))];
+    const percentage = Math.round((completedChapters.length / b.chapters) * 100);
+    const icon = categoryIcons[b.category] || '📖';
+    const isApocryphalBadge = b.isCanonical === false ? '<span style="font-size: 8px; background: rgba(245, 166, 35, 0.2); color: var(--accent-gold); padding: 2px 4px; border-radius: 4px; display: inline-block; margin-top: 4px;">Não Canônico</span>' : '';
+    
+    return `
+      <div class="book-chip" onclick="selectAndReadBook('${b.name}')">
+        <div class="book-chip-icon">${icon}</div>
+        <div class="book-chip-name" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${b.name}">${b.name}</div>
+        <div class="book-chip-count">${b.chapters} ${b.chapters === 1 ? 'cap.' : 'cap.'}</div>
+        ${isApocryphalBadge}
+        <div class="book-chip-bar"><div class="book-chip-fill" style="width:${percentage}%"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectAndReadBook(bookName) {
+  currentBook = bookName;
+  
+  // Find next unread chapter in this book
+  const progressList = currentUser ? currentUser.readingProgress || [] : [];
+  const completedChapters = progressList.filter(p => p.book === bookName && p.completed).map(p => p.chapter);
+  const bookObj = bibleBooks.find(b => b.name === bookName);
+  const totalChapters = bookObj ? bookObj.chapters : 1;
+  
+  let nextChapter = 1;
+  for (let c = 1; c <= totalChapters; c++) {
+    if (!completedChapters.includes(c)) {
+      nextChapter = c;
+      break;
+    }
+  }
+  currentChapter = nextChapter;
+  
+  const selectBook = document.getElementById('select-book');
+  if (selectBook) {
+    selectBook.value = currentBook;
+    populateChapters();
+  }
+  loadActiveChapter();
+  switchPage('leitura');
+  
+  // Prefetch quiz for this selected book
+  prefetchQuizForBook(currentBook);
+}
+
+function continueReading(bookName, chapter) {
+  currentBook = bookName;
+  currentChapter = chapter;
+  
+  const selectBook = document.getElementById('select-book');
+  if (selectBook) {
+    selectBook.value = currentBook;
+    populateChapters();
+  }
+  loadActiveChapter();
+  switchPage('leitura');
+  
+  // Prefetch quiz for this book
+  prefetchQuizForBook(currentBook);
+}
+
+async function initBibleSelector() {
+  try {
+    const res = await fetch(`${API_URL}/bible/books`);
+    const json = await res.json();
+    if (json.status === 'success') {
+      bibleBooks = json.data;
+      
+      const selectBook = document.getElementById('select-book');
+      if (selectBook) {
+        selectBook.innerHTML = bibleBooks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+        selectBook.value = currentBook;
+      }
+      
+      populateChapters();
+      await loadActiveChapter();
+    }
+  } catch (error) {
+    console.error('Erro ao inicializar seletor da bíblia:', error);
+  }
+}
+
+function populateChapters() {
+  const selectBook = document.getElementById('select-book');
+  const selectChapter = document.getElementById('select-chapter');
+  if (!selectBook || !selectChapter) return;
+
+  const bookName = selectBook.value;
+  const book = bibleBooks.find(b => b.name === bookName);
+  if (!book) return;
+
+  selectChapter.innerHTML = '';
+  for (let c = 1; c <= book.chapters; c++) {
+    selectChapter.innerHTML += `<option value="${c}">Capítulo ${c}</option>`;
+  }
+  selectChapter.value = currentChapter;
+}
+
+async function loadActiveChapter() {
+  const titleDisplay = document.getElementById('reading-title-display');
+  const catDisplay = document.getElementById('reading-category-display');
+  const metaDisplay = document.getElementById('reading-meta-display');
+  const textDiv = document.querySelector('.reading-text');
+  const sumTitle = document.querySelector('.ai-sum-title');
+  const sumText = document.querySelector('.ai-sum-text');
+  const chatLabel = document.getElementById('ia-section-label');
+  const chatInput = document.getElementById('chatInput');
+
+  saveReadingState();
+
+  if (!titleDisplay || !textDiv) return;
+
+  textDiv.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--label2);">Carregando capítulo bíblico...</div>';
+
+  try {
+    const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}`);
+    const json = await res.json();
+    if (json.status === 'success') {
+      const data = json.data;
+      
+      // Update book title and category
+      titleDisplay.textContent = `${data.book} ${data.chapter}`;
+      const bookObj = bibleBooks.find(b => b.name === data.book);
+      if (bookObj && catDisplay) {
+        catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
+      }
+      
+      // Dynamic reading meta calculations
+      const verseCount = data.verses.length;
+      const readTime = Math.ceil(verseCount * 0.125);
+      if (metaDisplay) {
+        metaDisplay.innerHTML = `
+          <span>📖 ${verseCount} versículos</span>
+          <span>⏱ ~${readTime} min</span>
+          <span>🎧 Áudio disponível</span>
+        `;
+      }
+
+      // Render verses beautifully
+      textDiv.innerHTML = data.verses.map(v => {
+        // Apply random premium highlighting for selected verses to feel elegant
+        const isHighlighted = (v.number % 4 === 0) ? ' highlight' : '';
+        return `<p class="verse${isHighlighted}"><span class="verse-num">${v.number}</span>${v.text}</p>`;
+      }).join('');
+
+      // Update AI summary card dynamically
+      if (sumTitle) sumTitle.textContent = `Resumo da IA · ${data.book} ${data.chapter}`;
+      if (sumText) sumText.innerHTML = data.summary;
+
+      // Update Chat context label and input placeholder automatically!
+      if (chatLabel) chatLabel.textContent = `Assistente Bíblico · ${data.book} ${data.chapter}`;
+      if (chatInput) chatInput.placeholder = `Faça uma pergunta sobre ${data.book} ${data.chapter}…`;
+
+      // Toggle warning banner if apocryphal
+      const warningBanner = document.getElementById('canonical-warning-banner');
+      if (warningBanner) {
+        warningBanner.style.display = data.isCanonical ? 'none' : 'flex';
+      }
+
+      // Update "Concluir Leitura" button status
+      updateReadingButton();
+      
+      // Update custom select triggers in sync
+      updateCustomSelectTriggers();
+    }
+  } catch (error) {
+    console.error('Erro ao carregar versículos:', error);
+    textDiv.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--red);">Ocorreu um erro ao carregar os versículos.</div>';
+  }
+}
+
+function onBookChange() {
+  const selectBook = document.getElementById('select-book');
+  if (!selectBook) return;
+  currentBook = selectBook.value;
+  currentChapter = 1; // reset to chapter 1
+  populateChapters();
+  loadActiveChapter();
+  
+  // Prefetch quiz in background for new book selection
+  prefetchQuizForBook(currentBook);
+}
+
+function onChapterChange() {
+  const selectChapter = document.getElementById('select-chapter');
+  if (!selectChapter) return;
+  currentChapter = parseInt(selectChapter.value, 10);
+  loadActiveChapter();
+}
+
+async function loadUserStats() {
+  try {
+    const res = await fetch(`${API_URL}/users/me`);
+    const json = await res.json();
+    if (json.status === 'success') {
+      currentUser = json.data;
+      updateUserUI(currentUser);
+    }
+  } catch (err) {
+    console.error('Erro ao carregar dados do usuário:', err);
+  }
+}
+
+function updateUserUI(user) {
+  // Update methodology selector UI
+  const currentTemplate = user.questTemplate || 'canon';
+  updateMethodologyUI(currentTemplate);
+
+  // Streak
+  const streakEl = document.getElementById('home-streak');
+  if (streakEl) streakEl.textContent = `🔥 ${user.streakDays} ${user.streakDays === 1 ? 'dia' : 'dias'} ${user.streakDays === 1 ? 'seguido' : 'seguidos'}`;
+
+  const statStreak = document.getElementById('stat-streak-days');
+  if (statStreak) statStreak.textContent = user.streakDays;
+
+  // Level & XP
+  const xpLabel = document.getElementById('home-xp-label');
+  const xpLevel = document.getElementById('home-xp-level');
+  const xpBar = document.getElementById('home-xp-bar');
+
+  const xpNeeded = user.level * 1000;
+  if (xpLabel) xpLabel.textContent = `Nível ${user.level} · Discípulo Fiel`;
+  if (xpLevel) xpLevel.textContent = `${user.xp}/${xpNeeded} XP`;
+  if (xpBar) {
+    const percentage = Math.min((user.xp / xpNeeded) * 100, 100);
+    xpBar.style.width = `${percentage}%`;
+  }
+
+  // Stats row
+  const capReadEl = document.getElementById('stat-chapters-read');
+  if (capReadEl) capReadEl.textContent = user.totalChaptersRead;
+
+  const xpWeekEl = document.getElementById('stat-xp-week');
+  if (xpWeekEl) xpWeekEl.textContent = user.xp;
+
+  // Continue reading uses the current active book/chapter
+  const progressList = user.readingProgress || [];
+  const targetBook = currentBook;
+  const nextChapter = currentChapter;
+
+  const bookObj = bibleBooks.find(b => b.name === targetBook);
+  const totalChapters = bookObj ? bookObj.chapters : (targetBook === 'Mateus' ? 28 : 1);
+  const bookCompletedChapters = progressList.filter(p => p.book === targetBook && p.completed).map(p => p.chapter);
+  
+  const heroTitle = document.getElementById('home-hero-title');
+  const heroSub = document.getElementById('home-hero-sub');
+  const heroProgress = document.getElementById('home-hero-progress');
+  const heroBtn = document.getElementById('home-hero-btn');
+
+  if (heroTitle) heroTitle.innerHTML = `Continue em<br>${targetBook} ${nextChapter}`;
+  if (heroSub) heroSub.textContent = `Capítulo ${nextChapter} • Bíblia Sagrada`;
+  
+  if (heroProgress) {
+    const percentage = Math.round((bookCompletedChapters.length / totalChapters) * 100);
+    heroProgress.style.width = `${percentage}%`;
+  }
+
+  if (heroBtn) {
+    heroBtn.setAttribute('onclick', `continueReading('${targetBook}', ${nextChapter})`);
+  }
+
+  // Book default items logic (just to feel premium and updated)
+  const bookProgSalmos = document.getElementById('book-progress-salmos');
+  if (bookProgSalmos) {
+    const salmosCompleted = progressList.filter(p => p.book === 'Salmos' && p.completed).length;
+    const percentage = Math.max(18, Math.round((salmosCompleted / 150) * 100));
+    bookProgSalmos.style.width = `${percentage}%`;
+  }
+  const bookProgProverbios = document.getElementById('book-progress-proverbios');
+  if (bookProgProverbios) {
+    const proverCompleted = progressList.filter(p => p.book === 'Provérbios' && p.completed).length;
+    const percentage = Math.max(65, Math.round((proverCompleted / 31) * 100));
+    bookProgProverbios.style.width = `${percentage}%`;
+  }
+
+  // Refresh explore books container dynamically!
+  renderExploreBooks();
+
+  // Update Concluir Leitura button status on the reading screen
+  updateReadingButton();
+}
+
+function updateReadingButton() {
+  const btn = document.getElementById('btn-concluir-leitura');
+  if (!btn || !currentUser) return;
+
+  const isCompleted = currentUser.readingProgress.some(p => p.book === currentBook && p.chapter === currentChapter && p.completed);
+  if (isCompleted) {
+    btn.textContent = '✓ Concluído! (+50 XP)';
+    btn.disabled = true;
+    btn.style.background = 'var(--green)';
+    btn.style.cursor = 'default';
+  } else {
+    btn.textContent = '✓ Concluir Leitura (+50 XP)';
+    btn.disabled = false;
+    btn.style.background = 'var(--blue)';
+    btn.style.cursor = 'pointer';
+  }
+}
+
+async function concluirLeitura() {
+  const btn = document.getElementById('btn-concluir-leitura');
+  if (!btn || btn.disabled) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  try {
+    const res = await fetch(`${API_URL}/progress`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        book: currentBook,
+        chapter: currentChapter,
+        verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        completed: true
+      })
+    });
+
+    const json = await res.json();
+    if (json.status === 'success') {
+      showFeedback(`📖 ${currentBook} ${currentChapter} Concluído! +50 XP obtido!`);
+      await initApp();
+    } else {
+      showFeedback('❌ Erro ao salvar progresso');
+      btn.disabled = false;
+      btn.textContent = '✓ Concluir Leitura (+50 XP)';
+    }
+  } catch (err) {
+    console.error('Erro ao registrar leitura:', err);
+    showFeedback('❌ Conexão com o servidor falhou');
+    btn.disabled = false;
+    btn.textContent = '✓ Concluir Leitura (+50 XP)';
+  }
+}
+
+function updateMethodologyUI(template) {
+  const slider = document.getElementById('methodology-slider');
+  const btnCanon = document.getElementById('methodology-btn-canon');
+  const btnChronological = document.getElementById('methodology-btn-chronological');
+  
+  if (!slider || !btnCanon || !btnChronological) return;
+  
+  if (template === 'chronological') {
+    slider.style.transform = 'translateX(100%)';
+    btnCanon.classList.remove('active');
+    btnChronological.classList.add('active');
+  } else {
+    slider.style.transform = 'translateX(0)';
+    btnCanon.classList.add('active');
+    btnChronological.classList.remove('active');
+  }
+}
+
+async function setMethodology(template) {
+  updateMethodologyUI(template);
+  
+  try {
+    const res = await fetch(`${API_URL}/users/profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ questTemplate: template })
+    });
+    const json = await res.json();
+    if (json.status === 'success') {
+      showFeedback('🎯 Template de missões atualizado!');
+      await loadUserStats();
+      await loadQuests();
+    } else {
+      showFeedback('❌ Falha ao atualizar template');
+    }
+  } catch (err) {
+    console.error('Erro ao atualizar metodologia:', err);
+    showFeedback('❌ Conexão com o servidor falhou');
+  }
+}
+
+async function loadQuests() {
+  try {
+    const res = await fetch(`${API_URL}/quests`);
+    const json = await res.json();
+    if (json.status === 'success') {
+      const quests = json.data;
+      renderQuests(quests);
+    }
+  } catch (err) {
+    console.error('Erro ao carregar missões:', err);
+  }
+}
+
+function renderQuests(quests) {
+  const weeklyContainer = document.getElementById('quests-weekly-container');
+  const dailyContainer = document.getElementById('quests-daily-container');
+  const challengeContainer = document.getElementById('quests-challenge-container');
+
+  if (weeklyContainer) weeklyContainer.innerHTML = '';
+  if (dailyContainer) dailyContainer.innerHTML = '';
+  if (challengeContainer) challengeContainer.innerHTML = '';
+
+  const homeActiveQuests = document.getElementById('home-active-quests');
+  if (homeActiveQuests) homeActiveQuests.innerHTML = '';
+
+  quests.forEach(q => {
+    let badgeClass = 'daily';
+    let badgeText = '⚡ Diária';
+    if (q.type.toLowerCase() === 'weekly') {
+      badgeClass = 'weekly';
+      badgeText = '📅 Meta Semanal';
+    } else if (q.type.toLowerCase() === 'challenge') {
+      badgeClass = 'challenge';
+      badgeText = '🔥 Desafio';
+    }
+
+    const isCompleted = q.completed;
+    const progressWidth = q.progress ? Math.min((q.progress.current / q.progress.target) * 100, 100) : (isCompleted ? 100 : 0);
+    const progressText = q.progress ? `${q.progress.current}/${q.progress.target}` : (isCompleted ? 'Concluído!' : 'Disponível');
+
+    let onClickAction = `switchPage('leitura')`;
+    if (!isCompleted && q.title && q.title.startsWith('Estudo: ')) {
+      const targetBook = q.title.replace('Estudo: ', '').trim();
+      const nextCh = q.progress ? (q.progress.current + 1) : 1;
+      onClickAction = `continueReading('${targetBook}', ${nextCh})`;
+    }
+
+    const cardHTML = `
+      <div class="quest-card" ${isCompleted ? '' : `onclick="${onClickAction}"`}>
+        <div class="quest-header">
+          <span class="quest-badge ${badgeClass}">${badgeText}</span>
+          ${isCompleted ? '<span style="font-size:18px">✅</span>' : ''}
+        </div>
+        <div class="quest-title">${q.title}</div>
+        <div class="quest-sub">${q.description}</div>
+        <div class="quest-bar-bg"><div class="quest-bar-fill" style="width:${progressWidth}%; background: var(--${badgeClass === 'weekly' ? 'purple' : (badgeClass === 'challenge' ? 'red' : 'blue')});"></div></div>
+        <div class="quest-footer">
+          <span class="quest-xp" ${isCompleted ? 'style="color: var(--green)"' : ''}>+${q.xpReward} XP ${isCompleted ? '✓' : ''}</span>
+          <span class="quest-progress-mini">${progressText}</span>
+        </div>
+      </div>
+    `;
+
+    if (q.type.toLowerCase() === 'weekly' && weeklyContainer) {
+      weeklyContainer.innerHTML += cardHTML;
+    } else if (q.type.toLowerCase() === 'daily' && dailyContainer) {
+      dailyContainer.innerHTML += cardHTML;
+    } else if (q.type.toLowerCase() === 'challenge' && challengeContainer) {
+      challengeContainer.innerHTML += cardHTML;
+    }
+
+    if (!isCompleted && homeActiveQuests && homeActiveQuests.children.length < 2) {
+      homeActiveQuests.innerHTML += cardHTML;
+    }
+  });
+
+  if (homeActiveQuests && homeActiveQuests.children.length === 0) {
+    homeActiveQuests.innerHTML = `
+      <div style="padding: 20px; text-align: center; color: var(--green); font-weight: 600;">
+        🎉 Todas as missões de hoje concluídas!
+      </div>
+    `;
+  }
+}
+
+function scrollToBottom() {
+  setTimeout(() => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight || document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, 50);
+}
+
+async function loadChatHistory() {
+  const area = document.getElementById('chatArea');
+  if (!area) return;
+
+  area.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--label2);">Carregando mensagens...</div>';
+
+  try {
+    const res = await fetch(`${API_URL}/chat`);
+    const json = await res.json();
+    if (json.status === 'success') {
+      const history = json.data;
+      area.innerHTML = '';
+      if (history.length > 0) {
+        history.forEach(msg => {
+          appendChatBubble(msg.sender === 'user', msg.message);
+        });
+      } else {
+        appendChatBubble(false, `Olá! Estou aqui para te ajudar a entender <strong>${currentBook} ${currentChapter}</strong>. Pode me perguntar sobre qualquer versículo, palavra ou conceito do capítulo. 😊`);
+        renderChatSuggestions();
+      }
+      scrollToBottom();
+    }
+  } catch (err) {
+    console.error('Erro ao carregar histórico do chat:', err);
+    area.innerHTML = '';
+    appendChatBubble(false, `Olá! Estou aqui para te ajudar a entender <strong>${currentBook} ${currentChapter}</strong>. Pode me perguntar sobre qualquer versículo, palavra ou conceito do capítulo. 😊`);
+    renderChatSuggestions();
+    scrollToBottom();
+  }
+}
+
+function renderChatSuggestions() {
+  const area = document.getElementById('chatArea');
+  if (!area) return;
+
+  const existing = document.getElementById('chat-suggestions-container');
+  if (existing) existing.remove();
+
+  const suggestionsContainer = document.createElement('div');
+  suggestionsContainer.id = 'chat-suggestions-container';
+  suggestionsContainer.style = 'display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; padding:0 4px;';
+  
+  const prompts = [
+    `Qual é o tema central de ${currentBook} ${currentChapter}?`,
+    `Me dê uma aplicação prática de ${currentBook} ${currentChapter}.`,
+    `Qual o contexto histórico do livro de ${currentBook}?`
+  ];
+
+  suggestionsContainer.innerHTML = prompts.map(p => `
+    <button class="suggestion-chip" onclick="clickSuggestionPrompt('${p.replace(/'/g, "\\'")}')">
+      ${p}
+    </button>
+  `).join('');
+
+  area.appendChild(suggestionsContainer);
+}
+
+function clickSuggestionPrompt(text) {
+  const input = document.getElementById('chatInput');
+  if (input) {
+    input.value = text;
+    sendChat();
+  }
+}
+
+function appendChatBubble(isUser, text) {
+  const area = document.getElementById('chatArea');
+  if (!area) return;
+
+  const bubbleDiv = document.createElement('div');
+  if (isUser) {
+    bubbleDiv.style = 'display:flex; flex-direction:column; gap:4px; align-items:flex-end;';
+    bubbleDiv.innerHTML = `<div class="chat-bubble bubble-user">${text}</div>`;
+  } else {
+    bubbleDiv.style = 'display:flex; flex-direction:column; gap:4px;';
+    bubbleDiv.innerHTML = `<div class="bubble-header"><div class="ai-avatar">✦</div> BíbliaViva IA</div><div class="chat-bubble bubble-ai">${text}</div>`;
+  }
+  area.appendChild(bubbleDiv);
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const val = input.value.trim();
+  if (!val) return;
+
+  const area = document.getElementById('chatArea');
+  
+  // Remove suggestions chips if present
+  const existing = document.getElementById('chat-suggestions-container');
+  if (existing) existing.remove();
+
+  appendChatBubble(true, val);
+  input.value = '';
+  scrollToBottom();
+
+  const typingDiv = document.createElement('div');
+  typingDiv.style = 'display:flex; flex-direction:column; gap:4px;';
+  typingDiv.innerHTML = `<div class="bubble-header"><div class="ai-avatar">✦</div> BíbliaViva IA</div><div class="chat-bubble bubble-ai" style="color:var(--label2)">Digitando...</div>`;
+  area.appendChild(typingDiv);
+  scrollToBottom();
+
+  try {
+    // Save user message and get AI reply from backend in a single request!
+    const res = await fetch(`${API_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sender: 'user',
+        message: val,
+        book: currentBook,
+        chapter: currentChapter
+      })
+    });
+
+    const json = await res.json();
+    if (json.status === 'success') {
+      const reply = json.data.message;
+      area.removeChild(typingDiv);
+      appendChatBubble(false, reply);
+      scrollToBottom();
+    } else {
+      throw new Error(json.message || 'Erro ao processar a resposta da IA.');
+    }
+  } catch (err) {
+    console.error('Erro no chat:', err);
+    if (typingDiv.parentNode) area.removeChild(typingDiv);
+    appendChatBubble(false, '❌ Ocorreu um erro de conexão com a IA da BíbliaViva.');
+    scrollToBottom();
+  }
+}
+
+function switchPage(name) {
+  pages.forEach(p => {
+    document.getElementById('page-'+p).classList.remove('active');
+    const tab = document.getElementById('tab-'+p);
+    if (tab) tab.classList.remove('active');
+  });
+  document.getElementById('page-'+name).classList.add('active');
+  const tab = document.getElementById('tab-'+name);
+  if (tab) tab.classList.add('active');
+  document.getElementById('nav-title').textContent = titles[name];
+  window.scrollTo(0, 0);
+
+  if (name === 'quests') {
+    loadQuests();
+  }
+  if (name === 'home') {
+    loadUserStats();
+    loadQuests();
+  }
+  if (name === 'quiz') {
+    startQuizFlow();
+  }
+  if (name === 'ia') {
+    const label = document.getElementById('ia-section-label');
+    if (label) label.textContent = `Assistente Bíblico · ${currentBook} ${currentChapter}`;
+    
+    const input = document.getElementById('chatInput');
+    if (input) {
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendChat();
+        }
+      });
+    }
+    if (input) input.placeholder = `Faça uma pergunta sobre ${currentBook} ${currentChapter}…`;
+
+    loadChatHistory();
+  }
+}
+
+function showFeedback(msg) {
+  const el = document.getElementById('feedbackPop');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ==========================================
+// DYNAMIC QUIZ WIZARD ENGINE
+// ==========================================
+let quizQuestions = [];
+let currentQuestionIndex = 0;
+let correctAnswersCount = 0;
+let quizXpGained = 0;
+let hasSelectedAnswer = false;
+
+function prefetchQuizForBook(bookName) {
+  if (!bookName) return null;
+  const bookKey = bookName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  if (preloadedPromises[bookKey]) {
+    return preloadedPromises[bookKey];
+  }
+
+  const promise = (async () => {
+    try {
+      console.log(`[Prefetch] Iniciando carregamento em background do quiz para: ${bookName}`);
+      const res = await fetch(`${API_URL}/quiz/${encodeURIComponent(bookName)}`);
+      const json = await res.json();
+      if (json.status === 'success' && Array.isArray(json.data) && json.data.length === 10) {
+        preloadedQuizzes[bookKey] = json.data;
+        console.log(`[Prefetch] Quiz pré-carregado com sucesso para: ${bookName}`);
+        return json.data;
+      }
+    } catch (err) {
+      console.warn(`[Prefetch] Erro ao pré-carregar quiz para ${bookName}:`, err);
+    }
+    return null;
+  })();
+
+  preloadedPromises[bookKey] = promise;
+  return promise;
+}
+
+async function startQuizFlow() {
+  const loadingState = document.getElementById('quiz-loading-state');
+  const errorState = document.getElementById('quiz-error-state');
+  const wizardState = document.getElementById('quiz-wizard-state');
+  const summaryState = document.getElementById('quiz-summary-state');
+
+  // Set initial UI panel states
+  if (loadingState) loadingState.style.display = 'flex';
+  if (errorState) errorState.style.display = 'none';
+  if (wizardState) wizardState.style.display = 'none';
+  if (summaryState) summaryState.style.display = 'none';
+
+  const bookKey = currentBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  try {
+    let quizData = null;
+
+    // Check if we have preloaded data
+    if (preloadedQuizzes[bookKey] && Array.isArray(preloadedQuizzes[bookKey])) {
+      console.log(`[Quiz UI] Usando quiz pré-carregado instantaneamente para: ${currentBook}`);
+      quizData = preloadedQuizzes[bookKey];
+    } else if (preloadedPromises[bookKey]) {
+      // If it is currently loading, wait for the existing background promise to resolve!
+      console.log(`[Quiz UI] Aguardando término do pré-carregamento em andamento para: ${currentBook}...`);
+      quizData = await preloadedPromises[bookKey];
+    }
+
+    // If it wasn't preloaded, or the prefetch promise resolved to null/failed, let's fetch it now
+    if (!quizData || quizData.length !== 10) {
+      console.log(`[Quiz UI] Quiz não estava em cache. Buscando agora para: ${currentBook}`);
+      const promise = prefetchQuizForBook(currentBook);
+      quizData = await promise;
+    }
+
+    if (quizData && quizData.length === 10) {
+      quizQuestions = quizData;
+      currentQuestionIndex = 0;
+      correctAnswersCount = 0;
+      quizXpGained = 0;
+      
+      if (loadingState) loadingState.style.display = 'none';
+      if (wizardState) wizardState.style.display = 'block';
+      
+      renderQuizQuestion();
+    } else {
+      throw new Error('Não foi possível obter 10 perguntas válidas do quiz.');
+    }
+  } catch (error) {
+    console.error('Erro ao iniciar quiz:', error);
+    if (loadingState) loadingState.style.display = 'none';
+    if (errorState) {
+      errorState.style.display = 'flex';
+      const errorMsg = document.getElementById('quiz-error-msg');
+      if (errorMsg) errorMsg.textContent = error.message || 'Erro na conexão com o servidor.';
+    }
+  }
+}
+
+function renderQuizQuestion() {
+  hasSelectedAnswer = false;
+
+  const currentQuestion = quizQuestions[currentQuestionIndex];
+  
+  // Update header descriptions
+  const titleInfo = document.getElementById('quiz-title-info');
+  if (titleInfo) titleInfo.textContent = `${currentBook} · 10 perguntas`;
+
+  const counterInfo = document.getElementById('quiz-counter-info');
+  if (counterInfo) counterInfo.textContent = `Pergunta ${currentQuestionIndex + 1} de 10`;
+
+  const questionTag = document.getElementById('quiz-question-tag');
+  if (questionTag) questionTag.textContent = `📖 ${currentBook}`;
+
+  const questionText = document.getElementById('quiz-question-text');
+  if (questionText) questionText.textContent = currentQuestion.question;
+
+  // Generate 10 progress dots
+  const dotsContainer = document.getElementById('quiz-progress-dots');
+  if (dotsContainer) {
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i < currentQuestionIndex) {
+        dot.className += ' done';
+      } else if (i === currentQuestionIndex) {
+        dot.className += ' current';
+      }
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  // Generate options A, B, C, D
+  const optionsContainer = document.getElementById('quizOptions');
+  if (optionsContainer) {
+    optionsContainer.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    
+    currentQuestion.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.onclick = function() { selectQuizAnswer(idx, this); };
+      
+      btn.innerHTML = `
+        <div class="option-letter">${letters[idx]}</div>
+        ${opt}
+      `;
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  // Hide the result card
+  const resultCard = document.getElementById('quizResult');
+  if (resultCard) resultCard.classList.remove('show');
+}
+
+function selectQuizAnswer(selectedIndex, optionBtn) {
+  if (hasSelectedAnswer) return;
+  hasSelectedAnswer = true;
+
+  const currentQuestion = quizQuestions[currentQuestionIndex];
+  const correctIndex = currentQuestion.answer;
+  const optionsContainer = document.getElementById('quizOptions');
+  const btns = optionsContainer.querySelectorAll('.quiz-option');
+
+  // Disable all option buttons
+  btns.forEach(b => b.disabled = true);
+
+  const resultEmoji = document.getElementById('quiz-result-emoji');
+  const resultText = document.getElementById('quiz-result-text');
+  const resultExplanation = document.getElementById('quiz-result-explanation');
+
+  if (selectedIndex === correctIndex) {
+    optionBtn.classList.add('correct');
+    optionBtn.querySelector('.option-letter').textContent = '✓';
+    
+    correctAnswersCount++;
+    quizXpGained += 20;
+
+    if (resultEmoji) resultEmoji.textContent = '🎉';
+    if (resultText) resultText.textContent = 'Correto! +20 XP';
+    showFeedback('🎉 Resposta Correta! +20 XP obtidos!');
+  } else {
+    optionBtn.classList.add('wrong');
+    optionBtn.querySelector('.option-letter').textContent = '✗';
+
+    // Highlight the correct answer option too
+    if (btns[correctIndex]) {
+      btns[correctIndex].classList.add('correct');
+      btns[correctIndex].querySelector('.option-letter').textContent = '✓';
+    }
+
+    if (resultEmoji) resultEmoji.textContent = '😢';
+    if (resultText) resultText.textContent = 'Incorreto!';
+    showFeedback('❌ Incorreto!');
+  }
+
+  if (resultExplanation) {
+    resultExplanation.textContent = currentQuestion.explanation;
+  }
+
+  // Show the explanation card
+  const resultCard = document.getElementById('quizResult');
+  if (resultCard) {
+    resultCard.classList.add('show');
+    // Scroll automatically into view so player can read explanation comfortably
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function goToNextQuestion() {
+  const resultCard = document.getElementById('quizResult');
+  if (resultCard) resultCard.classList.remove('show');
+
+  currentQuestionIndex++;
+  if (currentQuestionIndex < 10) {
+    renderQuizQuestion();
+  } else {
+    showQuizSummary();
+  }
+}
+
+function showQuizSummary() {
+  const wizardState = document.getElementById('quiz-wizard-state');
+  const summaryState = document.getElementById('quiz-summary-state');
+
+  if (wizardState) wizardState.style.display = 'none';
+  if (summaryState) summaryState.style.display = 'block';
+
+  const summaryBook = document.getElementById('summary-book');
+  if (summaryBook) summaryBook.textContent = currentBook;
+
+  const correctCount = document.getElementById('summary-correct-count');
+  if (correctCount) correctCount.textContent = `${correctAnswersCount}/10`;
+
+  const xpEarned = document.getElementById('summary-xp-earned');
+  if (xpEarned) xpEarned.textContent = `+${quizXpGained} XP`;
+
+  // Initially hide the level up badge
+  const levelUpBadge = document.getElementById('summary-level-up-badge');
+  if (levelUpBadge) levelUpBadge.style.display = 'none';
+
+  // Enable the claim rewards button
+  const claimBtn = document.getElementById('btn-claim-rewards');
+  if (claimBtn) {
+    claimBtn.disabled = false;
+    claimBtn.textContent = 'Resgatar Recompensas';
+    claimBtn.style.background = 'linear-gradient(90deg, var(--accent-blue), var(--accent-purple))';
+  }
+}
+
+async function claimQuizRewards() {
+  const claimBtn = document.getElementById('btn-claim-rewards');
+  if (claimBtn) {
+    claimBtn.disabled = true;
+    claimBtn.textContent = 'Processando...';
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/users/add-xp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        xpToAdd: quizXpGained
+      })
+    });
+
+    const json = await res.json();
+    if (json.status === 'success') {
+      showFeedback(`🏆 Recompensas salvas com sucesso!`);
+      
+      if (claimBtn) {
+        claimBtn.textContent = 'Recompensas Resgatadas!';
+        claimBtn.style.background = 'var(--green)';
+      }
+
+      // Check if user leveled up and show the gorgeous golden badge
+      if (json.data.leveledUp) {
+        const levelUpBadge = document.getElementById('summary-level-up-badge');
+        if (levelUpBadge) {
+          levelUpBadge.style.display = 'block';
+          levelUpBadge.textContent = `🌟 PARABÉNS! Você subiu para o Nível ${json.data.newLevel}!`;
+        }
+      }
+
+      // Reload user statistics in the background to update progress bars
+      await loadUserStats();
+
+      // Se for o quiz de Mateus, marca a missão correspondente como concluída no banco!
+      if (currentBook === 'Mateus') {
+        try {
+          await fetch(`${API_URL}/quests/complete`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              questId: 2
+            })
+          });
+        } catch (questErr) {
+          console.error('Erro ao completar missão do quiz:', questErr);
+        }
+      }
+
+      // Gracefully redirect the user to Home after 3.5 seconds so they can admire their level-up badge
+      setTimeout(() => {
+        switchPage('home');
+      }, 3500);
+
+    } else {
+      throw new Error(json.message || 'Erro ao salvar recompensas.');
+    }
+  } catch (error) {
+    console.error('Erro ao resgatar recompensas do quiz:', error);
+    showFeedback('❌ Falha ao salvar recompensas no banco.');
+    if (claimBtn) {
+      claimBtn.disabled = false;
+      claimBtn.textContent = 'Tentar Novamente';
+    }
+  }
+}
+window.currentAudio = null;
+async function playChapterAudio() {
+  const btn = document.getElementById('btn-audio-play');
+  
+  if (window.currentAudio) {
+    if (!window.currentAudio.paused) {
+      window.currentAudio.pause();
+      btn.innerText = '▶';
+    } else {
+      window.currentAudio.play();
+      btn.innerText = '⏸';
+    }
+    return;
+  }
+
+  showFeedback('Gerando áudio via IA...');
+  btn.innerText = '⏳';
+
+  try {
+    const voiceSpeed = localStorage.getItem('voiceSpeed') || '1.0';
+    const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}`);
+    const json = await res.json();
+    
+    if (json.status !== 'success' || !json.data.audioBase64) {
+      throw new Error(json.message || 'Erro ao gerar o áudio');
+    }
+    
+    const audioUrl = `data:audio/mp3;base64,${json.data.audioBase64}`;
+    window.currentAudio = new Audio(audioUrl);
+    
+    window.currentAudio.addEventListener('timeupdate', () => {
+      const prog = document.getElementById('audio-progress');
+      const timeLabel = document.getElementById('audio-time');
+      if (prog && window.currentAudio.duration) {
+        const p = (window.currentAudio.currentTime / window.currentAudio.duration) * 100;
+        prog.style.width = p + '%';
+        const mins = Math.floor(window.currentAudio.currentTime / 60);
+        const secs = Math.floor(window.currentAudio.currentTime % 60).toString().padStart(2, '0');
+        timeLabel.innerText = `${mins}:${secs}`;
+      }
+    });
+
+    window.currentAudio.addEventListener('ended', () => {
+      btn.innerText = '▶';
+    });
+    
+    window.currentAudio.play();
+    btn.innerText = '⏸';
+
+  } catch (error) {
+    console.error('Erro de Áudio:', error);
+    btn.innerText = '▶';
+    showFeedback('❌ Falha na geração do áudio (Verifique as credenciais do Google Cloud)');
+  }
+}
+
+// ==========================================
+// CUSTOM APPLE BIBLE SELECTOR ORCHESTRATION
+// ==========================================
+let tempBook = 'Mateus';
+let tempChapter = 5;
+
+function updateCustomSelectTriggers() {
+  const customBook = document.getElementById('custom-book-trigger');
+  const customChapter = document.getElementById('custom-chapter-trigger');
+  if (customBook) customBook.textContent = currentBook;
+  if (customChapter) customChapter.textContent = `Capítulo ${currentChapter}`;
+}
+
+function openAppleBibleSelectorModal(startTab) {
+  tempBook = currentBook;
+  tempChapter = currentChapter;
+  
+  const modal = document.getElementById('apple-bible-selector-modal');
+  if (modal) modal.classList.add('active');
+  
+  switchSelectorSegment(startTab || 'book');
+}
+
+function closeAppleBibleSelectorModal() {
+  const modal = document.getElementById('apple-bible-selector-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function switchSelectorSegment(tab) {
+  const segBook = document.getElementById('segment-book');
+  const segChapter = document.getElementById('segment-chapter');
+  const booksContainer = document.getElementById('selector-books-container');
+  const chaptersContainer = document.getElementById('selector-chapters-container');
+  
+  if (tab === 'book') {
+    if (segBook) segBook.classList.add('active');
+    if (segChapter) segChapter.classList.remove('active');
+    if (booksContainer) booksContainer.style.display = 'block';
+    if (chaptersContainer) chaptersContainer.style.display = 'none';
+    renderAppleBooks();
+  } else {
+    if (segBook) segBook.classList.remove('active');
+    if (segChapter) segChapter.classList.add('active');
+    if (booksContainer) booksContainer.style.display = 'none';
+    if (chaptersContainer) chaptersContainer.style.display = 'block';
+    renderAppleChapters();
+  }
+}
+
+function renderAppleBooks() {
+  const container = document.getElementById('selector-books-container');
+  if (!container || bibleBooks.length === 0) return;
+  
+  // Group books by category
+  const categories = {};
+  bibleBooks.forEach(b => {
+    const cat = b.category || 'Outros';
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(b);
+  });
+  
+  let html = '';
+  for (const cat in categories) {
+    const icon = categoryIcons[cat] || '📖';
+    html += `<div class="ios-group-title">${cat}</div>`;
+    html += `<div class="ios-group-list">`;
+    
+    categories[cat].forEach(b => {
+      const isSelected = b.name === tempBook ? ' selected' : '';
+      const apocryphalLabel = b.isCanonical === false ? ' <span style="font-size: 10px; opacity: 0.6;">(Não Canônico)</span>' : '';
+      html += `
+        <div class="ios-row${isSelected}" onclick="selectAppleBook('${b.name}')">
+          <div class="ios-row-left">
+            <span class="ios-row-icon">${icon}</span>
+            <span class="ios-row-name">${b.name}${apocryphalLabel}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="ios-row-meta">${b.chapters} cap.</span>
+            <span class="ios-row-check">✓</span>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += `</div>`;
+  }
+  container.innerHTML = html;
+}
+
+function selectAppleBook(bookName) {
+  tempBook = bookName;
+  // If the book changed, reset temporary chapter to 1
+  if (tempBook !== currentBook) {
+    tempChapter = 1;
+  }
+  renderAppleBooks();
+  // Automatically switch to chapter tab for smooth navigation
+  setTimeout(() => {
+    switchSelectorSegment('chapter');
+  }, 180);
+}
+
+function renderAppleChapters() {
+  const container = document.getElementById('selector-chapters-container');
+  if (!container) return;
+  
+  const book = bibleBooks.find(b => b.name === tempBook);
+  if (!book) {
+    container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-tertiary);">Selecione um livro primeiro.</div>';
+    return;
+  }
+  
+  let html = `<div class="ios-group-title" style="margin-top:10px;">${tempBook} — Escolha o Capítulo</div>`;
+  html += `<div class="ios-chapter-grid">`;
+  
+  for (let c = 1; c <= book.chapters; c++) {
+    const isSelected = c === tempChapter ? ' selected' : '';
+    html += `
+      <div class="ios-chapter-btn${isSelected}" onclick="selectAppleChapter(${c})">
+        ${c}
+      </div>
+    `;
+  }
+  
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function selectAppleChapter(chapterNum) {
+  tempChapter = chapterNum;
+  renderAppleChapters();
+  // Confirm selection immediately on tap for streamlined mobile UX
+  setTimeout(() => {
+    confirmAppleBibleSelection();
+  }, 100);
+}
+
+function confirmAppleBibleSelection() {
+  const selectBook = document.getElementById('select-book');
+  const selectChapter = document.getElementById('select-chapter');
+  
+  let bookChanged = tempBook !== currentBook;
+  let chapterChanged = tempChapter !== currentChapter;
+  
+  currentBook = tempBook;
+  currentChapter = tempChapter;
+  
+  if (selectBook) selectBook.value = currentBook;
+  
+  if (bookChanged) {
+    // If book changed, call original change handler which also repopulates chapters and loads text
+    onBookChange();
+  } else if (chapterChanged) {
+    // If only chapter changed, update chapter and call original handler
+    if (selectChapter) {
+      selectChapter.value = currentChapter;
+    }
+    onChapterChange();
+  }
+  
+  updateCustomSelectTriggers();
+  closeAppleBibleSelectorModal();
+}
+
+// ==========================================
+// APPLE HIG PROFILE & PREFERENCES MANAGEMENT
+// ==========================================
+function toggleSystemTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.classList.add('light-theme');
+    localStorage.setItem('systemTheme', 'light');
+  } else {
+    document.documentElement.classList.remove('light-theme');
+    localStorage.setItem('systemTheme', 'dark');
+  }
+}
+
+function toggleProfilePopover(event) {
+  event.stopPropagation();
+  const popover = document.getElementById('profile-popover');
+  if (popover) {
+    popover.classList.toggle('active');
+  }
+}
+
+function closeProfilePopover() {
+  const popover = document.getElementById('profile-popover');
+  if (popover) {
+    popover.classList.remove('active');
+  }
+}
+
+// Close popover when clicking anywhere else
+document.addEventListener('click', () => {
+  closeProfilePopover();
+});
+
+function openAppleProfileModal(event) {
+  if (event) event.stopPropagation();
+  closeProfilePopover();
+  
+  const modal = document.getElementById('apple-profile-modal');
+  if (!modal) return;
+
+  // Populate Name & Email from currentUser
+  const nameInput = document.getElementById('profile-name-input');
+  const emailInput = document.getElementById('profile-email-input');
+  if (currentUser) {
+    if (nameInput) nameInput.value = currentUser.name || '';
+    if (emailInput) emailInput.value = currentUser.email || '';
+  }
+
+  // Populate Voice Speed from localStorage
+  const voiceSpeed = parseFloat(localStorage.getItem('voiceSpeed') || '1.0');
+  const speedSlider = document.getElementById('profile-voice-speed');
+  if (speedSlider) {
+    speedSlider.value = voiceSpeed;
+  }
+  updateVoiceSpeedLabel(voiceSpeed);
+
+  // Populate Daily Goal from localStorage
+  const dailyGoal = localStorage.getItem('dailyGoal') || '100';
+  const goalSelect = document.getElementById('profile-daily-goal');
+  if (goalSelect) {
+    goalSelect.value = dailyGoal;
+  }
+
+  // Populate Notifications from localStorage
+  const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
+  const notificationsCheckbox = document.getElementById('profile-notifications');
+  if (notificationsCheckbox) {
+    notificationsCheckbox.checked = notificationsEnabled;
+  }
+
+  // Populate Theme from localStorage
+  const savedTheme = localStorage.getItem('systemTheme') || 'dark';
+  const themeSelect = document.getElementById('profile-theme');
+  if (themeSelect) {
+    themeSelect.value = savedTheme;
+  }
+
+  modal.classList.add('active');
+}
+
+function closeAppleProfileModal() {
+  const modal = document.getElementById('apple-profile-modal');
+  if (modal) modal.classList.remove('active');
+
+  // Revert theme to saved localStorage theme if modal is cancelled
+  const savedTheme = localStorage.getItem('systemTheme') || 'dark';
+  toggleSystemTheme(savedTheme);
+}
+
+function updateVoiceSpeedLabel(val) {
+  const valDisplay = document.getElementById('profile-voice-speed-val');
+  if (!valDisplay) return;
+  const numericVal = parseFloat(val).toFixed(2);
+  if (numericVal === '1.00') {
+    valDisplay.textContent = '1.0x (Padrão)';
+  } else {
+    valDisplay.textContent = `${parseFloat(val).toFixed(2)}x`;
+  }
+}
+
+async function saveAppleProfileData() {
+  const nameInput = document.getElementById('profile-name-input');
+  const emailInput = document.getElementById('profile-email-input');
+  const speedSlider = document.getElementById('profile-voice-speed');
+  const goalSelect = document.getElementById('profile-daily-goal');
+  const notificationsCheckbox = document.getElementById('profile-notifications');
+  const themeSelect = document.getElementById('profile-theme');
+  const saveBtn = document.getElementById('btn-save-profile');
+
+  if (!nameInput || !emailInput || !speedSlider || !goalSelect || !notificationsCheckbox || !themeSelect || !saveBtn) return;
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+
+  if (name.length < 2) {
+    showFeedback('⚠️ Nome deve ter pelo menos 2 caracteres');
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showFeedback('⚠️ Insira um e-mail válido');
+    return;
+  }
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Salvando...';
+
+  try {
+    // 1. Update Profile in Prisma database via PUT /users/profile
+    const res = await fetch(`${API_URL}/users/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, email })
+    });
+
+    const json = await res.json();
+    if (json.status !== 'success') {
+      throw new Error(json.message || 'Erro ao atualizar dados no servidor');
+    }
+
+    // Update frontend currentUser state
+    currentUser = json.data;
+
+    // 2. Persist local configurations in localStorage
+    const voiceSpeed = speedSlider.value;
+    const oldVoiceSpeed = localStorage.getItem('voiceSpeed') || '1.0';
+    localStorage.setItem('voiceSpeed', voiceSpeed);
+    localStorage.setItem('dailyGoal', goalSelect.value);
+    localStorage.setItem('notificationsEnabled', notificationsCheckbox.checked.toString());
+    localStorage.setItem('systemTheme', themeSelect.value);
+
+    // If speaking speed changed, pause and reset current audio so it uses the new speed rate next time!
+    if (voiceSpeed !== oldVoiceSpeed && window.currentAudio) {
+      window.currentAudio.pause();
+      window.currentAudio = null;
+      const playBtn = document.getElementById('btn-audio-play');
+      if (playBtn) playBtn.innerText = '▶';
+    }
+
+    showFeedback('⚙️ Configurações salvas com sucesso!');
+    closeAppleProfileModal();
+    
+    // Refresh stats UI in case streak/daily goal representation changes
+    await loadUserStats();
+
+  } catch (err) {
+    console.error('Erro ao salvar dados de perfil:', err);
+    showFeedback(`❌ ${err.message || 'Falha ao salvar dados no servidor'}`);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Salvar';
+  }
+}
+
+function triggerLogout(event) {
+  if (event) event.stopPropagation();
+  closeProfilePopover();
+
+  showFeedback('🚪 Saindo da sessão...');
+
+  setTimeout(() => {
+    // Clear all localStorage
+    localStorage.clear();
+    
+    // Clean current audio
+    if (window.currentAudio) {
+      window.currentAudio.pause();
+      window.currentAudio = null;
+    }
+
+    // Reset default user/config stats to initial state
+    currentUser = null;
+
+    // Show a beautiful glassmorphic reload splash
+    document.body.innerHTML = `
+      <div style="height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0A0C10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #FFFFFF; text-align: center; padding: 20px;">
+        <div style="font-size: 48px; margin-bottom: 24px; animation: spin 2s linear infinite;">⏳</div>
+        <div style="font-size: 20px; font-weight: 600; background: linear-gradient(135deg, #4F8EF7, #7C6FE4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">Limpando cache...</div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.4);">Retornando para a BíbliaViva...</div>
+      </div>
+      <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+      </style>
+    `;
+
+    setTimeout(() => {
+      window.location.replace('/');
+    }, 1500);
+
+  }, 400);
+}
+</script>
+
+<!-- ============================================ -->
+<!-- PWA: SERVICE WORKER REGISTRATION & OFFLINE   -->
+<!-- ============================================ -->
+<div id="offline-banner" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: linear-gradient(135deg, #FF9500, #FF3B30);
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: slideDown 0.3s ease;
+">
+  📡 Você está offline — dados salvos em cache serão exibidos
+</div>
+
+<style>
+  @keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+</style>
+
+<script>
+// ---- PWA SERVICE WORKER REGISTRATION ----
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
+
+      // Listen for updates
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated') {
+              showFeedback('🔄 Nova versão disponível! Recarregue para atualizar.');
+            }
+          });
+        }
+      });
+    } catch (err) {
+      console.warn('[PWA] Falha ao registrar Service Worker:', err);
+    }
+  });
+}
+
+// ---- OFFLINE / ONLINE STATUS HANDLING ----
+const offlineBanner = document.getElementById('offline-banner');
+
+function updateOnlineStatus() {
+  if (!navigator.onLine) {
+    if (offlineBanner) offlineBanner.style.display = 'block';
+    // Adjust body padding to accommodate the banner
+    document.body.style.paddingTop = '36px';
+  } else {
+    if (offlineBanner) offlineBanner.style.display = 'none';
+    document.body.style.paddingTop = '0';
+  }
+}
+
+window.addEventListener('online', () => {
+  updateOnlineStatus();
+  showFeedback('✅ Conexão restaurada!');
+});
+
+window.addEventListener('offline', () => {
+  updateOnlineStatus();
+});
+
+// Check on load
+updateOnlineStatus();
+
+// ---- LOCAL STORAGE OFFLINE CACHE for critical data ----
+// Intercept and cache API responses in localStorage for deep offline support
+(function patchFetchForOfflineCache() {
+  const originalFetch = window.fetch;
+  const CACHEABLE_GETS = ['/api/users/me', '/api/quests', '/api/bible/books'];
+
+  window.fetch = async function(...args) {
+    const url = typeof args[0] === 'string' ? args[0] : (args[0]?.url || '');
+    const method = args[1]?.method || 'GET';
+
+    try {
+      const response = await originalFetch.apply(this, args);
+
+      // Cache successful GET responses to localStorage
+      if (method === 'GET' && response.ok) {
+        const matchedRoute = CACHEABLE_GETS.find(route => url.includes(route));
+        if (matchedRoute) {
+          const cloned = response.clone();
+          try {
+            const data = await cloned.json();
+            localStorage.setItem(`offline_cache_${matchedRoute}`, JSON.stringify({
+              data,
+              timestamp: Date.now()
+            }));
+          } catch(e) { /* ignore parse errors */ }
+        }
+      }
+
+      return response;
+    } catch (err) {
+      // Network error – try localStorage fallback for GET requests
+      if (method === 'GET') {
+        const matchedRoute = CACHEABLE_GETS.find(route => url.includes(route));
+        if (matchedRoute) {
+          const cached = localStorage.getItem(`offline_cache_${matchedRoute}`);
+          if (cached) {
+            const { data } = JSON.parse(cached);
+            console.log('[Offline] Serving from localStorage:', matchedRoute);
+            return new Response(JSON.stringify(data), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          }
+        }
+
+        // For Bible chapter requests like /api/bible/Mateus/1
+        if (url.includes('/api/bible/') && !url.includes('/audio')) {
+          const cached = localStorage.getItem(`offline_cache_${url}`);
+          if (cached) {
+            const { data } = JSON.parse(cached);
+            return new Response(JSON.stringify(data), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          }
+        }
+      }
+      throw err;
+    }
+  };
+})();
+
+// Also cache each Bible chapter as it's read
+(function patchChapterLoading() {
+  const origLoadChapter = window.loadChapterText;
+  if (typeof origLoadChapter !== 'function') return;
+
+  window.loadChapterText = async function(book, chapter) {
+    // Before calling original, set up caching on success
+    const url = `${window.API_URL || ''}/bible/${encodeURIComponent(book)}/${chapter}`;
+    try {
+      const result = await origLoadChapter.call(this, book, chapter);
+      // Cache the full page HTML we just rendered (the reading area)
+      const readingArea = document.getElementById('reading-text-area');
+      if (readingArea) {
+        localStorage.setItem(`offline_chapter_html_${book}_${chapter}`, readingArea.innerHTML);
+      }
+      return result;
+    } catch (err) {
+      // Try offline fallback
+      const cachedHtml = localStorage.getItem(`offline_chapter_html_${book}_${chapter}`);
+      if (cachedHtml) {
+        const readingArea = document.getElementById('reading-text-area');
+        if (readingArea) {
+          readingArea.innerHTML = cachedHtml;
+          showFeedback('📖 Capítulo carregado do cache offline');
+        }
+      } else {
+        throw err;
+      }
+    }
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+import { Request, Response, NextFunction } from 'express';
+import prisma from '../prisma';
+
+export const getUserStats = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Hardcoded user ID for now since auth is not implemented
+    const userId = 1; 
+    let user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        readingProgress: true,
+      }
+    });
+
+    if (!user) {
+      await prisma.user.create({
+        data: {
+          name: 'Usuário Teste',
+          email: 'teste@bibliaviva.com',
+        }
+      });
+      user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          readingProgress: true,
+        }
+      });
+    }
+
+    res.json({
+      status: 'success',
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addXpToUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { xpToAdd } = req.body;
+    if (typeof xpToAdd !== 'number' || xpToAdd <= 0) {
+      res.status(400).json({ status: 'error', message: 'Quantidade de XP inválida.' });
+      return;
+    }
+
+    const userId = 1; // Hardcoded user ID for now since auth is not implemented
+    
+    // Find the user first to get their current XP and Level
+    let user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      // If user doesn't exist, create them
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          name: 'Usuário Teste',
+          email: 'teste@bibliaviva.com',
+          xp: 0,
+          level: 1
+        }
+      });
+    }
+
+    let currentXp = user.xp + xpToAdd;
+    let currentLevel = user.level;
+    let leveledUp = false;
+
+    // Loop to handle multiple level ups in one large XP addition
+    while (currentXp >= currentLevel * 1000) {
+      currentXp -= currentLevel * 1000;
+      currentLevel += 1;
+      leveledUp = true;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        xp: currentXp,
+        level: currentLevel
+      },
+      include: {
+        readingProgress: true
+      }
+    });
+
+    res.json({
+      status: 'success',
+      data: {
+        user: updatedUser,
+        leveledUp,
+        addedXp: xpToAdd,
+        newLevel: currentLevel
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, email, questTemplate } = req.body;
+    const userId = 1; // Hardcoded user ID for now since auth is not implemented
+
+    const data: any = {};
+    if (name !== undefined) data.name = name;
+    if (email !== undefined) data.email = email;
+    if (questTemplate !== undefined) data.questTemplate = questTemplate;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data,
+      include: {
+        readingProgress: true
+      }
+    });
+
+    res.json({
+      status: 'success',
+      data: updatedUser
+    });
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      res.status(400).json({
+        status: 'error',
+        message: 'Este e-mail já está sendo utilizado por outro usuário.'
+      });
+      return;
+    }
+    next(error);
+  }
+};
+
+export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, email } = req.body;
+
+    // Check if email already exists
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      res.status(409).json({
+        status: 'error',
+        message: 'Este e-mail já está sendo utilizado.'
+      });
+      return;
+    }
+
+    // Create the new user
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        xp: 0,
+        level: 1,
+        streakDays: 0,
+      }
+    });
+
+    // Auto-assign all existing quests to this new user
+    const quests = await prisma.quest.findMany();
+    if (quests.length > 0) {
+      await prisma.userQuest.createMany({
+        data: quests.map(q => ({
+          userId: newUser.id,
+          questId: q.id,
+          progress: 0,
+          completed: false,
+        }))
+      });
+    }
+
+    // Return full user with relations
+    const fullUser = await prisma.user.findUnique({
+      where: { id: newUser.id },
+      include: {
+        readingProgress: true,
+        userQuests: true,
+      }
+    });
+
+    res.status(201).json({
+      status: 'success',
+      data: fullUser
+    });
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      res.status(409).json({
+        status: 'error',
+        message: 'Este e-mail já está sendo utilizado.'
+      });
+      return;
+    }
+    next(error);
+  }
+};

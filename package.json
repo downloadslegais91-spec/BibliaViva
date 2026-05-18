@@ -1,0 +1,9 @@
+{
+  "name": "bibliaviva-root",
+  "version": "1.0.0",
+  "description": "Root of BibliaViva to easily run backend",
+  "scripts": {
+    "start": "npm --prefix backend run dev",
+    "dev": "npm --prefix backend run dev"
+  }
+}

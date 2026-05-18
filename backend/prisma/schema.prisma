@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id              Int               @id @default(autoincrement())
+  name            String
+  email           String            @unique
+  xp              Int               @default(0)
+  level           Int               @default(1)
+  streakDays      Int               @default(0)
+  lastAccess      DateTime          @default(now())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  readingProgress ReadingProgress[]
+  userQuests      UserQuest[]
+  chatHistory     AiChatHistory[]
+  questTemplate   String            @default("canon")
+}
+
+model ReadingProgress {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  book      String
+  chapter   Int
+  verses    Json     // Array of read verse numbers
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quest {
+  id          Int         @id @default(autoincrement())
+  type        String      // "daily", "weekly", "challenge"
+  title       String
+  description String
+  xpReward    Int
+  goal        Int         // E.g. 28 chapters
+  createdAt   DateTime    @default(now())
+  userQuests  UserQuest[]
+}
+
+model UserQuest {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  questId   Int
+  progress  Int      @default(0)
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest     Quest    @relation(fields: [questId], references: [id], onDelete: Cascade)
+}
+
+model AiChatHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  sender    String   // "user" or "ai"
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
