@@ -802,7 +802,7 @@
   <script>
     (function() {
       const savedTheme = localStorage.getItem('systemTheme');
-      if (savedTheme === 'light') {
+      if (savedTheme === 'light' || savedTheme === null) {
         document.documentElement.classList.add('light-theme');
       }
     })();
@@ -1217,7 +1217,7 @@
 
       const savedTheme = localStorage.getItem('systemTheme');
       const toggleIcon = document.querySelector('.theme-toggle-icon');
-      if (savedTheme === 'light') {
+      if (savedTheme === 'light' || savedTheme === null) {
         document.body.classList.add('light-theme');
         if (toggleIcon) toggleIcon.textContent = '☀️';
       } else {

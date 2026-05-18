@@ -2679,7 +2679,7 @@ if (localStorage.getItem('isLoggedIn') !== 'true') {
 // Carrega o tema imediatamente para evitar flash visual
 (function() {
   const savedTheme = localStorage.getItem('systemTheme');
-  if (savedTheme === 'light') {
+  if (savedTheme === 'light' || savedTheme === null) {
     document.documentElement.classList.add('light-theme');
   }
 })();
@@ -4084,7 +4084,7 @@ function openAppleProfileModal(event) {
   }
 
   // Populate Theme from localStorage
-  const savedTheme = localStorage.getItem('systemTheme') || 'dark';
+  const savedTheme = localStorage.getItem('systemTheme') || 'light';
   const themeSelect = document.getElementById('profile-theme');
   if (themeSelect) {
     themeSelect.value = savedTheme;
@@ -4098,7 +4098,7 @@ function closeAppleProfileModal() {
   if (modal) modal.classList.remove('active');
 
   // Revert theme to saved localStorage theme if modal is cancelled
-  const savedTheme = localStorage.getItem('systemTheme') || 'dark';
+  const savedTheme = localStorage.getItem('systemTheme') || 'light';
   toggleSystemTheme(savedTheme);
 }
 
