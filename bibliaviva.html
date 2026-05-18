@@ -2683,7 +2683,19 @@ if (localStorage.getItem('isLoggedIn') !== 'true') {
   }
 })();
 
-const API_URL = 'http://localhost:3000/api';
+// Auto-detect environment: use production backend URL if available, else localhost
+const API_URL = (function() {
+  // If set globally (e.g. from a config script), use that
+  if (window.BACKEND_URL) return window.BACKEND_URL + '/api';
+  // If deployed to Vercel (not localhost), use relative /api (requires backend on same domain)
+  // OR point to your dedicated backend URL here:
+  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    // TODO: Replace with your backend URL after deploying (e.g. Railway, Render)
+    // Example: return 'https://bibliaviva-backend.railway.app/api';
+    return window.PRODUCTION_API || '/api';
+  }
+  return 'http://localhost:3000/api';
+})();
 const pages = ['home','quests','leitura','ia','quiz'];
 const titles = { home:'Início', quests:'Missões', leitura:'Leitura Bíblica', ia:'Assistente IA', quiz:'Quiz do Dia' };
 let currentUser = null;
@@ -4141,8 +4153,12 @@ function triggerLogout(event) {
   showFeedback('🚪 Saindo da sessão...');
 
   setTimeout(() => {
-    // Clear all localStorage
+    // Save theme preference before clearing to keep it consistent
+    const savedTheme = localStorage.getItem('systemTheme');
     localStorage.clear();
+    if (savedTheme) {
+      localStorage.setItem('systemTheme', savedTheme);
+    }
     
     // Clean current audio
     if (window.currentAudio) {

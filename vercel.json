@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/login.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/registro", "destination": "/registro.html" },
+    { "source": "/app", "destination": "/bibliaviva.html" },
+    { "source": "/bibliaviva", "destination": "/bibliaviva.html" }
+  ]
+}

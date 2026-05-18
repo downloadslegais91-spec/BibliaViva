@@ -506,9 +506,9 @@
     }
 
     /* ── Light Theme Styles ── */
-    .light-theme {
-      background: linear-gradient(160deg, #F2F4F7 0%, #E5E7EB 100%);
-      color: #1C1C1E;
+    .light-theme body, body.light-theme {
+      background: linear-gradient(160deg, #F2F4F7 0%, #E5E7EB 100%) !important;
+      color: #1C1C1E !important;
     }
 
     .light-theme .orb-top-right {
@@ -674,7 +674,6 @@
       const savedTheme = localStorage.getItem('systemTheme');
       if (savedTheme === 'light') {
         document.documentElement.classList.add('light-theme');
-        document.body.classList.add('light-theme');
       }
     })();
   </script>
@@ -1053,7 +1052,7 @@
 
     // ── Theme Toggle Functions ──
     function toggleTheme() {
-      const isLight = document.body.classList.contains('light-theme');
+      const isLight = document.documentElement.classList.contains('light-theme');
       const toggleIcon = document.querySelector('.theme-toggle-icon');
       if (isLight) {
         document.documentElement.classList.remove('light-theme');
@@ -1073,6 +1072,7 @@
       const savedTheme = localStorage.getItem('systemTheme');
       const toggleIcon = document.querySelector('.theme-toggle-icon');
       if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
         if (toggleIcon) toggleIcon.textContent = '☀️';
       } else {
         if (toggleIcon) toggleIcon.textContent = '🌙';
