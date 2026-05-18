@@ -3442,6 +3442,7 @@ function appendChatBubble(isUser, text) {
 
 let recognition = null;
 let isListening = false;
+let hadError = false;
 
 function toggleSpeechRecognition() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -3466,6 +3467,7 @@ function toggleSpeechRecognition() {
 
     recognition.onstart = () => {
       isListening = true;
+      hadError = false;
       micBtn.classList.add('listening');
       micBtn.innerHTML = '🛑';
       chatInput.placeholder = "Ouvindo... Fale agora";
@@ -3493,16 +3495,21 @@ function toggleSpeechRecognition() {
 
     recognition.onerror = (event) => {
       console.error("Erro no reconhecimento de voz:", event.error);
+      hadError = true;
       if (event.error === 'not-allowed') {
         alert("Permissão para usar o microfone foi negada. Por favor, ative nas configurações do navegador.");
+      } else if (event.error === 'network') {
+        alert("Erro de conexão (network) no reconhecimento de voz.\n\nDica: Para funcionar no celular, o aplicativo precisa de uma conexão de internet ativa e segura (HTTPS). Se estiver testando localmente, acesse usando o endereço 'http://localhost:...' em vez do IP da sua rede.");
+      } else {
+        alert("Ocorreu um erro no reconhecimento de voz: " + event.error);
       }
       stopRecognitionState();
     };
 
     recognition.onend = () => {
       stopRecognitionState();
-      // Auto-send if there is text in the input!
-      if (chatInput.value.trim()) {
+      // Auto-send if there is text in the input and no error occurred!
+      if (!hadError && chatInput.value.trim()) {
         sendChat();
       }
     };
