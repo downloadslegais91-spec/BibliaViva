@@ -1064,7 +1064,8 @@
 
     function startGoogleRedirectFlow() {
       const clientId = localStorage.getItem('googleClientId') || '993346361316-ec2ssid3uahqgdgretnhbs326ap3qcm5.apps.googleusercontent.com';
-      const redirectUri = window.location.origin + window.location.pathname;
+      // Dynamically guarantee redirectUri matches Google Console registered callback URLs (ends with /login.html)
+      const redirectUri = window.location.origin + (window.location.pathname.endsWith('login.html') ? window.location.pathname : '/login.html');
       const nonce = Math.random().toString(36).substring(2) + Date.now().toString(36);
       const state = 'google_oauth';
       
