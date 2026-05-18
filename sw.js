@@ -1,5 +1,5 @@
 // BíbliaViva Service Worker – Offline-first PWA
-const CACHE_NAME = 'bibliaviva-v1';
+const CACHE_NAME = 'bibliaviva-v2';
 const STATIC_ASSETS = [
   '/',
   '/login.html',
@@ -50,13 +50,19 @@ self.addEventListener('fetch', event => {
   // Skip non-GET requests (POST/PUT/DELETE go straight to network)
   if (event.request.method !== 'GET') return;
 
+  // Strategy for HTML pages (Navigation requests): Network-first, fallback to cache
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html')) {
+    event.respondWith(networkFirstThenCache(event.request));
+    return;
+  }
+
   // Strategy for API calls: Network-first, fallback to cache
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirstThenCache(event.request));
     return;
   }
 
-  // Strategy for everything else (HTML, CSS, JS, fonts, images): Cache-first, fallback to network
+  // Strategy for everything else (CSS, JS, fonts, images): Cache-first, fallback to network
   event.respondWith(cacheFirstThenNetwork(event.request));
 });
 
