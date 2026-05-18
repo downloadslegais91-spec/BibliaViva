@@ -1108,8 +1108,7 @@
         google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleGoogleCredential,
-          ux_mode: 'redirect',
-          login_uri: window.location.origin + '/login.html'
+          ux_mode: 'popup'
         });
 
         google.accounts.id.renderButton(
