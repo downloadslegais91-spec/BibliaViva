@@ -12,6 +12,10 @@ app.use(express.json());
 
 app.use('/api', routes);
 
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../icon-512.png'));
+});
+
 // Serve PWA static files from project root
 app.use(express.static(path.join(__dirname, '../..'), {
   setHeaders: (res, filePath) => {
