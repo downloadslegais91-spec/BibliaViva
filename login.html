@@ -70,6 +70,7 @@
       z-index: 1;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       flex: 1;
       padding: env(safe-area-inset-top, 47px) 16px env(safe-area-inset-bottom, 34px) 16px;
       max-width: 430px;
@@ -270,8 +271,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-top: auto;
-      padding-bottom: 24px;
+      padding-bottom: 0;
     }
 
     .btn-social {
@@ -748,6 +748,48 @@
 
     .light-theme .ios-install-step-num {
       background: rgba(0, 0, 0, 0.06);
+    }
+
+    /* ── Mobile Responsive: Compact layout for small screens ── */
+    @media (max-height: 750px) {
+      .header {
+        margin-top: 16px;
+        margin-bottom: 16px;
+      }
+      .header-icon { font-size: 36px; margin-bottom: 8px; }
+      .title { font-size: 26px; }
+      .subtitle { font-size: 15px; }
+      .glass-card { gap: 12px; padding: 20px 14px; }
+      .glass-input { height: 46px; font-size: 16px; }
+      .eye-btn { height: 46px; }
+      .btn-primary { height: 48px; font-size: 16px; margin-top: 4px; }
+      .divider { margin: 12px 0; }
+      .social-buttons { gap: 10px; padding-bottom: 0; margin-top: 0; }
+      .btn-social { height: 46px; font-size: 16px; }
+    }
+
+    @media (max-height: 600px) {
+      .header {
+        margin-top: 8px;
+        margin-bottom: 10px;
+      }
+      .header-icon { font-size: 28px; margin-bottom: 4px; }
+      .title { font-size: 22px; }
+      .subtitle { font-size: 13px; }
+      .glass-card { gap: 8px; padding: 16px 12px; border-radius: 20px; }
+      .glass-input { height: 42px; font-size: 15px; }
+      .eye-btn { height: 42px; }
+      .btn-primary { height: 44px; font-size: 15px; margin-top: 2px; }
+      .forgot-password { font-size: 13px; padding: 6px 0; margin-top: -4px; }
+      .divider { margin: 8px 0; font-size: 12px; }
+      .social-buttons { gap: 8px; padding-bottom: 0; margin-top: 0; }
+      .btn-social { height: 42px; font-size: 15px; }
+    }
+
+    /* Width-based: ensure content never overflows horizontally on small phones */
+    @media (max-width: 375px) {
+      .login-container { padding-left: 12px; padding-right: 12px; }
+      .title { font-size: 28px; }
     }
   </style>
   <!-- Google Identity Services Library -->
