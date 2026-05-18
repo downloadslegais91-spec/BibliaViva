@@ -6,6 +6,7 @@ import { getQuests, completeQuest } from '../controllers/quest.controller';
 import { saveChat, getChatHistory } from '../controllers/chat.controller';
 import { getBooks, getChapter, getChapterAudio } from '../controllers/bible.controller';
 import { getQuizForBook } from '../controllers/quiz.controller';
+import { getSermons, refreshBookSermons, updateUserPlan } from '../controllers/sermon.controller';
 import { z } from 'zod';
 import { validate } from '../middlewares/validate';
 
@@ -32,7 +33,17 @@ router.post('/users/add-xp', validate(z.object({
   })
 })), addXpToUser);
 
+router.post('/users/me/plan', validate(z.object({
+  body: z.object({
+    plan: z.enum(['FREE', 'BASIC', 'PREMIUM'])
+  })
+})), updateUserPlan);
+
 router.get('/quiz/:book', getQuizForBook);
+
+// Sermon routes
+router.get('/sermons/:book', getSermons);
+router.post('/sermons/:book/refresh', refreshBookSermons);
 
 
 router.post('/progress', validate(z.object({

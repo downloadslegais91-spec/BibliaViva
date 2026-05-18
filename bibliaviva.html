@@ -1867,6 +1867,364 @@
   }
 
   /* ========================================== */
+  /* BIBLE SERMONS - TAB BAR, CARDS & MODAL   */
+  /* ========================================== */
+
+  /* Segmented control for reader tabs */
+  .reading-segmented-control {
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px;
+    border-radius: 9px;
+    display: flex;
+    gap: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .segment-item {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 6.5px 10px;
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
+  }
+
+  .segment-item.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+  }
+
+  /* Sermons List layout */
+  .sermons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 16px 20px;
+  }
+
+  .sermon-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+
+  .sermon-card:active {
+    transform: scale(0.98);
+  }
+
+  .sermon-thumbnail-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    background: #000;
+  }
+
+  .sermon-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+  }
+
+  .sermon-card:hover .sermon-thumbnail {
+    opacity: 1;
+  }
+
+  .play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    transition: background 0.2s ease;
+  }
+
+  .sermon-card:hover .play-overlay {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .play-button-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 20px;
+    padding-left: 3px;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .sermon-card:hover .play-button-icon {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.35);
+    border-color: #FFFFFF;
+  }
+
+  .sermon-duration-tag {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 3px 6px;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .sermon-info {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sermon-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .sermon-channel-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .sermon-channel-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .verified-badge {
+    color: var(--accent-gold);
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .sermon-stats-row {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  /* Premium Glass Up-sell Card */
+  .upsell-card {
+    background: linear-gradient(135deg, rgba(124, 111, 224, 0.15) 0%, rgba(79, 142, 247, 0.1) 100%);
+    border: 1px solid rgba(124, 111, 224, 0.25);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(124, 111, 224, 0.1);
+  }
+
+  .upsell-badge {
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(124, 111, 224, 0.3);
+  }
+
+  .upsell-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .upsell-description {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .upsell-btn {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    border: none;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(124, 111, 224, 0.3);
+    transition: transform 0.2s;
+  }
+
+  .upsell-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* Glassmorphic Modal Overlay player */
+  #sermon-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 12, 16, 0.6);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #sermon-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sermon-modal-content {
+    width: 90%;
+    max-width: 640px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #sermon-modal-overlay.active .sermon-modal-content {
+    transform: scale(1) translateY(0);
+  }
+
+  .sermon-video-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    background: #000;
+  }
+
+  .sermon-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .sermon-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sermon-modal-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 20px;
+    flex: 1;
+  }
+
+  .sermon-modal-close {
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background 0.2s;
+  }
+
+  .sermon-modal-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Light Theme overrides for Segmented Control and Sermon Cards */
+  .light-theme .reading-segmented-control {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .light-theme .segment-item.active {
+    background: #FFFFFF;
+    color: #1C1C1E !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  .light-theme .sermon-card {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  }
+
+  .light-theme .sermon-title {
+    color: #1C1C1E;
+  }
+
+  .light-theme .upsell-card {
+    background: linear-gradient(135deg, rgba(124, 111, 224, 0.06) 0%, rgba(79, 142, 247, 0.04) 100%);
+    border-color: rgba(124, 111, 224, 0.18);
+  }
+
+  /* ========================================== */
   /* PREMIUM LIGHT MODE GLASSMORPHISM THEME    */
   /* ========================================== */
   
@@ -2446,28 +2804,45 @@
     </div>
   </div>
 
-
-  <!-- AI SUMMARY -->
-  <div class="ai-summary-card">
-    <div class="ai-sum-header">
-      <div class="ai-avatar">✦</div>
-      <div class="ai-sum-title">Resumo da IA · Mateus 5</div>
-    </div>
-    <div class="ai-sum-text">Este capítulo contém o famoso <strong>Sermão do Monte</strong>, onde Jesus apresenta as Bem-aventuranças — bênçãos para os humildes, misericordiosos e pacificadores. Jesus também aprofunda a Lei de Moisés, mostrando que a verdadeira obediência vai além do ato externo e alcança o coração.</div>
+  <!-- APPLE SEGMENTED CONTROL TABS -->
+  <div class="reading-segmented-control">
+    <button class="segment-item active" onclick="switchReadingTab('text')" id="segment-text">Texto</button>
+    <button class="segment-item" onclick="switchReadingTab('sermons')" id="segment-sermons">Pregações</button>
+    <button class="segment-item" onclick="switchReadingTab('summary')" id="segment-summary">Resumo IA</button>
   </div>
 
-  <!-- TEXT -->
-  <div class="reading-text">
-    <p class="verse"><span class="verse-num">1</span>Vendo Jesus as multidões, subiu ao monte e, depois de se sentar, os seus discípulos se aproximaram dele.</p>
-    <p class="verse"><span class="verse-num">2</span>E ele passou a ensiná-los, dizendo:</p>
-    <p class="verse highlight"><span class="verse-num">3</span>"Bem-aventurados os pobres em espírito, porque deles é o reino dos céus.</p>
-    <p class="verse"><span class="verse-num">4</span>Bem-aventurados os que choram, porque serão consolados.</p>
-    <p class="verse highlight"><span class="verse-num">5</span>Bem-aventurados os humildes, porque herdarão a terra.</p>
-    <p class="verse"><span class="verse-num">6</span>Bem-aventurados os que têm fome e sede de justiça, porque serão saciados.</p>
-    <p class="verse"><span class="verse-num">7</span>Bem-aventurados os misericordiosos, porque obterão misericórdia.</p>
-    <p class="verse"><span class="verse-num">8</span>Bem-aventurados os puros de coração, porque verão a Deus.</p>
-    <p class="verse highlight"><span class="verse-num">9</span>Bem-aventurados os pacificadores, porque serão chamados filhos de Deus.</p>
-    <p class="verse"><span class="verse-num">10</span>Bem-aventurados os perseguidos por causa da justiça, porque deles é o reino dos céus.</p>
+  <!-- TAB CONTENT: TEXT -->
+  <div id="reading-tab-text-content">
+    <div class="reading-text">
+      <p class="verse"><span class="verse-num">1</span>Vendo Jesus as multidões, subiu ao monte e, depois de se sentar, os seus discípulos se aproximaram dele.</p>
+      <p class="verse"><span class="verse-num">2</span>E ele passou a ensiná-los, dizendo:</p>
+      <p class="verse highlight"><span class="verse-num">3</span>"Bem-aventurados os pobres em espírito, porque deles é o reino dos céus.</p>
+      <p class="verse"><span class="verse-num">4</span>Bem-aventurados os que choram, porque serão consolados.</p>
+      <p class="verse highlight"><span class="verse-num">5</span>Bem-aventurados os humildes, porque herdarão a terra.</p>
+      <p class="verse"><span class="verse-num">6</span>Bem-aventurados os que têm fome e sede de justiça, porque serão saciados.</p>
+      <p class="verse"><span class="verse-num">7</span>Bem-aventurados os misericordiosos, porque obterão misericórdia.</p>
+      <p class="verse"><span class="verse-num">8</span>Bem-aventurados os puros de coração, porque verão a Deus.</p>
+      <p class="verse highlight"><span class="verse-num">9</span>Bem-aventurados os pacificadores, porque serão chamados filhos de Deus.</p>
+      <p class="verse"><span class="verse-num">10</span>Bem-aventurados os perseguidos por causa da justiça, porque deles é o reino dos céus.</p>
+    </div>
+  </div>
+
+  <!-- TAB CONTENT: SERMONS -->
+  <div id="reading-tab-sermons-content" style="display: none;">
+    <div class="sermons-container" id="sermons-list-container">
+      <div style="padding: 30px; text-align: center; color: var(--label2);">Carregando pregações inspiradoras...</div>
+    </div>
+  </div>
+
+  <!-- TAB CONTENT: AI SUMMARY -->
+  <div id="reading-tab-summary-content" style="display: none;">
+    <div class="ai-summary-card">
+      <div class="ai-sum-header">
+        <div class="ai-avatar">✦</div>
+        <div class="ai-sum-title">Resumo da IA · Mateus 5</div>
+      </div>
+      <div class="ai-sum-text">Este capítulo contém o famoso <strong>Sermão do Monte</strong>, onde Jesus apresenta as Bem-aventuranças — bênçãos para os humildes, misericordiosos e pacificadores. Jesus também aprofunda a Lei de Moisés, mostrando que a verdadeira obediência vai além do ato externo e alcança o coração.</div>
+    </div>
   </div>
 
   <div style="padding: 0 16px 20px; display:flex; flex-direction:column; gap:10px;">
@@ -2705,6 +3080,18 @@
             <option value="dark">Escuro Glassmorphism</option>
             <option value="light">Claro Elegante</option>
           </select>
+        </div>
+      </div>
+
+      <!-- Sincronização e Versão Section -->
+      <div class="ios-group-title">Sincronização e Versão</div>
+      <div class="ios-group-list">
+        <div class="ios-row" onclick="checkPwaUpdatesForce()" style="cursor: pointer;">
+          <div class="ios-row-left">
+            <span class="ios-row-icon">🔄</span>
+            <span class="ios-row-name" style="color: var(--accent-blue); font-weight: 500;">Priorizar Atualização</span>
+          </div>
+          <span style="font-size: 14px; color: rgba(255,255,255,0.4);" id="pwa-version-tag">v6.0.0 (Prioritário)</span>
         </div>
       </div>
     </div>
@@ -2994,6 +3381,11 @@ async function loadActiveChapter() {
       
       // Update custom select triggers in sync
       updateCustomSelectTriggers();
+
+      // Reset reading tab back to biblical text
+      if (typeof switchReadingTab === 'function') {
+        switchReadingTab('text');
+      }
     }
   } catch (error) {
     console.error('Erro ao carregar versículos:', error);
@@ -3223,6 +3615,260 @@ async function concluirLeitura() {
     btn.disabled = false;
     btn.textContent = '✓ Concluir Leitura (+50 XP)';
   }
+}
+
+// ==================== FEATURES DE PREGAÇÕES (YOUTUBE API) ====================
+// A chave API do YouTube fornecida pelo usuário
+const YOUTUBE_API_KEY = "AIzaSyD-HtcNGpQy3f6HSz_-tsHHTnx3Ku6abEA";
+let currentReadingTab = 'text'; // 'text', 'sermons', 'summary'
+
+// Trocador de abas da tela de leitura (Segmented Control)
+function switchReadingTab(tabId) {
+  currentReadingTab = tabId;
+  
+  // Atualizar botões do segmented control
+  const segText = document.getElementById('segment-text');
+  const segSermons = document.getElementById('segment-sermons');
+  const segSummary = document.getElementById('segment-summary');
+  
+  if (segText) segText.classList.toggle('active', tabId === 'text');
+  if (segSermons) segSermons.classList.toggle('active', tabId === 'sermons');
+  if (segSummary) segSummary.classList.toggle('active', tabId === 'summary');
+  
+  // Atualizar exibições dos containers
+  const divText = document.getElementById('reading-tab-text-content');
+  const divSermons = document.getElementById('reading-tab-sermons-content');
+  const divSummary = document.getElementById('reading-tab-summary-content');
+  
+  if (divText) divText.style.display = tabId === 'text' ? 'block' : 'none';
+  if (divSermons) divSermons.style.display = tabId === 'sermons' ? 'block' : 'none';
+  if (divSummary) divSummary.style.display = tabId === 'summary' ? 'block' : 'none';
+  
+  // Se for a aba de pregações, carregar as pregações do livro atual
+  if (tabId === 'sermons') {
+    loadSermonsForCurrentBook();
+  }
+}
+
+// Carregar pregações via YouTube Data API v3
+// Carregar pregações via API segura do BíbliaViva
+async function loadSermonsForCurrentBook() {
+  const container = document.getElementById('sermons-list-container');
+  if (!container) return;
+  
+  const bookName = typeof currentBook !== 'undefined' ? currentBook : "Mateus";
+  
+  // Renderizar feedback de carregamento
+  container.innerHTML = `
+    <div style="padding: 40px 20px; text-align: center; color: var(--label2);">
+      <div class="sermon-loading-spinner" style="margin: 0 auto 16px;"></div>
+      <div style="font-size: 15px; font-weight: 500; color: var(--label1);">Buscando pregações inspiradoras...</div>
+      <div style="font-size: 13px; color: var(--label2); margin-top: 4px;">Encontrando vídeos sobre o livro de ${bookName} via API BíbliaViva</div>
+    </div>
+  `;
+  
+  try {
+    const res = await fetch(`${API_URL}/sermons/${encodeURIComponent(bookName)}`);
+    if (!res.ok) {
+      throw new Error(`Erro na API do BíbliaViva: ${res.status}`);
+    }
+    
+    const json = await res.json();
+    if (json.status !== 'success' || !json.data || !json.data.sermons || json.data.sermons.length === 0) {
+      container.innerHTML = `
+        <div class="empty-sermons-state">
+          <div class="empty-icon">📺</div>
+          <div class="empty-title">Nenhuma pregação encontrada</div>
+          <div class="empty-subtitle">Não conseguimos encontrar vídeos inspiradores sobre o livro de ${bookName} no momento.</div>
+        </div>
+      `;
+      return;
+    }
+    
+    renderSermonCards(json.data.sermons, json.data.plan);
+  } catch (err) {
+    console.error("Erro ao carregar pregações:", err);
+    container.innerHTML = `
+      <div class="empty-sermons-state">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">Erro ao carregar pregações</div>
+        <div class="empty-subtitle">Verifique sua conexão ou tente novamente mais tarde.</div>
+        <button class="pill-btn" onclick="loadSermonsForCurrentBook()" style="margin-top: 15px; font-size: 14px; width: auto; padding: 8px 16px;">Tentar Novamente</button>
+      </div>
+    `;
+  }
+}
+
+// Renderizar os cards das pregações no container
+function renderSermonCards(items, plan) {
+  const container = document.getElementById('sermons-list-container');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  items.forEach(item => {
+    const videoId = item.videoId;
+    const title = item.title;
+    const channelTitle = item.channelName;
+    const thumbnailUrl = item.thumbnailUrl;
+    const durationSeconds = item.durationSeconds;
+    const viewCount = item.viewCount;
+    
+    const durationMin = durationSeconds ? Math.round(durationSeconds / 60) : 0;
+    const durationText = durationMin ? `${durationMin} min` : '';
+    const viewsText = viewCount ? `${viewCount.toLocaleString('pt-BR')} views` : '';
+    const metaText = [durationText, viewsText].filter(Boolean).join(' • ');
+    
+    // Escapar strings para passar no evento onclick
+    const escapedTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const escapedChannel = channelTitle.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    
+    const card = document.createElement('div');
+    card.className = 'sermon-card';
+    card.onclick = () => playSermonVideo(videoId, escapedTitle, escapedChannel, '');
+    
+    card.innerHTML = `
+      <div class="sermon-thumbnail-container">
+        <img class="sermon-thumbnail" src="${thumbnailUrl}" alt="${escapedTitle}" loading="lazy">
+        <div class="sermon-play-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <div class="sermon-info">
+        <div class="sermon-title">${title}</div>
+        <div class="sermon-channel">${channelTitle}</div>
+        <div class="sermon-meta" style="font-size: 11px; color: var(--text-tertiary); margin-top: 3px;">${metaText}</div>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
+  
+  // Exibir card de Upsell Premium se o usuário for FREE
+  if (plan === 'FREE') {
+    const upsellCard = document.createElement('div');
+    upsellCard.className = 'sermon-premium-card';
+    upsellCard.style.cssText = `
+      grid-column: 1 / -1;
+      background: rgba(124, 111, 224, 0.08);
+      border: 1px dashed rgba(124, 111, 224, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 8px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    `;
+    
+    upsellCard.innerHTML = `
+      <div style="font-size: 28px; margin-bottom: 12px;">✦</div>
+      <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Desbloqueie Pregações Completas</div>
+      <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 18px; max-width: 320px; margin-left: auto; margin-right: auto;">
+        Assinantes FREE têm limite de 3 pregações por livro. Atualize para o plano PREMIUM e acesse todas as pregações e resumos por Inteligência Artificial!
+      </div>
+      <button class="pill-btn" onclick="upgradeToPremiumPlan()" style="
+        background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 111, 224, 0.3);
+        width: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      ">
+        Quero Acesso Premium
+      </button>
+    `;
+    
+    container.appendChild(upsellCard);
+  }
+}
+
+// Atualizar plano do usuário para Premium automaticamente
+async function upgradeToPremiumPlan() {
+  showFeedback("⚡ Ativando plano Premium...");
+  try {
+    const res = await fetch(`${API_URL}/users/me/plan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ plan: 'PREMIUM' })
+    });
+    
+    const json = await res.json();
+    if (json.status === 'success') {
+      showFeedback("🎉 Plano Premium ativado com sucesso! Carregando todos os recursos...", "success");
+      await loadUserStats(); // Atualizar dados globais do usuário
+      loadSermonsForCurrentBook(); // Recarregar pregações com limite de 6 vídeos
+    } else {
+      showFeedback("❌ Não foi possível atualizar o plano: " + (json.message || "Erro desconhecido"));
+    }
+  } catch (err) {
+    console.error("Erro ao assinar Premium:", err);
+    showFeedback("❌ Conexão com o servidor falhou.");
+  }
+}
+
+// Tocar o vídeo em um Iframe no Modal Premium
+function playSermonVideo(videoId, title, channel, description) {
+  const modal = document.getElementById('youtube-player-modal');
+  const titleEl = document.getElementById('sermon-modal-title');
+  const channelEl = document.getElementById('sermon-modal-channel');
+  const descEl = document.getElementById('sermon-modal-description');
+  const iframeContainer = document.getElementById('youtube-player-iframe-container');
+  
+  if (!modal || !iframeContainer) return;
+  
+  // Pausar o áudio do capítulo se estiver tocando
+  if (window.currentAudio && !window.currentAudio.paused) {
+    window.currentAudio.pause();
+    const btnPlay = document.getElementById('btn-audio-play');
+    if (btnPlay) btnPlay.textContent = '▶';
+  }
+  
+  // Preencher informações
+  if (titleEl) titleEl.innerText = title;
+  if (channelEl) channelEl.innerText = `Canal: ${channel}`;
+  if (descEl) descEl.innerText = description;
+  
+  // Inserir Iframe do YouTube
+  iframeContainer.innerHTML = `
+    <iframe 
+      id="sermon-youtube-iframe"
+      src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0" 
+      title="${title}" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      allowfullscreen>
+    </iframe>
+  `;
+  
+  // Mostrar modal
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden'; // Evitar scroll de fundo
+}
+
+// Fechar o player de pregações
+function closeSermonPlayer() {
+  const modal = document.getElementById('youtube-player-modal');
+  const iframeContainer = document.getElementById('youtube-player-iframe-container');
+  
+  if (modal) {
+    modal.classList.remove('active');
+  }
+  
+  if (iframeContainer) {
+    iframeContainer.innerHTML = ''; // Limpar iframe para parar reprodução
+  }
+  
+  document.body.style.overflow = ''; // Restaurar scroll
 }
 
 function updateMethodologyUI(template) {
@@ -3495,21 +4141,29 @@ function toggleSpeechRecognition() {
 
     recognition.onerror = (event) => {
       console.error("Erro no reconhecimento de voz:", event.error);
-      hadError = true;
+      
       if (event.error === 'not-allowed') {
-        alert("Permissão para usar o microfone foi negada. Por favor, ative nas configurações do navegador.");
+        hadError = true;
+        showFeedback("🎙️ Permissão para usar o microfone negada. Ative-a nas configurações do navegador.");
       } else if (event.error === 'network') {
-        alert("Erro de conexão (network) no reconhecimento de voz.\n\nDica: Para funcionar no celular, o aplicativo precisa de uma conexão de internet ativa e segura (HTTPS). Se estiver testando localmente, acesse usando o endereço 'http://localhost:...' em vez do IP da sua rede.");
+        if (chatInput.value.trim()) {
+          hadError = false;
+          showFeedback("🎙️ Transcrição parcial recuperada com instabilidade de rede.");
+        } else {
+          hadError = true;
+          showFeedback("🎙️ Instabilidade de rede no reconhecimento de voz. Fale novamente.");
+        }
       } else {
-        alert("Ocorreu um erro no reconhecimento de voz: " + event.error);
+        hadError = true;
+        showFeedback("🎙️ Ocorreu um erro no microfone: " + event.error);
       }
       stopRecognitionState();
     };
 
     recognition.onend = () => {
       stopRecognitionState();
-      // Auto-send if there is text in the input and no error occurred!
-      if (!hadError && chatInput.value.trim()) {
+      // Auto-send if there is text in the input
+      if (chatInput.value.trim()) {
         sendChat();
       }
     };
@@ -4499,6 +5153,40 @@ function triggerLogout(event) {
 
 <script>
 // ---- PWA SERVICE WORKER REGISTRATION & IMMEDIATE UPDATE ----
+async function checkPwaUpdatesForce() {
+  showFeedback('🔄 Limpando cache e forçando atualização imediata...');
+  
+  try {
+    // 1. Clear static caches
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      for (const key of keys) {
+        await caches.delete(key);
+      }
+      console.log('[PWA] Todos os caches expirados foram apagados.');
+    }
+
+    // 2. Check for SW updates
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const reg of regs) {
+        await reg.update();
+      }
+      console.log('[PWA] Service Workers atualizados com sucesso.');
+    }
+    
+    showFeedback('✨ Cache renovado! Recarregando BíbliaViva...', 'success');
+    
+    // 3. Forced hard reload with a cache-buster query parameter
+    setTimeout(() => {
+      window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+    }, 1500);
+  } catch (err) {
+    console.error('[PWA] Erro na atualização forçada:', err);
+    showFeedback('❌ Erro ao forçar atualização de cache.');
+  }
+}
+
 if ('serviceWorker' in navigator) {
   let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -4654,5 +5342,22 @@ updateOnlineStatus();
   };
 })();
 </script>
+
+<!-- YOUTUBE PLAYER PREMIUM MODAL -->
+<div id="youtube-player-modal" class="sermon-modal">
+  <div class="sermon-modal-content">
+    <div class="sermon-modal-header">
+      <span id="sermon-modal-title">Assumindo a Presença...</span>
+      <button class="sermon-modal-close" onclick="closeSermonPlayer()">&times;</button>
+    </div>
+    <div class="sermon-video-wrapper">
+      <div id="youtube-player-iframe-container"></div>
+    </div>
+    <div class="sermon-modal-details">
+      <p id="sermon-modal-channel" style="font-weight: 600; font-size: 14px; color: var(--accent); margin-bottom: 4px;"></p>
+      <p id="sermon-modal-description" style="font-size: 13px; color: var(--label2); line-height: 1.5; overflow-y: auto; max-height: 80px;"></p>
+    </div>
+  </div>
+</div>
 </body>
 </html>

@@ -23,6 +23,7 @@ model User {
   userQuests      UserQuest[]
   chatHistory     AiChatHistory[]
   questTemplate   String            @default("canon")
+  plan            String            @default("FREE")
 }
 
 model ReadingProgress {
@@ -67,4 +68,23 @@ model AiChatHistory {
   message   String   @db.Text
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BookSermon {
+  id              String   @id @default(uuid())
+  book            String   @db.VarChar(30)
+  videoId         String   @db.VarChar(30)
+  title           String   @db.Text
+  channelName     String   @db.VarChar(255)
+  channelId       String?  @db.VarChar(100)
+  thumbnailUrl    String   @db.Text
+  durationSeconds Int      @default(0)
+  viewCount       BigInt   @default(0)
+  publishedAt     DateTime?
+  cachedAt        DateTime @default(now())
+  position        Int      @default(0)
+
+  @@unique([book, videoId])
+  @@index([book])
+  @@index([book, position])
 }
