@@ -779,6 +779,37 @@
     transform: scale(0.9); 
   }
 
+  .chat-mic-btn {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: white !important;
+    transition: all 0.2s ease;
+  }
+  
+  .chat-mic-btn:active {
+    transform: scale(0.9);
+  }
+
+  .chat-mic-btn.listening {
+    background: linear-gradient(135deg, #FF3B30, #FF9500) !important;
+    border: none !important;
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.6);
+    animation: micPulse 1.2s infinite alternate;
+  }
+
+  @keyframes micPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+
   /* SCREEN 5: QUIZ */
   .quiz-container { 
     padding: 0 16px; 
@@ -1949,6 +1980,15 @@
   .light-theme .chat-input-row input::placeholder {
     color: rgba(28, 28, 30, 0.5) !important;
   }
+
+  .light-theme .chat-mic-btn {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  .light-theme .chat-mic-btn.listening {
+    background: linear-gradient(135deg, #FF3B30, #FF9500) !important;
+    border: none !important;
+  }
   
   .light-theme .suggestion-chip {
     background: rgba(0, 0, 0, 0.04) !important;
@@ -2534,6 +2574,7 @@
 
 <div class="chat-input-row">
   <input class="chat-input" placeholder="Faça uma pergunta sobre Mateus 5…" id="chatInput" />
+  <button class="chat-mic-btn" id="btn-chat-mic" onclick="toggleSpeechRecognition()" title="Falar com a IA">🎙️</button>
   <button class="chat-send" onclick="sendChat()">↑</button>
 </div>
 
@@ -3397,6 +3438,88 @@ function appendChatBubble(isUser, text) {
     bubbleDiv.innerHTML = `<div class="bubble-header"><div class="ai-avatar">✦</div> BíbliaViva IA</div><div class="chat-bubble bubble-ai">${text}</div>`;
   }
   area.appendChild(bubbleDiv);
+}
+
+let recognition = null;
+let isListening = false;
+
+function toggleSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Seu navegador não suporta reconhecimento de voz. Tente usar o Google Chrome ou Safari!");
+    return;
+  }
+
+  const micBtn = document.getElementById('btn-chat-mic');
+  const chatInput = document.getElementById('chatInput');
+
+  if (isListening) {
+    if (recognition) recognition.stop();
+    return;
+  }
+
+  if (!recognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      isListening = true;
+      micBtn.classList.add('listening');
+      micBtn.innerHTML = '🛑';
+      chatInput.placeholder = "Ouvindo... Fale agora";
+      chatInput.value = '';
+    };
+
+    recognition.onresult = (event) => {
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        chatInput.value = finalTranscript;
+      } else if (interimTranscript) {
+        chatInput.value = interimTranscript;
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Erro no reconhecimento de voz:", event.error);
+      if (event.error === 'not-allowed') {
+        alert("Permissão para usar o microfone foi negada. Por favor, ative nas configurações do navegador.");
+      }
+      stopRecognitionState();
+    };
+
+    recognition.onend = () => {
+      stopRecognitionState();
+      // Auto-send if there is text in the input!
+      if (chatInput.value.trim()) {
+        sendChat();
+      }
+    };
+  }
+
+  function stopRecognitionState() {
+    isListening = false;
+    if (micBtn) {
+      micBtn.classList.remove('listening');
+      micBtn.innerHTML = '🎙️';
+    }
+    if (chatInput) {
+      chatInput.placeholder = `Faça uma pergunta sobre ${currentBook} ${currentChapter}…`;
+    }
+  }
+
+  recognition.start();
 }
 
 async function sendChat() {

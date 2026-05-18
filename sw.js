@@ -1,5 +1,5 @@
 // BíbliaViva Service Worker – Offline-first PWA
-const CACHE_NAME = 'bibliaviva-v3';
+const CACHE_NAME = 'bibliaviva-v4';
 const STATIC_ASSETS = [
   '/',
   '/login.html',
