@@ -170,7 +170,11 @@ export const getChapter = async (req: Request, res: Response, next: NextFunction
     const bookParam = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const chapter = parseInt(rawChapter, 10);
 
-    const bookConfig = BIBLE_BOOKS.find(b => b.key === bookParam);
+    const bookConfig = BIBLE_BOOKS.find(b => 
+      b.key === bookParam || 
+      b.key === bookParam.replace(/\s+/g, '') ||
+      b.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === bookParam
+    );
     if (!bookConfig || isNaN(chapter) || chapter < 1 || chapter > bookConfig.chapters) {
       res.status(400).json({
         status: 'error',
@@ -179,11 +183,11 @@ export const getChapter = async (req: Request, res: Response, next: NextFunction
       return;
     }
 
-    const englishBookName = ENGLISH_MAPPING[bookParam];
+    const englishBookName = ENGLISH_MAPPING[bookConfig.key];
     let verses: Array<{ number: number; text: string }> = [];
 
     if (bookConfig.isCanonical === false) {
-      const bookData = APOCRYPHAL_BIBLE[bookParam];
+      const bookData = APOCRYPHAL_BIBLE[bookConfig.key];
       if (bookData && bookData[chapter]) {
         verses = bookData[chapter];
       } else {
@@ -206,7 +210,7 @@ export const getChapter = async (req: Request, res: Response, next: NextFunction
         }
       } catch (fetchError) {
         console.warn('Erro ao conectar com API externa da Bíblia. Usando fallback local para Mateus 5 se aplicável.', fetchError);
-        if (bookParam === 'mateus' && chapter === 5) {
+        if (bookConfig.key === 'mateus' && chapter === 5) {
           verses = LOCAL_FALLBACK_VERSES;
         } else {
           // Generics offline message
@@ -274,7 +278,11 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
     const chapterNum = parseInt(rawChapter, 10);
     const bookParam = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     
-    const bookConfig = BIBLE_BOOKS.find(b => b.key === bookParam);
+    const bookConfig = BIBLE_BOOKS.find(b => 
+      b.key === bookParam || 
+      b.key === bookParam.replace(/\s+/g, '') ||
+      b.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === bookParam
+    );
     
     if (!bookConfig || isNaN(chapterNum) || chapterNum < 1 || chapterNum > bookConfig.chapters) {
       res.status(404).json({ status: 'error', message: 'Livro ou capítulo não encontrado' });
@@ -284,13 +292,13 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
     let verses: Array<{ number: number; text: string }> = [];
 
     if (bookConfig.isCanonical === false) {
-      const bookData = APOCRYPHAL_BIBLE[bookParam];
+      const bookData = APOCRYPHAL_BIBLE[bookConfig.key];
       if (bookData && bookData[chapterNum]) {
         verses = bookData[chapterNum];
       }
     } else {
       try {
-        const englishBookName = ENGLISH_MAPPING[bookParam];
+        const englishBookName = ENGLISH_MAPPING[bookConfig.key];
         const url = `https://bible-api.com/${englishBookName}+${chapterNum}?translation=almeida`;
         const response = await fetch(url);
         if (response.ok) {
@@ -304,7 +312,7 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
         }
       } catch (fetchError) {
         console.warn('Erro ao conectar com API externa da Bíblia para áudio. Usando fallback local para Mateus 5 se aplicável.', fetchError);
-        if (bookParam === 'mateus' && chapterNum === 5) {
+        if (bookConfig.key === 'mateus' && chapterNum === 5) {
           verses = LOCAL_FALLBACK_VERSES;
         } else {
           verses = [
