@@ -3166,6 +3166,11 @@ async function concluirLeitura() {
     if (json.status === 'success') {
       showFeedback(`📖 ${currentBook} ${currentChapter} Concluído! +50 XP obtido!`);
       await initApp();
+      
+      // Automatically advance to the next chapter after a brief delay
+      setTimeout(() => {
+        goToNextChapter();
+      }, 2000);
     } else {
       showFeedback('❌ Erro ao salvar progresso');
       btn.disabled = false;
