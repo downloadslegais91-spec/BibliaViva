@@ -4368,24 +4368,36 @@ function triggerLogout(event) {
 </style>
 
 <script>
-// ---- PWA SERVICE WORKER REGISTRATION ----
+// ---- PWA SERVICE WORKER REGISTRATION & IMMEDIATE UPDATE ----
 if ('serviceWorker' in navigator) {
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    console.log('[PWA] Nova versão ativa! Recarregando página...');
+    showFeedback('✨ Nova versão ativada! Atualizando aplicativo...');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  });
+
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js');
       console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
 
-      // Listen for updates
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        if (newWorker) {
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'activated') {
-              showFeedback('🔄 Nova versão disponível! Recarregue para atualizar.');
-            }
-          });
-        }
+      // Query for updates immediately on load
+      reg.update().catch(() => {});
+
+      // Check for updates on page focus
+      window.addEventListener('focus', () => {
+        reg.update().catch(() => {});
       });
+
+      // Trigger updates check periodically (every 2 minutes)
+      setInterval(() => {
+        reg.update().catch(() => {});
+      }, 120000);
     } catch (err) {
       console.warn('[PWA] Falha ao registrar Service Worker:', err);
     }
