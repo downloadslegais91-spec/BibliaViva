@@ -5,6 +5,6 @@
   "scripts": {
     "start": "npm --prefix backend run dev",
     "dev": "npm --prefix backend run dev",
-    "postinstall": "npm install --prefix backend && npx --prefix backend prisma generate"
+    "postinstall": "npm install --prefix backend && npx prisma generate --schema=backend/prisma/schema.prisma"
   }
 }

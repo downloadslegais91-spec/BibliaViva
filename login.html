@@ -768,69 +768,17 @@
             <path d="M12 5.34C13.62 5.34 15.06 5.89 16.2 6.98L19.35 3.83C17.45 2.06 14.97 1 12 1C7.7 1 4.03 3.39 2.23 6.97L5.91 9.82C6.76 7.25 9.17 5.34 12 5.34Z" fill="#EA4335"/>
           </svg>
           <h2 class="google-title">Fazer login com o Google</h2>
-          <p class="google-subtitle">Escolha uma conta para continuar no BíbliaViva</p>
+          <p class="google-subtitle">Use sua conta do Google para acessar o BíbliaViva</p>
         </div>
 
-        <div class="google-accounts">
+        <div class="google-accounts" style="padding: 10px 0;">
           <!-- Real Interactive Google Sign-In Button Container -->
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; padding: 4px;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px;">
             <div id="google-signin-btn-container" style="width: 100%; display: flex; justify-content: center;"></div>
-            <div style="margin-top: 14px; font-size: 11px; opacity: 0.45; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">ou entre com conta de teste</div>
-          </div>
-
-          <div class="account-item" onclick="selectGoogleAccount('Samuel Lelé', 'samuel.lele@gmail.com', 'SL')">
-            <div class="account-avatar">SL</div>
-            <div class="account-info">
-              <span class="account-name">Samuel Lelé</span>
-              <span class="account-email">samuel.lele@gmail.com</span>
-            </div>
-          </div>
-          
-          <div class="account-item" onclick="selectGoogleAccount('Visitante Viva', 'visitante.viva@gmail.com', 'VV', true)">
-            <div class="account-avatar visitor">VV</div>
-            <div class="account-info">
-              <span class="account-name">Visitante Viva</span>
-              <span class="account-email">visitante.viva@gmail.com</span>
-            </div>
-          </div>
-
-          <div class="account-item" onclick="showGoogleCustomAccountView()">
-            <div class="account-avatar custom">＋</div>
-            <div class="account-info">
-              <span class="account-name">Usar outra conta</span>
-              <span class="account-email">Acessar com um e-mail diferente</span>
-            </div>
           </div>
         </div>
 
-        <button class="modal-close-btn" onclick="closeGoogleModal()">Cancelar</button>
-      </div>
-
-      <!-- Custom Account Form View -->
-      <div id="google-view-custom" style="display: none;">
-        <div class="google-header">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.8 15.71 17.58V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4"/>
-            <path d="M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.58C14.72 18.24 13.46 18.66 12 18.66C9.17 18.66 6.76 16.75 5.91 14.18H2.23V17.03C4.03 20.61 7.7 23 12 23Z" fill="#34A853"/>
-            <path d="M5.91 14.18C5.69 13.52 5.57 12.78 5.57 12C5.57 11.22 5.69 10.48 5.91 9.82V6.97H2.23C1.49 8.44 1.05 10.15 1.05 12C1.05 13.85 1.49 15.56 2.23 17.03L5.91 14.18Z" fill="#FBBC05"/>
-            <path d="M12 5.34C13.62 5.34 15.06 5.89 16.2 6.98L19.35 3.83C17.45 2.06 14.97 1 12 1C7.7 1 4.03 3.39 2.23 6.97L5.91 9.82C6.76 7.25 9.17 5.34 12 5.34Z" fill="#EA4335"/>
-          </svg>
-          <h2 class="google-title">Fazer login</h2>
-          <p class="google-subtitle">Use sua Conta do Google</p>
-        </div>
-
-        <div style="text-align: left; margin-bottom: 20px;">
-          <div class="input-group" id="google-custom-group" style="gap: 6px;">
-            <label class="input-label" for="google-custom-email">E-mail ou telefone</label>
-            <input type="email" id="google-custom-email" class="glass-input" style="padding-left: 16px;" placeholder="exemplo@gmail.com">
-            <span class="error-msg" id="google-custom-error" style="font-size: 11px;">Insira um e-mail válido do Google.</span>
-          </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px;">
-          <a href="#" onclick="showGoogleAccountSelectView()" style="color: #4F8EF7; text-decoration: none; font-size: 14px; font-weight: 500;">Voltar</a>
-          <button class="btn-primary" onclick="submitGoogleCustomAccount()" style="margin-top: 0; padding: 0 24px; height: 44px; border-radius: 22px; font-size: 15px;">Próximo</button>
-        </div>
+        <button class="modal-close-btn" onclick="closeGoogleModal()" style="margin-top: 16px;">Cancelar</button>
       </div>
 
       <!-- Loading View -->
@@ -1015,7 +963,6 @@
 
       // UI animations & redirect
       document.getElementById('google-view-select').style.display = 'none';
-      document.getElementById('google-view-custom').style.display = 'none';
       
       const loadingText = document.getElementById('google-loading-text');
       loadingText.textContent = `Bem-vindo, ${payload.name}! Acessando...`;
@@ -1039,61 +986,7 @@
 
     function showGoogleAccountSelectView() {
       document.getElementById('google-view-select').style.display = 'block';
-      document.getElementById('google-view-custom').style.display = 'none';
       document.getElementById('google-view-loading').style.display = 'none';
-    }
-
-    function showGoogleCustomAccountView() {
-      document.getElementById('google-view-select').style.display = 'none';
-      document.getElementById('google-view-custom').style.display = 'block';
-      document.getElementById('google-view-loading').style.display = 'none';
-      
-      document.getElementById('google-custom-email').value = '';
-      document.getElementById('google-custom-group').classList.remove('has-error');
-    }
-
-    function selectGoogleAccount(name, email, initials, isVisitor = false) {
-      document.getElementById('google-view-select').style.display = 'none';
-      document.getElementById('google-view-custom').style.display = 'none';
-      
-      const loadingText = document.getElementById('google-loading-text');
-      loadingText.textContent = `Fazendo login como ${name}...`;
-      
-      document.getElementById('google-view-loading').style.display = 'flex';
-      
-      // Save details to localStorage
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('userName', name);
-      // Remove any previously saved real Google photo
-      localStorage.removeItem('userAvatarUrl');
-      localStorage.setItem('userAvatarInitials', initials);
-      localStorage.setItem('userType', isVisitor ? 'visitor' : 'google_user');
-
-      // Simulate network request before redirecting
-      setTimeout(() => {
-        window.location.href = 'bibliaviva.html';
-      }, 1500);
-    }
-
-    function submitGoogleCustomAccount() {
-      const emailInput = document.getElementById('google-custom-email');
-      const email = emailInput.value.trim();
-      const group = document.getElementById('google-custom-group');
-      
-      group.classList.remove('has-error');
-      
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        group.classList.add('has-error');
-        return;
-      }
-      
-      const namePart = email.split('@')[0];
-      const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-      const initials = formattedName.substring(0, 2).toUpperCase();
-      
-      selectGoogleAccount(formattedName, email, initials);
     }
 
     // ── Apple Login Flow ──
