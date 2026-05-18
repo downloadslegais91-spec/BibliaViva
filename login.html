@@ -1050,6 +1050,34 @@
         window.location.href = 'bibliaviva.html';
       }, 1500);
     }
+
+    // ── Theme Toggle Functions ──
+    function toggleTheme() {
+      const isLight = document.body.classList.contains('light-theme');
+      const toggleIcon = document.querySelector('.theme-toggle-icon');
+      if (isLight) {
+        document.documentElement.classList.remove('light-theme');
+        document.body.classList.remove('light-theme');
+        localStorage.setItem('systemTheme', 'dark');
+        if (toggleIcon) toggleIcon.textContent = '🌙';
+      } else {
+        document.documentElement.classList.add('light-theme');
+        document.body.classList.add('light-theme');
+        localStorage.setItem('systemTheme', 'light');
+        if (toggleIcon) toggleIcon.textContent = '☀️';
+      }
+    }
+
+    // Set initial toggle icon state on DOM content loaded
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('systemTheme');
+      const toggleIcon = document.querySelector('.theme-toggle-icon');
+      if (savedTheme === 'light') {
+        if (toggleIcon) toggleIcon.textContent = '☀️';
+      } else {
+        if (toggleIcon) toggleIcon.textContent = '🌙';
+      }
+    });
   </script>
 </body>
 </html>

@@ -361,14 +361,149 @@
       color: rgba(255,255,255,0.6);
       text-decoration: underline;
     }
+
+    /* ── Theme Toggle Button ── */
+    .theme-toggle {
+      position: absolute;
+      top: env(safe-area-inset-top, 24px);
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      z-index: 100;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .theme-toggle:active {
+      transform: scale(0.9);
+    }
+
+    /* Transition for smooth theme switching */
+    body, .glass-card, .glass-input, .strength-segment, .strength-label, .back-btn, .footer-link, .terms {
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* ── Light Theme Styles ── */
+    .light-theme body, body.light-theme {
+      background: linear-gradient(160deg, #F2F4F7 0%, #E5E7EB 100%) !important;
+      color: #1C1C1E !important;
+    }
+
+    .light-theme .orb-top-right {
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+    }
+
+    .light-theme .orb-bottom-left {
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+    }
+
+    .light-theme .orb-center {
+      background: radial-gradient(circle, rgba(124, 111, 224, 0.05) 0%, transparent 70%);
+    }
+
+    .light-theme .title {
+      background: linear-gradient(135deg, #1C1C1E 60%, rgba(124,111,224,0.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .light-theme .subtitle {
+      color: rgba(28, 28, 30, 0.7);
+    }
+
+    .light-theme .glass-card {
+      background: rgba(255, 255, 255, 0.75);
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .light-theme .input-label {
+      color: #1C1C1E;
+    }
+
+    .light-theme .glass-input {
+      background: rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 0, 0, 0.08);
+      color: #1C1C1E;
+    }
+
+    .light-theme .glass-input::placeholder {
+      color: rgba(28, 28, 30, 0.4);
+    }
+
+    .light-theme .glass-input:focus {
+      border-color: #4F8EF7;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 0 4px rgba(79, 142, 247, 0.15);
+    }
+
+    .light-theme .input-icon {
+      color: rgba(0, 0, 0, 0.4);
+    }
+
+    .light-theme .strength-segment {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .light-theme .strength-label {
+      color: rgba(28, 28, 30, 0.5);
+    }
+
+    .light-theme .back-btn {
+      color: #007AFF;
+    }
+
+    .light-theme .footer-link {
+      color: rgba(28, 28, 30, 0.5);
+    }
+    .light-theme .footer-link a {
+      color: #007AFF;
+    }
+
+    .light-theme .terms {
+      color: rgba(28, 28, 30, 0.5);
+    }
+    .light-theme .terms a {
+      color: rgba(28, 28, 30, 0.7);
+    }
+
+    .light-theme .theme-toggle {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.08);
+      color: #1C1C1E;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Initial Theme Initialization to Prevent Flash -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('systemTheme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-theme');
+      }
+    })();
+  </script>
 
   <!-- Ambient Light Orbs -->
   <div class="orb-top-right"></div>
   <div class="orb-bottom-left"></div>
   <div class="orb-center"></div>
+
+  <!-- Alternador de Tema -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+    <span class="theme-toggle-icon">🌙</span>
+  </button>
 
   <div class="register-container">
 
@@ -629,6 +764,35 @@
         group.classList.add('has-success');
       } else if (this.value.length > 0) {
         group.classList.add('has-error');
+      }
+    });
+
+    // ── Theme Toggle Functions ──
+    function toggleTheme() {
+      const isLight = document.documentElement.classList.contains('light-theme');
+      const toggleIcon = document.querySelector('.theme-toggle-icon');
+      if (isLight) {
+        document.documentElement.classList.remove('light-theme');
+        document.body.classList.remove('light-theme');
+        localStorage.setItem('systemTheme', 'dark');
+        if (toggleIcon) toggleIcon.textContent = '🌙';
+      } else {
+        document.documentElement.classList.add('light-theme');
+        document.body.classList.add('light-theme');
+        localStorage.setItem('systemTheme', 'light');
+        if (toggleIcon) toggleIcon.textContent = '☀️';
+      }
+    }
+
+    // Set initial toggle icon state on DOM content loaded
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('systemTheme');
+      const toggleIcon = document.querySelector('.theme-toggle-icon');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        if (toggleIcon) toggleIcon.textContent = '☀️';
+      } else {
+        if (toggleIcon) toggleIcon.textContent = '🌙';
       }
     });
   </script>
