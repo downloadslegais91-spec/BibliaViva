@@ -761,30 +761,50 @@
       <!-- Account Selection View -->
       <div id="google-view-select">
         <div class="google-header">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 8px;">
             <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.8 15.71 17.58V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4"/>
             <path d="M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.58C14.72 18.24 13.46 18.66 12 18.66C9.17 18.66 6.76 16.75 5.91 14.18H2.23V17.03C4.03 20.61 7.7 23 12 23Z" fill="#34A853"/>
             <path d="M5.91 14.18C5.69 13.52 5.57 12.78 5.57 12C5.57 11.22 5.69 10.48 5.91 9.82V6.97H2.23C1.49 8.44 1.05 10.15 1.05 12C1.05 13.85 1.49 15.56 2.23 17.03L5.91 14.18Z" fill="#FBBC05"/>
             <path d="M12 5.34C13.62 5.34 15.06 5.89 16.2 6.98L19.35 3.83C17.45 2.06 14.97 1 12 1C7.7 1 4.03 3.39 2.23 6.97L5.91 9.82C6.76 7.25 9.17 5.34 12 5.34Z" fill="#EA4335"/>
           </svg>
-          <h2 class="google-title">Fazer login com o Google</h2>
-          <p class="google-subtitle">Use sua conta do Google para acessar o BíbliaViva</p>
+          <h2 class="google-title">Login com o Google</h2>
+          <p class="google-subtitle">Use sua conta para um acesso rápido e imersivo no BíbliaViva.</p>
         </div>
 
-        <div class="google-accounts" style="padding: 10px 0;">
-          <!-- Real Interactive Google Sign-In Button Container -->
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px;">
-            <div id="google-signin-btn-container" style="width: 100%; display: flex; justify-content: center;"></div>
+        <div style="padding: 16px 0 8px; display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%;">
+          <button class="btn-primary" onclick="startGoogleRedirectFlow()" style="background: #4285F4; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.8 15.71 17.58V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z"/>
+            </svg>
+            Entrar com o Google
+          </button>
+          
+          <a href="#" onclick="toggleGoogleConfig(event)" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 8px;">
+            ⚙️ Configurar Google Client ID
+          </a>
+        </div>
+
+        <!-- Google Client ID Configuration Panel (Collapsible) -->
+        <div id="google-config-panel" style="display: none; width: 100%; text-align: left; padding: 12px 16px; margin-top: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+          <div class="input-group" style="margin-bottom: 8px; gap: 4px;">
+            <label class="input-label" style="font-size: 12px;">Google OAuth Client ID</label>
+            <input type="text" id="google-client-id-input" class="glass-input" style="height: 38px; font-size: 13px; padding-left: 12px;" placeholder="Digite seu Client ID...">
+          </div>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.4; margin-bottom: 12px;">
+            Obtenha seu ID no Google Cloud Console. Lembre-se de adicionar a URL da Vercel nas origens autorizadas do seu ID de cliente OAuth.
+          </p>
+          <div style="display: flex; gap: 8px; justify-content: flex-end;">
+            <button onclick="saveGoogleClientId()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 16px; padding: 6px 12px; font-size: 12px; font-weight: 500; cursor: pointer;">Salvar</button>
           </div>
         </div>
 
-        <button class="modal-close-btn" onclick="closeGoogleModal()" style="margin-top: 16px;">Cancelar</button>
+        <button class="modal-close-btn" onclick="closeGoogleModal()" style="margin-top: 20px;">Voltar</button>
       </div>
 
       <!-- Loading View -->
       <div id="google-view-loading" class="loading-overlay">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="google-loading-text">Conectando ao Google...</div>
+        <div class="loading-text" id="google-loading-text">Redirecionando para o Google...</div>
       </div>
 
     </div>
@@ -882,11 +902,9 @@
         const googleOverlay = document.getElementById('google-overlay');
         const appleOverlay = document.getElementById('apple-overlay');
         
-        if (googleOverlay.classList.contains('active')) {
-          if (document.getElementById('google-view-custom').style.display === 'block') {
-            submitGoogleCustomAccount();
-          }
-        } else if (appleOverlay.classList.contains('active')) {
+        if (googleOverlay && googleOverlay.classList.contains('active')) {
+          startGoogleRedirectFlow();
+        } else if (appleOverlay && appleOverlay.classList.contains('active')) {
           submitAppleLogin();
         } else {
           simulateLogin();
@@ -894,7 +912,7 @@
       }
     });
 
-    // ── Google Login Flow (Real Google Identity Services + JWT Decoder) ──
+    // ── Google Login Flow (Immersive Direct OAuth 2.0 Redirect) ──
     function decodeJwt(token) {
       try {
         const base64Url = token.split('.')[1];
@@ -906,78 +924,92 @@
       }
     }
 
-    function initGoogleSignIn() {
-      if (typeof google === 'undefined') {
-        console.log('[GSI] Aguardando carregamento da biblioteca do Google...');
-        setTimeout(initGoogleSignIn, 300);
-        return;
-      }
-
-      // Use client ID or a standard fallback configured for Vercel/Localhost
-      const client_id = localStorage.getItem('googleClientId') || '1035659858000-q0srfp7t68k5k24e8g87qg8oqvbrg7qf.apps.googleusercontent.com';
-
-      console.log('[GSI] Inicializando Google One Tap / Button com ID:', client_id);
-      google.accounts.id.initialize({
-        client_id: client_id,
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true
-      });
-
-      const container = document.getElementById('google-signin-btn-container');
-      if (container) {
-        // Clear any previous button to prevent duplicate renders
-        container.innerHTML = '';
-        google.accounts.id.renderButton(
-          container,
-          { 
-            theme: document.body.classList.contains('light-theme') ? 'outline' : 'filled_blue', 
-            size: 'large',
-            width: 280,
-            text: 'continue_with',
-            shape: 'pill',
-            logo_alignment: 'left'
-          }
-        );
+    function toggleGoogleConfig(event) {
+      if (event) event.preventDefault();
+      const panel = document.getElementById('google-config-panel');
+      const isHidden = panel.style.display === 'none';
+      panel.style.display = isHidden ? 'block' : 'none';
+      if (isHidden) {
+        document.getElementById('google-client-id-input').value = localStorage.getItem('googleClientId') || '';
       }
     }
 
-    function handleCredentialResponse(response) {
-      if (!response.credential) return;
-      
-      const payload = decodeJwt(response.credential);
-      if (!payload) {
-        alert('Erro ao processar as credenciais do Google.');
-        return;
+    function saveGoogleClientId() {
+      const clientId = document.getElementById('google-client-id-input').value.trim();
+      if (!clientId) {
+        localStorage.removeItem('googleClientId');
+        alert('Client ID padrão restaurado.');
+      } else {
+        localStorage.setItem('googleClientId', clientId);
+        alert('Google Client ID configurado com sucesso!');
       }
+      document.getElementById('google-config-panel').style.display = 'none';
+    }
 
-      console.log('[GSI] Login real do Google efetuado com sucesso:', payload);
+    function startGoogleRedirectFlow() {
+      const clientId = localStorage.getItem('googleClientId') || '1035659858000-q0srfp7t68k5k24e8g87qg8oqvbrg7qf.apps.googleusercontent.com';
+      const redirectUri = window.location.origin + window.location.pathname;
+      const nonce = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      const state = 'google_oauth';
       
-      // Save details to localStorage
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', payload.email);
-      localStorage.setItem('userName', payload.name);
-      localStorage.setItem('userAvatarUrl', payload.picture || ''); // Google Profile picture!
-      localStorage.setItem('userAvatarInitials', payload.given_name ? payload.given_name.substring(0, 2).toUpperCase() : 'G');
-      localStorage.setItem('userType', 'google_user');
-
-      // UI animations & redirect
+      const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20profile%20email&nonce=${nonce}&state=${state}`;
+      
       document.getElementById('google-view-select').style.display = 'none';
-      
-      const loadingText = document.getElementById('google-loading-text');
-      loadingText.textContent = `Bem-vindo, ${payload.name}! Acessando...`;
+      document.getElementById('google-loading-text').textContent = 'Redirecionando para o Google...';
       document.getElementById('google-view-loading').style.display = 'flex';
-
+      
       setTimeout(() => {
-        window.location.href = 'bibliaviva.html';
-      }, 1500);
+        window.location.href = oauthUrl;
+      }, 800);
+    }
+
+    function handleOAuthRedirect() {
+      const hash = window.location.hash;
+      if (!hash) return;
+      
+      const params = new URLSearchParams(hash.substring(1));
+      const idToken = params.get('id_token');
+      const state = params.get('state');
+      
+      if (idToken && state === 'google_oauth') {
+        const payload = decodeJwt(idToken);
+        if (!payload) {
+          console.error('Falha ao decodificar ID Token recebido do Google.');
+          return;
+        }
+        
+        console.log('[GSI] Login real do Google efetuado via Redirecionamento:', payload);
+        
+        // Save details to localStorage
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', payload.email);
+        localStorage.setItem('userName', payload.name || payload.email.split('@')[0]);
+        localStorage.setItem('userAvatarUrl', payload.picture || '');
+        localStorage.setItem('userAvatarInitials', payload.given_name ? payload.given_name.substring(0, 2).toUpperCase() : 'G');
+        localStorage.setItem('userType', 'google_user');
+        
+        // Show overlay with loading
+        const overlay = document.getElementById('google-overlay');
+        overlay.classList.add('active');
+        document.getElementById('google-view-select').style.display = 'none';
+        
+        const loadingText = document.getElementById('google-loading-text');
+        loadingText.textContent = `Bem-vindo, ${payload.name || 'Usuário'}! Acessando...`;
+        document.getElementById('google-view-loading').style.display = 'flex';
+        
+        // Clean URL hash so the user doesn't see the token in address bar
+        window.history.replaceState(null, null, window.location.pathname);
+        
+        setTimeout(() => {
+          window.location.href = 'bibliaviva.html';
+        }, 1500);
+      }
     }
 
     function simulateGoogleLogin() {
       const overlay = document.getElementById('google-overlay');
       overlay.classList.add('active');
       showGoogleAccountSelectView();
-      initGoogleSignIn(); // Render standard button immediately on modal display
     }
 
     function closeGoogleModal() {
@@ -1062,6 +1094,9 @@
       } else {
         if (toggleIcon) toggleIcon.textContent = '🌙';
       }
+      
+      // Parse Google OAuth redirect token on page load
+      handleOAuthRedirect();
     });
   </script>
 </body>
