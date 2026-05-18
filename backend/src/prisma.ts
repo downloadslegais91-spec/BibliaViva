@@ -1,25 +1,12 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
-const dbUrl = process.env.DATABASE_URL || 'mysql://root:@localhost:3306/bibliaviva';
+const connectionString = process.env.DATABASE_URL;
 
-// Parse the DATABASE_URL connection string: mysql://user:password@host:port/database
-const match = dbUrl.match(/mysql:\/\/([^:]*)(?::([^@]*))?@([^:\/]+)(?::(\d+))?\/(.+)/);
-
-if (!match) {
-  throw new Error('Invalid DATABASE_URL format. Must be: mysql://user:password@host:port/database');
-}
-
-const [, user, password, host, port, database] = match;
-
-const adapter = new PrismaMariaDb({
-  host: host,
-  port: port ? parseInt(port, 10) : 3306,
-  user: user,
-  password: password || '',
-  database: database,
-});
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
 
