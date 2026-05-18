@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { getSystemInstruction } from './aiPrompt';
 
 // Modelos configurados com fallback automático para evitar problemas de limite de requisições (429)
 const PRIMARY_MODEL = 'gemini-2.5-flash';
@@ -47,13 +48,7 @@ export async function generateChatReply(
     throw new Error('GEMINI_API_KEY não configurada no ambiente.');
   }
 
-  const systemInstruction = 
-    `Você é a BíbliaViva IA, uma assistente bíblica sábia, atenciosa e empática. ` +
-    `Seu objetivo é ajudar o usuário a compreender as Escrituras Sagradas, com foco especial no livro e capítulo que ele está lendo atualmente. ` +
-    `Seja espiritualmente edificante, teologicamente preciso, mas acessível. ` +
-    `Use formatação HTML básica como <strong> para destacar conceitos fundamentais. ` +
-    `Use emojis calorosos e acolhedores. Mantenha as respostas concisas e objetivas, com no máximo 2 a 3 parágrafos curtos. ` +
-    `Contexto de leitura atual do usuário: Livro de ${book}, capítulo ${chapter}.`;
+  const systemInstruction = getSystemInstruction(book, chapter);
 
   const contents = history.map(h => ({
     role: h.sender === 'user' ? 'user' : 'model',
