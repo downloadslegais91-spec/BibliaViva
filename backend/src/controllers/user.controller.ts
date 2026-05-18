@@ -13,14 +13,16 @@ export const getUserStats = async (req: Request, res: Response, next: NextFuncti
     });
 
     if (!user) {
-      await prisma.user.create({
+      const uniqueEmail = `fallback-${userId}-${Date.now()}@bibliaviva.com`;
+      user = await prisma.user.create({
         data: {
+          id: userId,
           name: 'Usuário Teste',
-          email: 'teste@bibliaviva.com',
-        }
-      });
-      user = await prisma.user.findUnique({
-        where: { id: userId },
+          email: uniqueEmail,
+          xp: 0,
+          level: 1,
+          streakDays: 0,
+        },
         include: {
           readingProgress: true,
         }
@@ -53,13 +55,15 @@ export const addXpToUser = async (req: Request, res: Response, next: NextFunctio
 
     if (!user) {
       // If user doesn't exist, create them
+      const uniqueEmail = `fallback-${userId}-${Date.now()}@bibliaviva.com`;
       user = await prisma.user.create({
         data: {
           id: userId,
           name: 'Usuário Teste',
-          email: 'teste@bibliaviva.com',
+          email: uniqueEmail,
           xp: 0,
-          level: 1
+          level: 1,
+          streakDays: 0,
         }
       });
     }

@@ -51,5 +51,40 @@ export const resolveUserId = async (req: Request): Promise<number> => {
     return user.id;
   }
   
-  return 1; // Default fallback to user 1 (test user)
+  // Default fallback to user 1 (test user). Ensure user 1 exists!
+  let defaultUser = await prisma.user.findUnique({ where: { id: 1 } });
+  if (!defaultUser) {
+    try {
+      defaultUser = await prisma.user.create({
+        data: {
+          id: 1,
+          name: 'Discípulo Fiel',
+          email: 'usuario@bibliaviva.com.br',
+          xp: 0,
+          level: 1,
+          streakDays: 0,
+        }
+      });
+      
+      const quests = await prisma.quest.findMany();
+      if (quests.length > 0) {
+        await prisma.userQuest.createMany({
+          data: quests.map(q => ({
+            userId: 1,
+            questId: q.id,
+            progress: 0,
+            completed: false,
+          }))
+        });
+      }
+    } catch (e) {
+      defaultUser = await prisma.user.findUnique({ where: { id: 1 } });
+      if (!defaultUser) {
+        const anyUser = await prisma.user.findFirst();
+        if (anyUser) return anyUser.id;
+      }
+    }
+  }
+
+  return defaultUser ? defaultUser.id : 1;
 };
