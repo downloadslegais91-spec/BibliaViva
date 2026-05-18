@@ -2961,6 +2961,16 @@ async function loadActiveChapter() {
 }
 
 function onBookChange() {
+  if (window.currentAudio) {
+    window.currentAudio.pause();
+    window.currentAudio = null;
+    const btn = document.getElementById('btn-audio-play');
+    if (btn) btn.innerText = '▶';
+    const prog = document.getElementById('audio-progress');
+    const timeLabel = document.getElementById('audio-time');
+    if (prog) prog.style.width = '0%';
+    if (timeLabel) timeLabel.innerText = '0:00';
+  }
   const selectBook = document.getElementById('select-book');
   if (!selectBook) return;
   currentBook = selectBook.value;
@@ -2973,6 +2983,16 @@ function onBookChange() {
 }
 
 function onChapterChange() {
+  if (window.currentAudio) {
+    window.currentAudio.pause();
+    window.currentAudio = null;
+    const btn = document.getElementById('btn-audio-play');
+    if (btn) btn.innerText = '▶';
+    const prog = document.getElementById('audio-progress');
+    const timeLabel = document.getElementById('audio-time');
+    if (prog) prog.style.width = '0%';
+    if (timeLabel) timeLabel.innerText = '0:00';
+  }
   const selectChapter = document.getElementById('select-chapter');
   if (!selectChapter) return;
   currentChapter = parseInt(selectChapter.value, 10);
@@ -3835,8 +3855,41 @@ async function playChapterAudio() {
       }
     });
 
-    window.currentAudio.addEventListener('ended', () => {
+    window.currentAudio.addEventListener('ended', async () => {
       btn.innerText = '▶';
+      showFeedback('🔊 Áudio concluído! Salvando progresso e avançando...');
+      
+      const isCompleted = currentUser && currentUser.readingProgress && currentUser.readingProgress.some(
+        p => p.book === currentBook && p.chapter === currentChapter && p.completed
+      );
+      
+      if (!isCompleted) {
+        try {
+          const res = await fetch(`${API_URL}/progress`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              book: currentBook,
+              chapter: currentChapter,
+              verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+              completed: true
+            })
+          });
+          const json = await res.json();
+          if (json.status === 'success') {
+            showFeedback(`📖 ${currentBook} ${currentChapter} Concluído! +50 XP obtido!`);
+            await initApp();
+          }
+        } catch (err) {
+          console.error('Erro ao registrar progresso automático:', err);
+        }
+      }
+      
+      setTimeout(() => {
+        goToNextChapter();
+      }, 2000);
     });
     
     window.currentAudio.play();
@@ -3846,6 +3899,45 @@ async function playChapterAudio() {
     console.error('Erro de Áudio:', error);
     btn.innerText = '▶';
     showFeedback('❌ Falha na geração do áudio (Verifique as credenciais do Google Cloud)');
+  }
+}
+
+async function goToNextChapter() {
+  if (window.currentAudio) {
+    window.currentAudio.pause();
+    window.currentAudio = null;
+    const btn = document.getElementById('btn-audio-play');
+    if (btn) btn.innerText = '▶';
+    const prog = document.getElementById('audio-progress');
+    const timeLabel = document.getElementById('audio-time');
+    if (prog) prog.style.width = '0%';
+    if (timeLabel) timeLabel.innerText = '0:00';
+  }
+  
+  const bookObj = bibleBooks.find(b => b.name === currentBook);
+  if (!bookObj) return;
+
+  if (currentChapter < bookObj.chapters) {
+    currentChapter++;
+    const selectChapter = document.getElementById('select-chapter');
+    if (selectChapter) selectChapter.value = currentChapter;
+    loadActiveChapter();
+  } else {
+    const bookIndex = bibleBooks.findIndex(b => b.name === currentBook);
+    if (bookIndex !== -1 && bookIndex < bibleBooks.length - 1) {
+      const nextBook = bibleBooks[bookIndex + 1];
+      currentBook = nextBook.name;
+      currentChapter = 1;
+      
+      const selectBook = document.getElementById('select-book');
+      if (selectBook) selectBook.value = currentBook;
+      
+      populateChapters();
+      loadActiveChapter();
+      prefetchQuizForBook(currentBook);
+    } else {
+      showFeedback('🎉 Parabéns! Você concluiu a leitura de toda a Bíblia Viva!');
+    }
   }
 }
 
