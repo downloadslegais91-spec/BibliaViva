@@ -9,6 +9,16 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/api/auth/google/callback', (req, res) => {
+  const credential = req.body.credential;
+  if (credential) {
+    res.redirect(`/login.html?credential=${encodeURIComponent(credential)}`);
+  } else {
+    res.redirect('/login.html?error=missing_credential');
+  }
+});
 
 app.use('/api', routes);
 

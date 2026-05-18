@@ -1108,7 +1108,8 @@
         google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleGoogleCredential,
-          ux_mode: 'popup'
+          ux_mode: 'redirect',
+          login_uri: window.location.origin + '/api/auth/google/callback'
         });
 
         google.accounts.id.renderButton(
@@ -1204,6 +1205,16 @@
 
     // Set initial toggle icon state on DOM content loaded
     window.addEventListener('DOMContentLoaded', () => {
+      // Check for Google Login Callback credential in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const googleCredential = urlParams.get('credential');
+      if (googleCredential) {
+        // Clean up the URL to not leave the credential exposed
+        window.history.replaceState({}, document.title, window.location.pathname);
+        // Simulate Google Callback
+        handleGoogleCredential({ credential: googleCredential });
+      }
+
       const savedTheme = localStorage.getItem('systemTheme');
       const toggleIcon = document.querySelector('.theme-toggle-icon');
       if (savedTheme === 'light') {
