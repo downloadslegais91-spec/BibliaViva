@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import '../env';
 
 export async function generateAudio(text: string, speakingRate?: number): Promise<string> {
   const apiKey = process.env.GOOGLE_TTS_API_KEY;

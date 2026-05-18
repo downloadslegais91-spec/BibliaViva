@@ -5,6 +5,12 @@
   "scripts": {
     "start": "npm --prefix backend run dev",
     "dev": "npm --prefix backend run dev",
-    "postinstall": "npm install --prefix backend && npx prisma generate --schema=backend/prisma/schema.prisma"
+    "postinstall": "npm install --prefix backend && npx prisma generate --schema=prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.8.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0"
   }
 }

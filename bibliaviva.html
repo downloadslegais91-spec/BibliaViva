@@ -2224,6 +2224,49 @@
     border-color: rgba(124, 111, 224, 0.18);
   }
 
+  /* SERMONS PAGE UNIQUE STYLES */
+  .sermons-filter-container {
+    display: flex;
+    gap: 10px;
+    padding: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sermons-filter-container::-webkit-scrollbar {
+    display: none;
+  }
+  .sermon-chip {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sermon-chip.active {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(124, 111, 224, 0.3);
+    transform: translateY(-1px);
+  }
+  .light-theme .sermon-chip {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .light-theme .sermon-chip.active {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+    color: white;
+    border-color: transparent;
+  }
+
   /* ========================================== */
   /* PREMIUM LIGHT MODE GLASSMORPHISM THEME    */
   /* ========================================== */
@@ -2947,6 +2990,14 @@
   </div>
 </div>
 
+<!-- ========== PAGE: SERMONS ========== -->
+<div class="page" id="page-sermons">
+  <div class="sermons-filter-container" id="sermons-page-book-chips"></div>
+  <div class="sermons-container" id="sermons-page-list-container">
+    <div style="padding: 30px; text-align: center; color: var(--label2);">Carregando pregações inspiradoras...</div>
+  </div>
+</div>
+
 <div class="chat-input-row">
   <input class="chat-input" placeholder="Faça uma pergunta sobre Mateus 5…" id="chatInput" />
   <button class="chat-mic-btn" id="btn-chat-mic" onclick="toggleSpeechRecognition()" title="Falar com a IA">🎙️</button>
@@ -2974,6 +3025,10 @@
   <div class="tab-item" id="tab-quiz" onclick="switchPage('quiz')">
     <div class="tab-icon">⚡</div>
     <div class="tab-label">Quiz</div>
+  </div>
+  <div class="tab-item" id="tab-sermons" onclick="switchPage('sermons')">
+    <div class="tab-icon">🎥</div>
+    <div class="tab-label">Pregações</div>
   </div>
 </div>
 
@@ -3149,8 +3204,8 @@ const API_URL = (function() {
   }
   return 'http://localhost:3000/api';
 })();
-const pages = ['home','quests','leitura','ia','quiz'];
-const titles = { home:'Início', quests:'Missões', leitura:'Leitura Bíblica', ia:'Assistente IA', quiz:'Quiz do Dia' };
+const pages = ['home','quests','leitura','ia','quiz','sermons'];
+const titles = { home:'Início', quests:'Missões', leitura:'Leitura Bíblica', ia:'Assistente IA', quiz:'Quiz do Dia', sermons:'Pregações' };
 let currentUser = null;
 let bibleBooks = [];
 let currentBook = localStorage.getItem('lastReadBook') || 'Mateus';
@@ -3806,13 +3861,207 @@ async function upgradeToPremiumPlan() {
     if (json.status === 'success') {
       showFeedback("🎉 Plano Premium ativado com sucesso! Carregando todos os recursos...", "success");
       await loadUserStats(); // Atualizar dados globais do usuário
-      loadSermonsForCurrentBook(); // Recarregar pregações com limite de 6 vídeos
+      loadSermonsForCurrentBook(); // Recarregar pregações na aba de leitura
+      if (document.getElementById('sermons-page-list-container')) {
+        loadSermonsForBook(currentBook); // Recarregar pregações na aba dedicada
+      }
     } else {
       showFeedback("❌ Não foi possível atualizar o plano: " + (json.message || "Erro desconhecido"));
     }
   } catch (err) {
     console.error("Erro ao assinar Premium:", err);
     showFeedback("❌ Conexão com o servidor falhou.");
+  }
+}
+
+// ==========================================
+// DEDICATED SERMONS PAGE CORE LOGIC
+// ==========================================
+
+async function loadSermonsForBook(bookName) {
+  const container = document.getElementById('sermons-page-list-container');
+  if (!container) return;
+  
+  // Renderizar feedback de carregamento
+  container.innerHTML = `
+    <div style="padding: 40px 20px; text-align: center; color: var(--label2);">
+      <div class="sermon-loading-spinner" style="margin: 0 auto 16px;"></div>
+      <div style="font-size: 15px; font-weight: 500; color: var(--label1);">Buscando pregações inspiradoras...</div>
+      <div style="font-size: 13px; color: var(--label2); margin-top: 4px;">Encontrando vídeos sobre o livro de ${bookName} via API BíbliaViva</div>
+    </div>
+  `;
+  
+  try {
+    const res = await fetch(`${API_URL}/sermons/${encodeURIComponent(bookName)}`);
+    if (!res.ok) {
+      throw new Error(`Erro na API do BíbliaViva: ${res.status}`);
+    }
+    
+    const json = await res.json();
+    if (json.status !== 'success' || !json.data || !json.data.sermons || json.data.sermons.length === 0) {
+      container.innerHTML = `
+        <div class="empty-sermons-state">
+          <div class="empty-icon">📺</div>
+          <div class="empty-title">Nenhuma pregação encontrada</div>
+          <div class="empty-subtitle">Não conseguimos encontrar vídeos inspiradores sobre o livro de ${bookName} no momento.</div>
+        </div>
+      `;
+      return;
+    }
+    
+    renderSermonCardsForSermonsPage(json.data.sermons, json.data.plan);
+  } catch (err) {
+    console.error("Erro ao carregar pregações da página:", err);
+    container.innerHTML = `
+      <div class="empty-sermons-state">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">Erro ao carregar pregações</div>
+        <div class="empty-subtitle">Verifique sua conexão ou tente novamente mais tarde.</div>
+        <button class="pill-btn" onclick="loadSermonsForBook('${bookName.replace(/'/g, "\\'")}')" style="margin-top: 15px; font-size: 14px; width: auto; padding: 8px 16px;">Tentar Novamente</button>
+      </div>
+    `;
+  }
+}
+
+function renderSermonCardsForSermonsPage(items, plan) {
+  const container = document.getElementById('sermons-page-list-container');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  items.forEach(item => {
+    const videoId = item.videoId;
+    const title = item.title;
+    const channelTitle = item.channelName;
+    const thumbnailUrl = item.thumbnailUrl;
+    const durationSeconds = item.durationSeconds;
+    const viewCount = item.viewCount;
+    
+    const durationMin = durationSeconds ? Math.round(durationSeconds / 60) : 0;
+    const durationText = durationMin ? `${durationMin} min` : '';
+    const viewsText = viewCount ? `${viewCount.toLocaleString('pt-BR')} views` : '';
+    const metaText = [durationText, viewsText].filter(Boolean).join(' • ');
+    
+    // Escapar strings para passar no evento onclick
+    const escapedTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const escapedChannel = channelTitle.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    
+    const card = document.createElement('div');
+    card.className = 'sermon-card';
+    card.onclick = () => playSermonVideo(videoId, escapedTitle, escapedChannel, '');
+    
+    card.innerHTML = `
+      <div class="sermon-thumbnail-container">
+        <img class="sermon-thumbnail" src="${thumbnailUrl}" alt="${escapedTitle}" loading="lazy">
+        <div class="sermon-play-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <div class="sermon-info">
+        <div class="sermon-title">${title}</div>
+        <div class="sermon-channel">${channelTitle}</div>
+        <div class="sermon-meta" style="font-size: 11px; color: var(--text-tertiary); margin-top: 3px;">${metaText}</div>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
+  
+  // Exibir card de Upsell Premium se o usuário for FREE
+  if (plan === 'FREE') {
+    const upsellCard = document.createElement('div');
+    upsellCard.className = 'sermon-premium-card';
+    upsellCard.style.cssText = `
+      grid-column: 1 / -1;
+      background: rgba(124, 111, 224, 0.08);
+      border: 1px dashed rgba(124, 111, 224, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 8px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    `;
+    
+    upsellCard.innerHTML = `
+      <div style="font-size: 28px; margin-bottom: 12px;">✦</div>
+      <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Desbloqueie Pregações Completas</div>
+      <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 18px; max-width: 320px; margin-left: auto; margin-right: auto;">
+        Assinantes FREE têm limite de 3 pregações por livro. Atualize para o plano PREMIUM e acesse todas as pregações e resumos por Inteligência Artificial!
+      </div>
+      <button class="pill-btn" onclick="upgradeToPremiumPlan()" style="
+        background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 111, 224, 0.3);
+        width: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      ">
+        Quero Acesso Premium
+      </button>
+    `;
+    
+    container.appendChild(upsellCard);
+  }
+}
+
+function initSermonsPageBookChips() {
+  const container = document.getElementById('sermons-page-book-chips');
+  if (!container) return;
+  
+  if (container.children.length > 0) {
+    updateActiveSermonChip();
+    return;
+  }
+  
+  if (bibleBooks.length === 0) return;
+  
+  container.innerHTML = bibleBooks.map(b => {
+    const isActive = b.name === currentBook;
+    return `
+      <div class="sermon-chip ${isActive ? 'active' : ''}" 
+           id="sermon-chip-${b.name}" 
+           onclick="selectSermonBook('${b.name.replace(/'/g, "\\'")}')">
+        ${b.name}
+      </div>
+    `;
+  }).join('');
+  
+  scrollToActiveSermonChip();
+}
+
+function selectSermonBook(bookName) {
+  currentBook = bookName;
+  saveReadingState();
+  
+  updateActiveSermonChip();
+  loadSermonsForBook(bookName);
+}
+
+function updateActiveSermonChip() {
+  const chips = document.querySelectorAll('#sermons-page-book-chips .sermon-chip');
+  chips.forEach(chip => {
+    if (chip.id === `sermon-chip-${currentBook}`) {
+      chip.classList.add('active');
+    } else {
+      chip.classList.remove('active');
+    }
+  });
+  scrollToActiveSermonChip();
+}
+
+function scrollToActiveSermonChip() {
+  const activeChip = document.getElementById(`sermon-chip-${currentBook}`);
+  if (activeChip) {
+    activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }
 }
 
@@ -4271,6 +4520,11 @@ function switchPage(name) {
     if (input) input.placeholder = `Faça uma pergunta sobre ${currentBook} ${currentChapter}…`;
 
     loadChatHistory();
+  }
+
+  if (name === 'sermons') {
+    initSermonsPageBookChips();
+    loadSermonsForBook(currentBook);
   }
 }
 

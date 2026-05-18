@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import '../env';
 import { getSystemInstruction } from './aiPrompt';
 
 // Modelos configurados com fallback automático para evitar problemas de limite de requisições (429)
