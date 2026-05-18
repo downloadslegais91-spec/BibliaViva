@@ -30,7 +30,8 @@
       color: #fff;
       min-height: 100vh;
       min-height: -webkit-fill-available;
-      overflow: hidden; /* Full-screen single view, scroll disabled */
+      overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -38,7 +39,7 @@
 
     /* Orbs de luz ambiente */
     .orb-top-right {
-      position: absolute;
+      position: fixed;
       pointer-events: none;
       width: 220px;
       height: 220px;
@@ -50,7 +51,7 @@
     }
 
     .orb-bottom-left {
-      position: absolute;
+      position: fixed;
       pointer-events: none;
       width: 180px;
       height: 180px;
@@ -69,6 +70,9 @@
       flex-direction: column;
       flex: 1;
       padding: env(safe-area-inset-top, 47px) 16px env(safe-area-inset-bottom, 34px) 16px;
+      max-width: 430px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     /* Header (Logo & Texts) */
