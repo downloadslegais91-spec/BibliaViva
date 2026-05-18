@@ -28,20 +28,16 @@
     }
 
     html, body {
-      height: 100%;
+      min-height: 100%;
+      overflow-x: hidden;
     }
 
     body {
       background: linear-gradient(160deg, #0d1117 0%, #161b2e 45%, #1a1040 100%);
       color: #fff;
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-      overflow-y: auto;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
-      -webkit-overflow-scrolling: touch;
     }
 
     /* Orbs de luz ambiente */
@@ -1113,7 +1109,8 @@
         google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleGoogleCredential,
-          ux_mode: 'popup'
+          ux_mode: 'redirect',
+          login_uri: window.location.origin + '/login.html'
         });
 
         google.accounts.id.renderButton(
