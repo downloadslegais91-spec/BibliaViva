@@ -3893,7 +3893,7 @@ async function playChapterAudio() {
       }
       
       setTimeout(() => {
-        goToNextChapter();
+        goToNextChapter(true);
       }, 2000);
     });
     
@@ -3907,7 +3907,7 @@ async function playChapterAudio() {
   }
 }
 
-async function goToNextChapter() {
+async function goToNextChapter(autoPlayAudio = false) {
   if (window.currentAudio) {
     window.currentAudio.pause();
     window.currentAudio = null;
@@ -3926,7 +3926,7 @@ async function goToNextChapter() {
     currentChapter++;
     const selectChapter = document.getElementById('select-chapter');
     if (selectChapter) selectChapter.value = currentChapter;
-    loadActiveChapter();
+    await loadActiveChapter();
   } else {
     const bookIndex = bibleBooks.findIndex(b => b.name === currentBook);
     if (bookIndex !== -1 && bookIndex < bibleBooks.length - 1) {
@@ -3938,11 +3938,18 @@ async function goToNextChapter() {
       if (selectBook) selectBook.value = currentBook;
       
       populateChapters();
-      loadActiveChapter();
+      await loadActiveChapter();
       prefetchQuizForBook(currentBook);
     } else {
       showFeedback('🎉 Parabéns! Você concluiu a leitura de toda a Bíblia Viva!');
+      return;
     }
+  }
+
+  if (autoPlayAudio) {
+    setTimeout(() => {
+      playChapterAudio();
+    }, 500);
   }
 }
 
