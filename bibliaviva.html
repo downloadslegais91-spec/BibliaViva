@@ -2102,7 +2102,7 @@
   }
 
   /* Glassmorphic Modal Overlay player */
-  #sermon-modal-overlay {
+  .sermon-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -2120,7 +2120,7 @@
     transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  #sermon-modal-overlay.active {
+  .sermon-modal.active {
     opacity: 1;
     pointer-events: auto;
   }
@@ -2138,7 +2138,7 @@
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  #sermon-modal-overlay.active .sermon-modal-content {
+  .sermon-modal.active .sermon-modal-content {
     transform: scale(1) translateY(0);
   }
 
