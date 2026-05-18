@@ -2941,7 +2941,27 @@ async function loadUserStats() {
     const json = await res.json();
     if (json.status === 'success') {
       currentUser = json.data;
+      
+      // Override values for Google/Apple/custom registration mock login
+      const isSocial = localStorage.getItem('isLoggedIn') === 'true';
+      if (isSocial) {
+        currentUser.name = localStorage.getItem('userName') || currentUser.name;
+        currentUser.email = localStorage.getItem('userEmail') || currentUser.email;
+      }
+      
       updateUserUI(currentUser);
+      
+      // Dynamic profile trigger avatar updates
+      const userInitials = localStorage.getItem('userAvatarInitials');
+      const triggerEl = document.getElementById('profile-trigger');
+      if (triggerEl && userInitials) {
+        triggerEl.textContent = userInitials;
+        triggerEl.style.fontSize = '12px';
+        triggerEl.style.fontWeight = '700';
+        triggerEl.style.color = '#fff';
+        triggerEl.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+        triggerEl.style.border = '1px solid rgba(255,255,255,0.2)';
+      }
     }
   } catch (err) {
     console.error('Erro ao carregar dados do usuário:', err);
