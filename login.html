@@ -27,6 +27,10 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       background: linear-gradient(160deg, #0d1117 0%, #161b2e 45%, #1a1040 100%);
       color: #fff;
@@ -37,6 +41,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Orbs de luz ambiente */
@@ -71,7 +76,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      flex: 1;
+      flex: 1 0 auto; /* Permite crescer mas não encolher além do conteúdo */
+      min-height: 650px; /* Força o scroll em telas menores */
       padding: env(safe-area-inset-top, 47px) 16px env(safe-area-inset-bottom, 34px) 16px;
       max-width: 430px;
       margin: 0 auto;
