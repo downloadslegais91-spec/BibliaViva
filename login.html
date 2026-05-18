@@ -667,6 +667,8 @@
       border-left-color: rgba(0,0,0,0.1);
     }
   </style>
+  <!-- Google Identity Services Library -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -770,6 +772,12 @@
         </div>
 
         <div class="google-accounts">
+          <!-- Real Interactive Google Sign-In Button Container -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; padding: 4px;">
+            <div id="google-signin-btn-container" style="width: 100%; display: flex; justify-content: center;"></div>
+            <div style="margin-top: 14px; font-size: 11px; opacity: 0.45; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">ou entre com conta de teste</div>
+          </div>
+
           <div class="account-item" onclick="selectGoogleAccount('Samuel Lelé', 'samuel.lele@gmail.com', 'SL')">
             <div class="account-avatar">SL</div>
             <div class="account-info">
@@ -938,11 +946,91 @@
       }
     });
 
-    // ── Google Login Flow ──
+    // ── Google Login Flow (Real Google Identity Services + JWT Decoder) ──
+    function decodeJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+      } catch (err) {
+        console.error('Erro decodificando JWT:', err);
+        return null;
+      }
+    }
+
+    function initGoogleSignIn() {
+      if (typeof google === 'undefined') {
+        console.log('[GSI] Aguardando carregamento da biblioteca do Google...');
+        setTimeout(initGoogleSignIn, 300);
+        return;
+      }
+
+      // Use client ID or a standard fallback configured for Vercel/Localhost
+      const client_id = localStorage.getItem('googleClientId') || '1035659858000-q0srfp7t68k5k24e8g87qg8oqvbrg7qf.apps.googleusercontent.com';
+
+      console.log('[GSI] Inicializando Google One Tap / Button com ID:', client_id);
+      google.accounts.id.initialize({
+        client_id: client_id,
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      const container = document.getElementById('google-signin-btn-container');
+      if (container) {
+        // Clear any previous button to prevent duplicate renders
+        container.innerHTML = '';
+        google.accounts.id.renderButton(
+          container,
+          { 
+            theme: document.body.classList.contains('light-theme') ? 'outline' : 'filled_blue', 
+            size: 'large',
+            width: 280,
+            text: 'continue_with',
+            shape: 'pill',
+            logo_alignment: 'left'
+          }
+        );
+      }
+    }
+
+    function handleCredentialResponse(response) {
+      if (!response.credential) return;
+      
+      const payload = decodeJwt(response.credential);
+      if (!payload) {
+        alert('Erro ao processar as credenciais do Google.');
+        return;
+      }
+
+      console.log('[GSI] Login real do Google efetuado com sucesso:', payload);
+      
+      // Save details to localStorage
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', payload.email);
+      localStorage.setItem('userName', payload.name);
+      localStorage.setItem('userAvatarUrl', payload.picture || ''); // Google Profile picture!
+      localStorage.setItem('userAvatarInitials', payload.given_name ? payload.given_name.substring(0, 2).toUpperCase() : 'G');
+      localStorage.setItem('userType', 'google_user');
+
+      // UI animations & redirect
+      document.getElementById('google-view-select').style.display = 'none';
+      document.getElementById('google-view-custom').style.display = 'none';
+      
+      const loadingText = document.getElementById('google-loading-text');
+      loadingText.textContent = `Bem-vindo, ${payload.name}! Acessando...`;
+      document.getElementById('google-view-loading').style.display = 'flex';
+
+      setTimeout(() => {
+        window.location.href = 'bibliaviva.html';
+      }, 1500);
+    }
+
     function simulateGoogleLogin() {
       const overlay = document.getElementById('google-overlay');
       overlay.classList.add('active');
       showGoogleAccountSelectView();
+      initGoogleSignIn(); // Render standard button immediately on modal display
     }
 
     function closeGoogleModal() {
@@ -977,6 +1065,8 @@
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userName', name);
+      // Remove any previously saved real Google photo
+      localStorage.removeItem('userAvatarUrl');
       localStorage.setItem('userAvatarInitials', initials);
       localStorage.setItem('userType', isVisitor ? 'visitor' : 'google_user');
 

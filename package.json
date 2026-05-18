@@ -4,6 +4,7 @@
   "description": "Root of BibliaViva to easily run backend",
   "scripts": {
     "start": "npm --prefix backend run dev",
-    "dev": "npm --prefix backend run dev"
+    "dev": "npm --prefix backend run dev",
+    "postinstall": "npm install --prefix backend && npx --prefix backend prisma generate"
   }
 }

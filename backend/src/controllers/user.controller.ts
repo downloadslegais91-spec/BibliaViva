@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
+import { resolveUserId } from '../services/auth';
 
 export const getUserStats = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Hardcoded user ID for now since auth is not implemented
-    const userId = 1; 
+    const userId = await resolveUserId(req); 
     let user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -44,7 +44,7 @@ export const addXpToUser = async (req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    const userId = 1; // Hardcoded user ID for now since auth is not implemented
+    const userId = await resolveUserId(req);
     
     // Find the user first to get their current XP and Level
     let user = await prisma.user.findUnique({
@@ -103,7 +103,7 @@ export const addXpToUser = async (req: Request, res: Response, next: NextFunctio
 export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, questTemplate } = req.body;
-    const userId = 1; // Hardcoded user ID for now since auth is not implemented
+    const userId = await resolveUserId(req);
 
     const data: any = {};
     if (name !== undefined) data.name = name;

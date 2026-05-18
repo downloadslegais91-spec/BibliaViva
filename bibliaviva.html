@@ -2684,6 +2684,30 @@ if (localStorage.getItem('isLoggedIn') !== 'true') {
   }
 })();
 
+// Interceptor global do fetch para adicionar o cabeçalho X-User-Email nas chamadas de API
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = async function(resource, config) {
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+      config = config || {};
+      config.headers = config.headers || {};
+      
+      // Se headers for um objeto Headers nativo
+      if (typeof Headers !== 'undefined' && config.headers instanceof Headers) {
+        config.headers.set('X-User-Email', userEmail);
+      } else if (Array.isArray(config.headers)) {
+        // Se for um array de pares
+        config.headers.push(['X-User-Email', userEmail]);
+      } else {
+        // Se for um objeto simples
+        config.headers['X-User-Email'] = userEmail;
+      }
+    }
+    return originalFetch(resource, config);
+  };
+})();
+
 // Auto-detect environment: use production backend URL if available, else localhost
 const API_URL = (function() {
   // If set globally (e.g. from a config script), use that
@@ -2965,15 +2989,27 @@ async function loadUserStats() {
       updateUserUI(currentUser);
       
       // Dynamic profile trigger avatar updates
-      const userInitials = localStorage.getItem('userAvatarInitials');
       const triggerEl = document.getElementById('profile-trigger');
-      if (triggerEl && userInitials) {
-        triggerEl.textContent = userInitials;
-        triggerEl.style.fontSize = '12px';
-        triggerEl.style.fontWeight = '700';
-        triggerEl.style.color = '#fff';
-        triggerEl.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
-        triggerEl.style.border = '1px solid rgba(255,255,255,0.2)';
+      if (triggerEl) {
+        const userAvatarUrl = localStorage.getItem('userAvatarUrl');
+        const userInitials = localStorage.getItem('userAvatarInitials');
+        
+        if (userAvatarUrl) {
+          triggerEl.innerHTML = `<img src="${userAvatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" referrerpolicy="no-referrer">`;
+          triggerEl.style.background = 'none';
+          triggerEl.style.border = '1px solid rgba(255,255,255,0.3)';
+          triggerEl.style.padding = '0';
+          triggerEl.style.display = 'flex';
+          triggerEl.style.alignItems = 'center';
+          triggerEl.style.justifyContent = 'center';
+        } else if (userInitials) {
+          triggerEl.textContent = userInitials;
+          triggerEl.style.fontSize = '12px';
+          triggerEl.style.fontWeight = '700';
+          triggerEl.style.color = '#fff';
+          triggerEl.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+          triggerEl.style.border = '1px solid rgba(255,255,255,0.2)';
+        }
       }
     }
   } catch (err) {

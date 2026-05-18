@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
 import { BIBLE_BOOKS } from './bible.controller';
+import { resolveUserId } from '../services/auth';
 
 export const CHRONOLOGICAL_ORDER = [
   'jo', 'genesis', 'exodo', 'levitico', 'numeros', 'deuteronomio', 'josue', 'juizes', 'rute',
@@ -158,7 +159,7 @@ export const syncUserQuests = async (userId: number) => {
 
 export const getQuests = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = 1; // mock
+    const userId = await resolveUserId(req);
     
     // Always sync before loading
     await syncUserQuests(userId);
@@ -192,7 +193,7 @@ export const getQuests = async (req: Request, res: Response, next: NextFunction)
 
 export const completeQuest = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = 1; // mock
+    const userId = await resolveUserId(req);
     const { questId } = req.body;
 
     if (!questId) {

@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
 import { syncUserQuests } from './quest.controller';
+import { resolveUserId } from '../services/auth';
 
 export const saveProgress = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = 1; // mock
+    const userId = await resolveUserId(req);
     const { book, chapter, verses, completed } = req.body;
 
     let progress = await prisma.readingProgress.findFirst({

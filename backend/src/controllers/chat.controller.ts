@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
 import { generateChatReply } from '../services/gemini.service';
+import { resolveUserId } from '../services/auth';
 
 export const saveChat = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = 1; // mock
+    const userId = await resolveUserId(req);
     const { sender, message, book, chapter } = req.body;
 
     // 1. Salva a mensagem do usuário ou do IA diretamente
@@ -58,7 +59,7 @@ export const saveChat = async (req: Request, res: Response, next: NextFunction) 
 
 export const getChatHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = 1; // mock
+    const userId = await resolveUserId(req);
     const history = await prisma.aiChatHistory.findMany({
       where: { userId },
       orderBy: { createdAt: 'asc' }
