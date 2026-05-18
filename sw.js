@@ -2,6 +2,9 @@
 const CACHE_NAME = 'bibliaviva-v1';
 const STATIC_ASSETS = [
   '/',
+  '/login.html',
+  '/registro.html',
+  '/bibliaviva.html',
   '/manifest.json',
   '/icon-512.png',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'

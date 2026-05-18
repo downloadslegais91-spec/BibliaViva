@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   <title>BíbliaViva — Login</title>
   <link rel="icon" type="image/png" href="/icon-512.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BíbliaViva">
   <style>
     :root {
       --primary-gradient: linear-gradient(90deg, #4F8EF7, #7C6FE0);
@@ -666,6 +670,79 @@
       border-bottom-color: rgba(0,0,0,0.1);
       border-left-color: rgba(0,0,0,0.1);
     }
+
+    /* ── PWA Install Option Styles ── */
+    .install-pwa-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .btn-install-pwa {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-install-pwa:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(79, 142, 247, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-install-pwa:active {
+      transform: translateY(0);
+    }
+
+    .light-theme .btn-install-pwa {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.08);
+      color: #1C1C1E;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .light-theme .btn-install-pwa:hover {
+      background: rgba(0, 0, 0, 0.08);
+      border-color: rgba(79, 142, 247, 0.3);
+    }
+
+    .ios-install-steps {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    
+    .light-theme .ios-install-steps {
+      color: rgba(28, 28, 30, 0.85);
+    }
+
+    .ios-install-step-num {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .light-theme .ios-install-step-num {
+      background: rgba(0, 0, 0, 0.06);
+    }
   </style>
   <!-- Google Identity Services Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -746,6 +823,13 @@
           <path d="M12 5.34C13.62 5.34 15.06 5.89 16.2 6.98L19.35 3.83C17.45 2.06 14.97 1 12 1C7.7 1 4.03 3.39 2.23 6.97L5.91 9.82C6.76 7.25 9.17 5.34 12 5.34Z" fill="#EA4335"/>
         </svg>
         Entrar com Google
+      </button>
+    </div>
+
+    <!-- Opção de Instalação PWA -->
+    <div class="install-pwa-container" id="pwa-container" style="display: none;">
+      <button class="btn-install-pwa" onclick="triggerPwaInstall()">
+        <span>📲</span> Instalar Aplicativo
       </button>
     </div>
 
@@ -842,6 +926,34 @@
         <div class="loading-text" style="background: none; -webkit-text-fill-color: #fff; color: #fff;">Iniciando sessão com o ID Apple...</div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Modal de Instruções de Instalação no iOS -->
+  <div class="modal-overlay" id="ios-install-overlay">
+    <div class="glass-modal" style="width: 340px; padding: 28px 20px 24px;">
+      <div class="google-header">
+        <div style="font-size: 40px; margin-bottom: 4px;">📲</div>
+        <h2 class="google-title">Instalar BíbliaViva</h2>
+        <p class="google-subtitle">Adicione o aplicativo à sua tela de início para um acesso instantâneo e suporte offline.</p>
+      </div>
+
+      <div class="ios-install-steps" style="text-align: left; display: flex; flex-direction: column; gap: 16px; margin: 20px 0 24px; font-size: 15px; line-height: 1.5;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="ios-install-step-num">1</span>
+          <span>Toque no botão de <strong>Compartilhar</strong> <span style="font-size: 16px;">📤</span> na barra de navegação inferior do Safari.</span>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="ios-install-step-num">2</span>
+          <span>Role o menu para baixo e selecione a opção <strong>Adicionar à Tela de Início</strong> <span style="font-size: 16px;">➕</span>.</span>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="ios-install-step-num">3</span>
+          <span>Toque em <strong>Adicionar</strong> no canto superior direito para confirmar.</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="closeIosInstallModal()" style="margin-top: 0; width: 100%; height: 48px; border-radius: 24px; box-shadow: none;">Entendi</button>
     </div>
   </div>
 
@@ -947,7 +1059,7 @@
     }
 
     function startGoogleRedirectFlow() {
-      const clientId = localStorage.getItem('googleClientId') || '1035659858000-q0srfp7t68k5k24e8g87qg8oqvbrg7qf.apps.googleusercontent.com';
+      const clientId = localStorage.getItem('googleClientId') || '993346361316-ec2ssid3uahqgdgretnhbs326ap3qcm5.apps.googleusercontent.com';
       const redirectUri = window.location.origin + window.location.pathname;
       const nonce = Math.random().toString(36).substring(2) + Date.now().toString(36);
       const state = 'google_oauth';
@@ -1097,7 +1209,98 @@
       
       // Parse Google OAuth redirect token on page load
       handleOAuthRedirect();
+      // Initialize PWA installation UI
+      initPwaInstall();
+
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registrado com sucesso:', reg.scope))
+          .catch(err => console.error('Erro ao registrar o Service Worker:', err));
+      }
     });
+
+    // ── PWA Installation Logic ──
+    let deferredPrompt;
+    
+    function isIos() {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    }
+    
+    function isInStandaloneMode() {
+      return window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone);
+    }
+    
+    function initPwaInstall() {
+      const container = document.getElementById('pwa-container');
+      if (!container) return;
+      
+      // If already in standalone mode, don't show the button
+      if (isInStandaloneMode()) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      // If iOS, always show the button so they can see the manual instructions modal
+      if (isIos()) {
+        container.style.display = 'flex';
+      }
+    }
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      deferredPrompt = e;
+      // Show the install button container
+      const container = document.getElementById('pwa-container');
+      if (container) {
+        container.style.display = 'flex';
+      }
+    });
+    
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('BíbliaViva foi instalado com sucesso!');
+      // Hide the install button container
+      const container = document.getElementById('pwa-container');
+      if (container) {
+        container.style.display = 'none';
+      }
+      deferredPrompt = null;
+    });
+    
+    function triggerPwaInstall() {
+      if (isIos()) {
+        // Show iOS installation instructions modal
+        const overlay = document.getElementById('ios-install-overlay');
+        if (overlay) {
+          overlay.classList.add('active');
+        }
+      } else if (deferredPrompt) {
+        // Show native install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuário aceitou a instalação da PWA');
+          } else {
+            console.log('Usuário recusou a instalação da PWA');
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        // Fallback for other browsers where PWA prompt is not supported/ready
+        alert('Para instalar o app, clique no menu de opções do seu navegador (três pontos) e selecione "Instalar aplicativo" ou "Adicionar à tela inicial".');
+      }
+    }
+    
+    function closeIosInstallModal() {
+      const overlay = document.getElementById('ios-install-overlay');
+      if (overlay) {
+        overlay.classList.remove('active');
+      }
+    }
   </script>
 </body>
 </html>

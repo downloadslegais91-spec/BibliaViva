@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   <title>BíbliaViva — Criar Conta</title>
   <link rel="icon" type="image/png" href="/icon-512.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BíbliaViva">
   <meta name="description" content="Crie sua conta no BíbliaViva e comece sua jornada espiritual com gamificação e IA.">
   <meta name="theme-color" content="#7C6FE4">
   <style>
@@ -796,6 +800,13 @@
         if (toggleIcon) toggleIcon.textContent = '☀️';
       } else {
         if (toggleIcon) toggleIcon.textContent = '🌙';
+      }
+
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registrado com sucesso:', reg.scope))
+          .catch(err => console.error('Erro ao registrar o Service Worker:', err));
       }
     });
   </script>
