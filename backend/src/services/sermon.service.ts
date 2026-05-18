@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../prisma';
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || 'AIzaSyD-HtcNGpQy3f6HSz_-tsHHTnx3Ku6abEA';
 const CACHE_TTL_DAYS = 7;
