@@ -15,6 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="sermon-player.js" defer></script>
+<link rel="stylesheet" href="sermon-player.css">
 <style>
   :root {
     /* Spiritual Dark Glass Design Tokens */
@@ -1468,10 +1470,12 @@
   }
   
   .ios-sheet-header {
+    position: relative;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 12px 20px 16px;
+    min-height: 56px;
+    padding: 0 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-shrink: 0;
   }
@@ -1483,22 +1487,57 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px 0;
+    padding: 8px 12px;
     font-family: var(--font);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
   }
   
   .ios-sheet-btn.cancel {
+    position: absolute;
+    left: 8px;
     color: rgba(255, 255, 255, 0.6);
   }
   
+  .ios-sheet-btn.share {
+    position: absolute;
+    right: 8px;
+    color: var(--accent-blue);
+  }
+  
   .ios-sheet-btn:active {
-    opacity: 0.7;
+    opacity: 0.5;
   }
   
   .ios-sheet-title {
     font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
+    text-align: center;
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Scrollbar glassmórfica premium para o conteúdo do sheet */
+  .ios-sheet-content::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .ios-sheet-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .ios-sheet-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 99px;
+  }
+  .ios-sheet-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
   
   /* Segmented Control */
@@ -2101,6 +2140,7 @@
     transform: scale(0.96);
   }
 
+<<<<<<< HEAD
   /* Glassmorphic Modal Overlay player */
   .sermon-modal {
     position: fixed;
@@ -2196,6 +2236,9 @@
   .sermon-modal-close:hover {
     background: rgba(255, 255, 255, 0.15);
   }
+=======
+  /* Sermon Player styles moved to external sermon-player.css for modularization */
+>>>>>>> a590df9ba1a7a13bd8472742ee895f2f4a776068
 
   /* Light Theme overrides for Segmented Control and Sermon Cards */
   .light-theme .reading-segmented-control {
@@ -4065,60 +4108,8 @@ function scrollToActiveSermonChip() {
   }
 }
 
-// Tocar o vídeo em um Iframe no Modal Premium
-function playSermonVideo(videoId, title, channel, description) {
-  const modal = document.getElementById('youtube-player-modal');
-  const titleEl = document.getElementById('sermon-modal-title');
-  const channelEl = document.getElementById('sermon-modal-channel');
-  const descEl = document.getElementById('sermon-modal-description');
-  const iframeContainer = document.getElementById('youtube-player-iframe-container');
-  
-  if (!modal || !iframeContainer) return;
-  
-  // Pausar o áudio do capítulo se estiver tocando
-  if (window.currentAudio && !window.currentAudio.paused) {
-    window.currentAudio.pause();
-    const btnPlay = document.getElementById('btn-audio-play');
-    if (btnPlay) btnPlay.textContent = '▶';
-  }
-  
-  // Preencher informações
-  if (titleEl) titleEl.innerText = title;
-  if (channelEl) channelEl.innerText = `Canal: ${channel}`;
-  if (descEl) descEl.innerText = description;
-  
-  // Inserir Iframe do YouTube
-  iframeContainer.innerHTML = `
-    <iframe 
-      id="sermon-youtube-iframe"
-      src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0" 
-      title="${title}" 
-      frameborder="0" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-      allowfullscreen>
-    </iframe>
-  `;
-  
-  // Mostrar modal
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden'; // Evitar scroll de fundo
-}
+// A lógica do Player de Sermões (pregações) foi modularizada e reside em sermon-player.js
 
-// Fechar o player de pregações
-function closeSermonPlayer() {
-  const modal = document.getElementById('youtube-player-modal');
-  const iframeContainer = document.getElementById('youtube-player-iframe-container');
-  
-  if (modal) {
-    modal.classList.remove('active');
-  }
-  
-  if (iframeContainer) {
-    iframeContainer.innerHTML = ''; // Limpar iframe para parar reprodução
-  }
-  
-  document.body.style.overflow = ''; // Restaurar scroll
-}
 
 function updateMethodologyUI(template) {
   const slider = document.getElementById('methodology-slider');
@@ -5597,21 +5588,6 @@ updateOnlineStatus();
 })();
 </script>
 
-<!-- YOUTUBE PLAYER PREMIUM MODAL -->
-<div id="youtube-player-modal" class="sermon-modal">
-  <div class="sermon-modal-content">
-    <div class="sermon-modal-header">
-      <span id="sermon-modal-title">Assumindo a Presença...</span>
-      <button class="sermon-modal-close" onclick="closeSermonPlayer()">&times;</button>
-    </div>
-    <div class="sermon-video-wrapper">
-      <div id="youtube-player-iframe-container"></div>
-    </div>
-    <div class="sermon-modal-details">
-      <p id="sermon-modal-channel" style="font-weight: 600; font-size: 14px; color: var(--accent); margin-bottom: 4px;"></p>
-      <p id="sermon-modal-description" style="font-size: 13px; color: var(--label2); line-height: 1.5; overflow-y: auto; max-height: 80px;"></p>
-    </div>
-  </div>
-</div>
+<!-- Sermon player modal is dynamically injected from sermon-player.js -->
 </body>
 </html>
