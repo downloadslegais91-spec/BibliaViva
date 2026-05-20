@@ -24,7 +24,7 @@ app.post('/api/auth/google/callback', (req, res) => {
 app.use('/api', routes);
 
 app.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../icon-512.png'));
+  res.sendFile(path.join(__dirname, '../../icon-biblia-viva.svg'));
 });
 
 // Serve PWA static files from project root
