@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <filter id="blur-heavy">
+      <feGaussianBlur stdDeviation="60" />
+    </filter>
+    <filter id="blur-mid">
+      <feGaussianBlur stdDeviation="18" />
+    </filter>
+    <filter id="blur-soft">
+      <feGaussianBlur stdDeviation="1" />
+    </filter>
+    <filter id="blur-micro">
+      <feGaussianBlur stdDeviation="0.5" />
+    </filter>
+
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a3e" />
+      <stop offset="40%" stop-color="#2d1b6e" />
+      <stop offset="100%" stop-color="#0f0f2e" />
+    </linearGradient>
+
+    <radialGradient id="blob1-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(120,80,255,0.55)" />
+      <stop offset="100%" stop-color="rgba(120,80,255,0)" />
+    </radialGradient>
+
+    <radialGradient id="blob2-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(59,130,246,0.45)" />
+      <stop offset="100%" stop-color="rgba(59,130,246,0)" />
+    </radialGradient>
+
+    <radialGradient id="blob3-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,200,100,0.15)" />
+      <stop offset="100%" stop-color="transparent" />
+    </radialGradient>
+
+    <linearGradient id="reflex-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="40%" stop-color="rgba(255,255,255,0.35)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Fundo -->
+  <rect x="0" y="0" width="1024" height="1024" rx="230" fill="url(#bg-grad)" />
+
+  <!-- 2. Blobs -->
+  <circle cx="780" cy="200" r="280" fill="url(#blob1-grad)" filter="url(#blur-heavy)" />
+  <circle cx="220" cy="820" r="220" fill="url(#blob2-grad)" filter="url(#blur-heavy)" />
+  <circle cx="512" cy="512" r="180" fill="url(#blob3-grad)" filter="url(#blur-heavy)" />
+
+  <!-- 3. Card Glass -->
+  <rect x="212" y="180" width="600" height="664" rx="48" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.30)" stroke-width="2" />
+  <ellipse cx="512" cy="220" rx="220" ry="28" fill="url(#reflex-grad)" opacity="0.6" />
+  <line x1="512" y1="200" x2="512" y2="824" stroke="rgba(255,255,255,0.20)" stroke-width="2" stroke-dasharray="8 6" />
+
+  <!-- 4. Glow Cruz -->
+  <g transform="translate(512, 512) scale(1.12) translate(-512, -512)" filter="url(#blur-mid)">
+    <rect x="484" y="310" width="56" height="280" rx="28" fill="rgba(200,180,255,0.40)" />
+    <rect x="370" y="436" width="284" height="56" rx="28" fill="rgba(200,180,255,0.40)" />
+  </g>
+
+  <!-- 4. Cruz Branca -->
+  <g>
+    <rect x="484" y="310" width="56" height="280" rx="28" fill="rgba(255,255,255,0.90)" filter="url(#blur-micro)" />
+    <rect x="370" y="436" width="284" height="56" rx="28" fill="rgba(255,255,255,0.90)" />
+  </g>
+
+  <!-- 5. Partículas -->
+  <circle cx="340" cy="300" r="6" fill="rgba(255,255,255,0.70)" filter="url(#blur-soft)" />
+  <circle cx="700" cy="290" r="8" fill="rgba(255,255,255,0.70)" filter="url(#blur-soft)" />
+  <circle cx="720" cy="740" r="5" fill="rgba(255,255,255,0.70)" filter="url(#blur-soft)" />
+  <circle cx="300" cy="720" r="7" fill="rgba(255,255,255,0.70)" filter="url(#blur-soft)" />
+  <circle cx="460" cy="370" r="4" fill="rgba(255,255,255,0.70)" filter="url(#blur-soft)" />
+  <circle cx="580" cy="670" r="10" fill="rgba(255,255,255,0.70)" filter="url(#blur-soft)" />
+
+  <!-- Tipografia -->
+  <text x="512" y="760" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="88px" font-weight="700" fill="rgba(255,255,255,0.95)" style="letter-spacing: -2px;">Bíblia</text>
+  <text x="512" y="850" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="72px" font-weight="300" fill="rgba(255,255,255,0.65)" style="letter-spacing: 8px;">Viva</text>
+
+  <!-- 6. Borda Glass Externa -->
+  <rect x="0" y="0" width="1024" height="1024" rx="230" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="3" pointer-events="none" />
+</svg>
