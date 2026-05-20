@@ -663,7 +663,7 @@
     function validateForm() {
       clearErrors();
       const name = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
       const password = document.getElementById('reg-password').value;
       const confirm = document.getElementById('reg-confirm').value;
       let valid = true;
@@ -701,7 +701,7 @@
       btn.disabled = true;
 
       const name = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
 
       try {
         const res = await fetch('/api/users/register', {

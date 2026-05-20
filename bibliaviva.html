@@ -161,8 +161,48 @@
   
   .page.active { 
     display: block !important; 
-    animation: pageEntrance 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
+  
+  @keyframes cascadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes cascadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-12px); }
+  }
+  
+  .page.active > * {
+    opacity: 0;
+    animation: cascadeIn 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .page.active > *:nth-child(1) { animation-delay: 0ms; }
+  .page.active > *:nth-child(2) { animation-delay: 35ms; }
+  .page.active > *:nth-child(3) { animation-delay: 70ms; }
+  .page.active > *:nth-child(4) { animation-delay: 105ms; }
+  .page.active > *:nth-child(5) { animation-delay: 140ms; }
+  .page.active > *:nth-child(6) { animation-delay: 175ms; }
+  .page.active > *:nth-child(7) { animation-delay: 210ms; }
+  .page.active > *:nth-child(8) { animation-delay: 245ms; }
+  .page.active > *:nth-child(9) { animation-delay: 280ms; }
+  .page.active > *:nth-child(10) { animation-delay: 315ms; }
+  .page.active > *:nth-child(n+11) { animation-delay: 350ms; }
+  
+  .page.exiting {
+    display: block !important;
+  }
+  .page.exiting > * {
+    animation: cascadeOut 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .page.exiting > *:nth-child(1) { animation-delay: 0ms; }
+  .page.exiting > *:nth-child(2) { animation-delay: 15ms; }
+  .page.exiting > *:nth-child(3) { animation-delay: 30ms; }
+  .page.exiting > *:nth-child(4) { animation-delay: 45ms; }
+  .page.exiting > *:nth-child(5) { animation-delay: 60ms; }
+  .page.exiting > *:nth-child(n+6) { animation-delay: 75ms; }
 
   /* SECTION HEADERS */
   .section { 
@@ -1186,66 +1226,120 @@
   }
 
   /* GLOBAL BOTTOM TAB BAR */
-  .tab-bar {
+  .tab-bar-wrapper {
     position: fixed;
-    bottom: 0; 
-    left: 0; 
-    right: 0;
-    height: 83px; /* Exact Apple HIG height */
-    background: rgba(10, 12, 16, 0.45) !important;
-    backdrop-filter: blur(25px) saturate(190%);
-    -webkit-backdrop-filter: blur(25px) saturate(190%);
-    border-top: 1px solid rgba(255, 255, 255, 0.10) !important; /* thin glass top border */
+    bottom: 0; left: 0; right: 0;
+    padding: 0 14px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background: transparent;
+    z-index: 999;
+  }
+
+  .tab-bar {
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-radius: 24px;
+    border: 0.5px solid rgba(255, 255, 255, 0.28);
     display: flex;
-    padding: 6px 0 20px; /* perfect safe-area height */
-    z-index: 1000;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
-    box-sizing: border-box;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 6px;
+    gap: 2px;
   }
-  
+
   .tab-item {
-    flex: 1;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 3px;
+    flex: 1;
+    min-height: 44px;
     cursor: pointer;
-    position: relative;
-    padding: 4px 0;
-    color: var(--text-tertiary) !important;
-    transition: color 120ms ease;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 16px;
+    padding: 6px 2px;
+    border: none;
+    background: transparent;
+    transition: background .2s, transform .15s cubic-bezier(0.34,1.56,0.64,1);
   }
-  
-  .tab-icon { 
-    font-size: 22px; 
-    transition: transform 120ms ease;
+
+  .tab-item:active {
+    transform: scale(0.88);
   }
-  
-  .tab-item:active .tab-icon {
-    transform: scale(0.85);
+
+  .tab-item.active {
+    background: rgba(255, 255, 255, 0.20);
+    border: 0.5px solid rgba(255, 255, 255, 0.30);
   }
-  
-  .tab-label { 
-    font-size: 10px; 
-    font-weight: 500; 
-    color: inherit; 
+
+  .tab-icon {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .18s cubic-bezier(0.34,1.56,0.64,1);
   }
-  
-  .tab-item.active { 
-    color: var(--accent-blue) !important; 
+
+  .tab-item.active .tab-icon {
+    transform: translateY(-1px);
   }
-  
-  /* Glowing bottom dot active indicator */
-  .tab-item.active::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    width: 4px;
-    height: 4px;
+
+  .tab-icon svg {
+    width: 22px; height: 22px;
+    stroke: rgba(255, 255, 255, 0.38);
+    stroke-width: 1.6;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke .2s;
+  }
+
+  .tab-item.active .tab-icon svg {
+    stroke: #ffffff;
+  }
+
+  .tab-label {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.38);
+    font-family: -apple-system, 'SF Pro Text', sans-serif;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    transition: color .2s, font-weight .15s;
+  }
+
+  .tab-item.active .tab-label {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .tab-dot {
+    width: 4px; height: 4px;
     border-radius: 50%;
-    background: var(--accent-blue);
-    box-shadow: 0 0 6px var(--accent-blue);
+    background: #ffffff;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity .2s, transform .25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .tab-item.active .tab-dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .tab-badge {
+    position: absolute;
+    top: 2px; right: 8px;
+    min-width: 15px; height: 15px;
+    background: #FF3B30;
+    border-radius: 8px;
+    font-size: 8px; font-weight: 700; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 3px;
+    border: 1.5px solid rgba(255,255,255,0.14);
+  }
+
+  body, .page-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
 
   /* PREMIUM PILL BUTTONS */
@@ -2533,14 +2627,27 @@
   /* Bottom Tab Bar */
   .light-theme .tab-bar {
     background: rgba(255, 255, 255, 0.8) !important;
-    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.03) !important;
+    border: 0.5px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
   }
-  .light-theme .tab-item {
+  .light-theme .tab-item .tab-icon svg {
+    stroke: rgba(28, 28, 30, 0.4) !important;
+  }
+  .light-theme .tab-item.active .tab-icon svg {
+    stroke: #007AFF !important;
+  }
+  .light-theme .tab-item .tab-label {
     color: rgba(28, 28, 30, 0.4) !important;
   }
-  .light-theme .tab-item.active {
+  .light-theme .tab-item.active .tab-label {
     color: #007AFF !important;
+  }
+  .light-theme .tab-item.active {
+    background: rgba(0, 122, 255, 0.08) !important;
+    border: 0.5px solid rgba(0, 122, 255, 0.20) !important;
+  }
+  .light-theme .tab-item.active .tab-dot {
+    background: #007AFF !important;
   }
 
   /* Buttons and Interaction Pills */
@@ -2798,9 +2905,142 @@
   <div class="spacer-md"></div>
 </div>
 
-<!-- ========== PAGE: QUESTS ========== -->
+<style>
+#page-quests {
+  background: #F2F2F7;
+  padding: 0 16px;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+#page-quests .methodology-selector-wrapper {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+#page-quests .section-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6C6C70;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 22px 0 8px 4px;
+}
+#page-quests .xp-resumo-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 0.5px solid rgba(0,0,0,0.07);
+  padding: 14px 16px;
+  display: flex;
+  margin-bottom: 4px;
+  margin-top: 12px;
+}
+#page-quests .xp-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+#page-quests .xp-stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+#page-quests .xp-stat-lbl {
+  font-size: 11px;
+  font-weight: 500;
+  color: #8E8E93;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 3px;
+}
+#page-quests .xp-divisor {
+  width: 0.5px;
+  background: rgba(0,0,0,0.08);
+  height: 36px;
+  align-self: center;
+  margin: 0 16px;
+}
+#page-quests .missao-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 0.5px solid rgba(0,0,0,0.07);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+#page-quests .tipo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+#page-quests .missao-titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+#page-quests .missao-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6C6C70;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+#page-quests .missao-prog-track {
+  height: 5px;
+  border-radius: 3px;
+  background: #F2F2F7;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+#page-quests .missao-prog-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #3B82F6;
+  transition: width .4s ease;
+}
+#page-quests .missao-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#page-quests .missao-xp {
+  font-size: 13px;
+  font-weight: 700;
+}
+#page-quests .missao-frac {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8E8E93;
+}
+#page-quests .intensiva-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 0.5px solid rgba(0,0,0,0.07);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s;
+  text-decoration: none;
+  display: block;
+}
+#page-quests .intensiva-card:active { transform: scale(0.98); }
+#page-quests .int-linha1 { display: flex; justify-content: space-between; align-items: center; }
+#page-quests .int-tema { font-size: 15px; font-weight: 700; color: #000; display: flex; align-items: center; gap: 8px; }
+#page-quests .int-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+#page-quests .int-desc { font-size: 13px; color: #6C6C70; margin: 4px 0 10px; }
+#page-quests .int-prog-track { height: 4px; border-radius: 2px; background: #F2F2F7; overflow: hidden; }
+#page-quests .int-prog-fill { height: 100%; border-radius: 2px; }
+#page-quests .int-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+#page-quests .int-frac { font-size: 11px; color: #8E8E93; }
+</style>
+
 <div class="page" id="page-quests">
-  <!-- APPLE PREMIUM METHODOLOGY SELECTOR -->
+  <!-- APPLE PREMIUM METHODOLOGY SELECTOR (Header) -->
   <div class="methodology-selector-wrapper">
     <div class="methodology-selector">
       <div class="methodology-slider" id="methodology-slider"></div>
@@ -2813,33 +3053,94 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Esta semana</div>
-    <div id="quests-weekly-container">
-      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
+  <!-- RESUMO DE XP -->
+  <div class="xp-resumo-card">
+    <div class="xp-stat">
+      <div class="xp-stat-val" id="quests-xp-total" style="color: #F59E0B;">0</div>
+      <div class="xp-stat-lbl">XP Total</div>
+    </div>
+    <div class="xp-divisor"></div>
+    <div class="xp-stat">
+      <div class="xp-stat-val" id="quests-streak-days" style="color: #EF4444;">0</div>
+      <div class="xp-stat-lbl">Dias seguidos</div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Hoje</div>
-    <div id="quests-daily-container">
-      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
-    </div>
+  <div class="section-label">Hoje</div>
+  <div id="quests-daily-container">
+    <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Especiais</div>
-    <div id="quests-challenge-container">
-      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
-    </div>
+  <div class="section-label">Especiais</div>
+  <div id="quests-challenge-container">
+    <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
   </div>
-  <div class="spacer-md"></div>
+
+  <div class="section-label">Intensivas</div>
+  <div id="quests-intensivas-container">
+    <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
+  </div>
+
+  <script>
+    // Render Intensivas inline without breaking global logic
+    setTimeout(() => {
+      const intensivasData = [
+        { id: "fe-01", tema: "Fé", desc: "Entenda o que é fé e como ela age na sua vida.", icone: "🙏", cor: "#3B82F6", total: 7 },
+        { id: "perdao-01", tema: "Perdão", desc: "Uma jornada sobre perdoar e ser perdoado.", icone: "🕊️", cor: "#8B5CF6", total: 6 },
+        { id: "ansiedade-01", tema: "Ansiedade", desc: "Encontre paz nos textos que falam sobre confiar em Deus.", icone: "🌿", cor: "#10B981", total: 5 }
+      ];
+      const container = document.getElementById('quests-intensivas-container');
+      if (container) {
+        let html = '';
+        intensivasData.forEach(int => {
+          const raw = localStorage.getItem('intensiva_' + int.id);
+          const prog = raw ? JSON.parse(raw) : { etapasConcluidas: [] };
+          const pct = Math.round((prog.etapasConcluidas.length / int.total) * 100);
+          
+          let pill = pct === 0 ? `<span class="int-pill" style="background: rgba(${hexToRgb(int.cor)}, 0.12); color: ${int.cor}">Nova</span>` :
+                     pct >= 100 ? `<span class="int-pill" style="background: #F0FDF4; color: #16A34A">Concluída</span>` :
+                     `<span class="int-pill" style="background: #F2F2F7; color: #3C3C43">${pct}%</span>`;
+                     
+          html += `
+            <a href="Intensiva.html" class="intensiva-card">
+              <div class="int-linha1">
+                <div class="int-tema"><span style="font-size:20px">${int.icone}</span> ${int.tema}</div>
+                ${pill}
+              </div>
+              <div class="int-desc">${int.desc}</div>
+              <div class="int-prog-track"><div class="int-prog-fill" style="width:${pct}%; background:${int.cor}"></div></div>
+              <div class="int-footer">
+                <div class="int-frac">${prog.etapasConcluidas.length}/${int.total} capítulos</div>
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><polyline points="2 12 8 6 2 0"></polyline></svg>
+              </div>
+            </a>
+          `;
+        });
+        container.innerHTML = html;
+      }
+      
+      function hexToRgb(hex) {
+        var r = parseInt(hex.slice(1, 3), 16);
+        var g = parseInt(hex.slice(3, 5), 16);
+        var b = parseInt(hex.slice(5, 7), 16);
+        return r + ',' + g + ',' + b;
+      }
+    }, 500);
+  </script>
 </div>
+
 
 
 <!-- ========== PAGE: LEITURA ========== -->
 <div class="page" id="page-leitura">
 
+  <!-- SEGMENTED CONTROL LEITURA -->
+  <div class="ios-segmented-control" style="margin: 16px 16px 8px 16px;">
+    <div class="ios-segment active" id="leitura-segment-bible" onclick="switchLeituraTab('bible')">Bíblia</div>
+    <div class="ios-segment" id="leitura-segment-sermons" onclick="switchLeituraTab('sermons')">Pregações</div>
+  </div>
+
+  <div id="leitura-content-bible">
   <!-- PREMIUM SELECTOR PANEL -->
   <div class="bible-selector-panel">
     <div class="selector-row">
@@ -2850,6 +3151,13 @@
       <div class="selector-field" onclick="openAppleBibleSelectorModal('chapter')">
         <label>Capítulo</label>
         <div class="custom-select-trigger" id="custom-chapter-trigger">Capítulo 5</div>
+      </div>
+    </div>
+    <!-- Translation Version Selector -->
+    <div class="selector-row" style="margin-top: 8px;">
+      <div class="selector-field" style="flex: 1;" onclick="openAppleBibleSelectorModal('translation')">
+        <label>Versão</label>
+        <div class="custom-select-trigger" id="custom-translation-trigger">ARA</div>
       </div>
     </div>
     <!-- Hidden native inputs to maintain 100% logic integrity -->
@@ -2938,12 +3246,29 @@
       <button class="pill-btn secondary" onclick="switchPage('quiz')" style="font-size:15px; padding:12px 16px; flex:1">⚡ Fazer quiz</button>
     </div>
   </div>
+  </div> <!-- Close leitura-content-bible -->
+
+  <!-- PREGAÇÕES TAB -->
+  <div id="leitura-content-sermons" style="display: none;">
+    <div class="sermons-filter-container" id="sermons-page-book-chips"></div>
+    <div class="sermons-container" id="sermons-page-list-container">
+      <div style="padding: 30px; text-align: center; color: var(--label2);">Carregando pregações inspiradoras...</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ========== PAGE: IA ========== -->
 <div class="page" id="page-ia">
-  <div class="section" style="margin-bottom: 8px;">
-    <div class="section-label" id="ia-section-label">Assistente Bíblico · Mateus 5</div>
+  <div class="section" style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+    <div class="section-label" id="ia-section-label" style="margin-bottom: 0;">Assistente Bíblico · Mateus 5</div>
+    <div style="display: flex; align-items: center; gap: 8px; margin-right: 16px; font-size: 13px; color: var(--text-secondary);">
+      <span>Auto-leitura</span>
+      <label class="ios-switch" style="transform: scale(0.85); transform-origin: right center;">
+        <input type="checkbox" id="chat-auto-tts-toggle" onchange="toggleAutoTts(this.checked)">
+        <span class="ios-switch-slider"></span>
+      </label>
+    </div>
   </div>
 
   <div class="chat-area" id="chatArea">
@@ -3033,14 +3358,13 @@
   </div>
 </div>
 
-<!-- ========== PAGE: SERMONS ========== -->
-<div class="page" id="page-sermons">
-  <div class="sermons-filter-container" id="sermons-page-book-chips"></div>
-  <div class="sermons-container" id="sermons-page-list-container">
-    <div style="padding: 30px; text-align: center; color: var(--label2);">Carregando pregações inspiradoras...</div>
+<!-- ========== PAGE: RANKING ========== -->
+<div class="page" id="page-ranking">
+  <div class="section-label" style="margin: 20px 16px 10px 16px; font-size: 20px;">Classificação Global</div>
+  <div id="ranking-list-container" style="padding: 0 16px;">
+    <div style="padding: 30px; text-align: center; color: var(--label2);">Carregando ranking...</div>
   </div>
 </div>
-
 <div class="chat-input-row">
   <input class="chat-input" placeholder="Faça uma pergunta sobre Mateus 5…" id="chatInput" />
   <button class="chat-mic-btn" id="btn-chat-mic" onclick="toggleSpeechRecognition()" title="Falar com a IA">🎙️</button>
@@ -3048,30 +3372,50 @@
 </div>
 
 <!-- TAB BAR -->
-<div class="tab-bar">
-  <div class="tab-item active" id="tab-home" onclick="switchPage('home')">
-    <div class="tab-icon">🏠</div>
-    <div class="tab-label">Início</div>
-  </div>
-  <div class="tab-item" id="tab-quests" onclick="switchPage('quests')">
-    <div class="tab-icon">🎯</div>
-    <div class="tab-label">Missões</div>
-  </div>
-  <div class="tab-item" id="tab-leitura" onclick="switchPage('leitura')">
-    <div class="tab-icon">📖</div>
-    <div class="tab-label">Leitura</div>
-  </div>
-  <div class="tab-item" id="tab-ia" onclick="switchPage('ia')">
-    <div class="tab-icon">✦</div>
-    <div class="tab-label">IA</div>
-  </div>
-  <div class="tab-item" id="tab-quiz" onclick="switchPage('quiz')">
-    <div class="tab-icon">⚡</div>
-    <div class="tab-label">Quiz</div>
-  </div>
-  <div class="tab-item" id="tab-sermons" onclick="switchPage('sermons')">
-    <div class="tab-icon">🎥</div>
-    <div class="tab-label">Pregações</div>
+<div class="tab-bar-wrapper">
+  <div class="tab-bar">
+    <a class="tab-item active" id="tab-home" onclick="switchPage('home')">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </div>
+      <span class="tab-label">Início</span>
+      <div class="tab-dot"></div>
+    </a>
+    <a class="tab-item" id="tab-quests" onclick="switchPage('quests')">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+      </div>
+      <span class="tab-label">Missões</span>
+      <div class="tab-dot"></div>
+    </a>
+    <a class="tab-item" id="tab-leitura" onclick="switchPage('leitura')">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <span class="tab-label">Leitura</span>
+      <div class="tab-dot"></div>
+    </a>
+    <a class="tab-item" id="tab-ia" onclick="switchPage('ia')">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+      </div>
+      <span class="tab-label">IA</span>
+      <div class="tab-dot"></div>
+    </a>
+    <a class="tab-item" id="tab-quiz" onclick="switchPage('quiz')">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      </div>
+      <span class="tab-label">Quiz</span>
+      <div class="tab-dot"></div>
+    </a>
+    <a class="tab-item" id="tab-ranking" onclick="switchPage('ranking')">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10"></path><path d="M5 4h14a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6h-6a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2z"></path></svg>
+      </div>
+      <span class="tab-label">Ranking</span>
+      <div class="tab-dot"></div>
+    </a>
   </div>
 </div>
 
@@ -3089,6 +3433,7 @@
     <div class="ios-segmented-control">
       <div class="ios-segment active" id="segment-book" onclick="switchSelectorSegment('book')">Livro</div>
       <div class="ios-segment" id="segment-chapter" onclick="switchSelectorSegment('chapter')">Capítulo</div>
+      <div class="ios-segment" id="segment-translation" onclick="switchSelectorSegment('translation')">Versão</div>
     </div>
     
     <!-- Dynamic Content List -->
@@ -3098,6 +3443,9 @@
       
       <!-- Chapters Grid Container -->
       <div id="selector-chapters-container" style="display: none;"></div>
+
+      <!-- Translations List Container -->
+      <div id="selector-translations-container" style="display: none;"></div>
     </div>
   </div>
 </div>
@@ -3129,6 +3477,20 @@
       <!-- Voz e Áudio Section -->
       <div class="ios-group-title">Voz e Áudio</div>
       <div class="ios-group-list">
+        <div class="ios-row" style="cursor: default;">
+          <div class="ios-row-left">
+            <span class="ios-row-icon">🗣️</span>
+            <span class="ios-row-name">Voz Padrão</span>
+          </div>
+          <select class="ios-select" id="profile-default-voice" onchange="updateDefaultVoice(this.value)">
+            <option value="pt-BR-Neural2-B">Masculina (Neural2 B)</option>
+            <option value="pt-BR-Neural2-A">Feminina (Neural2 A)</option>
+            <option value="pt-BR-Neural2-C">Feminina (Neural2 C)</option>
+            <option value="pt-BR-Wavenet-B">Masculina (Wavenet B)</option>
+            <option value="pt-BR-Wavenet-A">Feminina (Wavenet A)</option>
+            <option value="pt-BR-Wavenet-C">Feminina (Wavenet C)</option>
+          </select>
+        </div>
         <div class="ios-slider-container">
           <div class="ios-slider-header">
             <span class="ios-slider-title">Velocidade da Voz</span>
@@ -3196,6 +3558,72 @@
   </div>
 </div>
 
+<!-- ========== APPLE HIG RANKING DETAILS SHEET MODAL ========== -->
+<div class="ios-sheet-overlay" id="ranking-details-modal" onclick="closeRankingDetailsModal()">
+  <div class="ios-sheet" onclick="event.stopPropagation()" style="height: 65vh; max-height: 75vh;">
+    <div class="ios-sheet-grabber"></div>
+    <div class="ios-sheet-header">
+      <button class="ios-sheet-btn cancel" onclick="closeRankingDetailsModal()">Fechar</button>
+      <span class="ios-sheet-title">Perfil do Discípulo</span>
+      <div style="width: 60px;"></div>
+    </div>
+    
+    <div class="ios-sheet-content" style="padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 20px; overflow-y: auto;">
+      <!-- Avatar and Basic Info -->
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;">
+        <div id="ranking-detail-avatar" style="width: 80px; height: 80px; border-radius: 40px; background: linear-gradient(135deg, #3B82F6, #8B5CF6); display: flex; align-items: center; justify-content: center; font-size: 32px; color: #FFFFFF; font-weight: 700; box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);">
+          👤
+        </div>
+        <div id="ranking-detail-name" style="font-size: 22px; font-weight: 700; color: var(--text-primary); text-align: center; margin-top: 8px;">Carregando...</div>
+        <div id="ranking-detail-email" style="font-size: 14px; color: var(--label2); margin-top: -4px;">...</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 10px;">
+        <!-- Level Card -->
+        <div style="background: var(--bg-card, rgba(255,255,255,0.05)); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center;">
+          <span style="font-size: 24px;">⭐</span>
+          <span style="font-size: 13px; color: var(--label2); font-weight: 500;">Nível</span>
+          <span id="ranking-detail-level" style="font-size: 20px; font-weight: 700; color: var(--text-primary);">--</span>
+        </div>
+        
+        <!-- XP Card -->
+        <div style="background: var(--bg-card, rgba(255,255,255,0.05)); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center;">
+          <span style="font-size: 24px;">⚡</span>
+          <span style="font-size: 13px; color: var(--label2); font-weight: 500;">Pontos de XP</span>
+          <span id="ranking-detail-xp" style="font-size: 20px; font-weight: 700; color: #3B82F6;">--</span>
+        </div>
+
+        <!-- Streak Card -->
+        <div style="background: var(--bg-card, rgba(255,255,255,0.05)); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center;">
+          <span style="font-size: 24px;">🔥</span>
+          <span style="font-size: 13px; color: var(--label2); font-weight: 500;">Ofensiva Atual</span>
+          <span id="ranking-detail-streak" style="font-size: 20px; font-weight: 700; color: #EF4444;">--</span>
+        </div>
+
+        <!-- Chapters Read Card -->
+        <div style="background: var(--bg-card, rgba(255,255,255,0.05)); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center;">
+          <span style="font-size: 24px;">📖</span>
+          <span style="font-size: 13px; color: var(--label2); font-weight: 500;">Capítulos Lidos</span>
+          <span id="ranking-detail-chapters" style="font-size: 20px; font-weight: 700; color: #10B981;">--</span>
+        </div>
+      </div>
+
+      <!-- Secondary Info list -->
+      <div style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(0,0,0,0.02); border-radius: 12px; border: 0.5px solid rgba(255,255,255,0.05);">
+          <span style="font-size: 14px; color: var(--label2);">Missões Completadas</span>
+          <span id="ranking-detail-quests" style="font-size: 15px; font-weight: 600; color: var(--text-primary);">--</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(0,0,0,0.02); border-radius: 12px; border: 0.5px solid rgba(255,255,255,0.05);">
+          <span style="font-size: 14px; color: var(--label2);">Membro Desde</span>
+          <span id="ranking-detail-joined" style="font-size: 14px; font-weight: 500; color: var(--text-primary);">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // Guard de Autenticação - Redireciona para o login se não estiver autenticado
 if (localStorage.getItem('isLoggedIn') !== 'true') {
@@ -3247,16 +3675,29 @@ const API_URL = (function() {
   }
   return 'http://localhost:3000/api';
 })();
-const pages = ['home','quests','leitura','ia','quiz','sermons'];
-const titles = { home:'Início', quests:'Missões', leitura:'Leitura Bíblica', ia:'Assistente IA', quiz:'Quiz do Dia', sermons:'Pregações' };
+const pages = ['home','quests','leitura','ia','quiz','ranking'];
+const titles = { home:'Início', quests:'Missões', leitura:'Leitura Bíblica', ia:'Assistente IA', quiz:'Quiz do Dia', ranking:'Classificação' };
 let currentUser = null;
 let bibleBooks = [];
 let currentBook = localStorage.getItem('lastReadBook') || 'Mateus';
 let currentChapter = parseInt(localStorage.getItem('lastReadChapter'), 10) || 1;
+let currentTranslation = localStorage.getItem('lastReadTranslation') || 'ARA';
 
 function saveReadingState() {
   localStorage.setItem('lastReadBook', currentBook);
   localStorage.setItem('lastReadChapter', currentChapter);
+  localStorage.setItem('lastReadTranslation', currentTranslation);
+}
+
+// Restore translation selector on load
+(function restoreTranslationSelector() {
+  const trigger = document.getElementById('custom-translation-trigger');
+  if (trigger) trigger.textContent = currentTranslation;
+})();
+
+function onTranslationChange() {
+  saveReadingState();
+  loadActiveChapter();
 }
 let preloadedQuizzes = {};
 let preloadedPromises = {};
@@ -3428,9 +3869,14 @@ async function loadActiveChapter() {
   if (!titleDisplay || !textDiv) return;
 
   textDiv.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--label2);">Carregando capítulo bíblico...</div>';
-
+  if (sumTitle) sumTitle.textContent = `Resumo da IA · Carregando...`;
+  if (sumText) sumText.innerHTML = '<span style="color: var(--label2);">Gerando insights divinos...</span>';
+  
+  const activeTransName = AVAILABLE_TRANSLATIONS.find(t => t.id === currentTranslation)?.name || currentTranslation;
+  const translationQuery = currentTranslation ? `?translation=${currentTranslation}` : '';
+  
   try {
-    const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}`);
+    const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}${translationQuery}`);
     const json = await res.json();
     if (json.status === 'success') {
       const data = json.data;
@@ -3462,7 +3908,13 @@ async function loadActiveChapter() {
 
       // Update AI summary card dynamically
       if (sumTitle) sumTitle.textContent = `Resumo da IA · ${data.book} ${data.chapter}`;
-      if (sumText) sumText.innerHTML = data.summary;
+      if (sumText) {
+        // Fallback for empty summary
+        let summaryHtml = data.summary || "Nenhum resumo disponível para este capítulo.";
+        // Sanitize broken HTML brackets while keeping strong tags
+        summaryHtml = summaryHtml.replace(/<(?!\/?strong\b)/gi, '&lt;');
+        sumText.innerHTML = summaryHtml;
+      }
 
       // Update Chat context label and input placeholder automatically!
       if (chatLabel) chatLabel.textContent = `Assistente Bíblico · ${data.book} ${data.chapter}`;
@@ -3492,6 +3944,12 @@ async function loadActiveChapter() {
 }
 
 function onBookChange() {
+  if (window.chatAudio) {
+    window.chatAudio.pause();
+    window.chatAudio = null;
+    if (window.activeTtsButton) window.activeTtsButton.innerText = '🔊';
+    window.activeTtsButton = null;
+  }
   if (window.currentAudio) {
     window.currentAudio.pause();
     window.currentAudio = null;
@@ -3514,6 +3972,12 @@ function onBookChange() {
 }
 
 function onChapterChange() {
+  if (window.chatAudio) {
+    window.chatAudio.pause();
+    window.chatAudio = null;
+    if (window.activeTtsButton) window.activeTtsButton.innerText = '🔊';
+    window.activeTtsButton = null;
+  }
   if (window.currentAudio) {
     window.currentAudio.pause();
     window.currentAudio = null;
@@ -3602,10 +4066,16 @@ function updateUserUI(user) {
 
   // Stats row
   const capReadEl = document.getElementById('stat-chapters-read');
-  if (capReadEl) capReadEl.textContent = user.totalChaptersRead;
+  if (capReadEl) capReadEl.textContent = user.totalChaptersRead !== undefined ? user.totalChaptersRead : (user.readingProgress ? user.readingProgress.length : 0);
 
   const xpWeekEl = document.getElementById('stat-xp-week');
   if (xpWeekEl) xpWeekEl.textContent = user.xp;
+
+  const questsXpEl = document.getElementById('quests-xp-total');
+  if (questsXpEl) questsXpEl.textContent = user.xp;
+
+  const questsStreakEl = document.getElementById('quests-streak-days');
+  if (questsStreakEl) questsStreakEl.textContent = user.streakDays;
 
   // Continue reading uses the current active book/chapter
   const progressList = user.readingProgress || [];
@@ -4215,12 +4685,33 @@ function renderQuests(quests) {
       </div>
     `;
 
+    let tipoBg = badgeClass === 'challenge' ? '#FFF1F2' : '#FFF7ED';
+    let tipoColor = badgeClass === 'challenge' ? '#BE123C' : '#C2410C';
+    let xpColor = badgeClass === 'challenge' ? '#EF4444' : '#F59E0B';
+    
+    const missaoCardHTML = `
+      <div class="missao-card" ${isCompleted ? '' : `onclick="${onClickAction}"`} style="cursor:${isCompleted ? 'default' : 'pointer'}; -webkit-tap-highlight-color: transparent;">
+        <div class="tipo-pill" style="background:${tipoBg}; color:${tipoColor}">
+          ${badgeClass === 'challenge' ? '🔥' : '⚡'} ${badgeClass === 'challenge' ? 'Desafio' : 'Diária'}
+        </div>
+        <div class="missao-titulo">${q.title}</div>
+        <div class="missao-desc">${q.description}</div>
+        <div class="missao-prog-track">
+          <div class="missao-prog-fill" style="width:${progressWidth}%;"></div>
+        </div>
+        <div class="missao-footer">
+          <div class="missao-xp" style="color:${xpColor}">+${q.xpReward} XP</div>
+          <div class="missao-frac">${progressText}</div>
+        </div>
+      </div>
+    `;
+
     if (q.type.toLowerCase() === 'weekly' && weeklyContainer) {
-      weeklyContainer.innerHTML += cardHTML;
+      weeklyContainer.innerHTML += missaoCardHTML;
     } else if (q.type.toLowerCase() === 'daily' && dailyContainer) {
-      dailyContainer.innerHTML += cardHTML;
+      dailyContainer.innerHTML += missaoCardHTML;
     } else if (q.type.toLowerCase() === 'challenge' && challengeContainer) {
-      challengeContainer.innerHTML += cardHTML;
+      challengeContainer.innerHTML += missaoCardHTML;
     }
 
     if (!isCompleted && homeActiveQuests && homeActiveQuests.children.length < 2) {
@@ -4311,6 +4802,89 @@ function clickSuggestionPrompt(text) {
   }
 }
 
+function stripHtml(html) {
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+}
+
+async function preFetchBubbleTts(btn, rawText) {
+  const text = stripHtml(rawText);
+  if (!text) return;
+
+  btn.dataset.ttsStatus = 'loading';
+
+  try {
+    const defaultVoice = localStorage.getItem('profile_default_voice') || 'pt-BR-Neural2-B';
+    const res = await fetch(`${API_URL}/chat/tts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text, voice: defaultVoice })
+    });
+
+    const json = await res.json();
+    if (json.status === 'success' && json.data.audioBase64) {
+      btn.dataset.audioBase64 = json.data.audioBase64;
+      btn.dataset.ttsStatus = 'ready';
+
+      // Se este botão estiver aguardando (o ícone é o de carregamento/ampulheta)
+      if (window.activeTtsButton === btn && btn.innerText === '⏳') {
+        playBase64Tts(btn, json.data.audioBase64);
+      }
+    } else {
+      btn.dataset.ttsStatus = 'error';
+      if (window.activeTtsButton === btn) {
+        showFeedback('❌ Falha ao gerar áudio da resposta.');
+        btn.innerText = '🔊';
+      }
+    }
+  } catch (err) {
+    console.error('Erro no pre-fetch de TTS:', err);
+    btn.dataset.ttsStatus = 'error';
+    if (window.activeTtsButton === btn) {
+      showFeedback('❌ Falha na conexão de áudio.');
+      btn.innerText = '🔊';
+    }
+  }
+}
+
+function playBase64Tts(btn, base64) {
+  if (!window.chatAudio) {
+    window.chatAudio = new Audio();
+  }
+
+  // Configurar manipuladores no singleton global para evitar acumular múltiplos listeners de eventos
+  window.chatAudio.onended = () => {
+    btn.innerText = '🔊';
+    if (window.chatAudio && window.activeTtsButton === btn) {
+      window.chatAudio = null;
+      window.activeTtsButton = null;
+    }
+  };
+
+  window.chatAudio.onpause = () => {
+    btn.innerText = '🔊';
+  };
+
+  window.chatAudio.onplay = () => {
+    btn.innerText = '⏸';
+  };
+
+  try {
+    window.chatAudio.src = 'data:audio/mpeg;base64,' + base64;
+    window.chatAudio.play().catch(playErr => {
+      console.error('Erro ao reproduzir áudio do chat:', playErr);
+      showFeedback('🔊 Toque no botão para ouvir a resposta.');
+      btn.innerText = '🔊';
+    });
+  } catch (e) {
+    console.error('Falha ao definir src/play no áudio do chat:', e);
+    btn.innerText = '🔊';
+  }
+}
+
 function appendChatBubble(isUser, text) {
   const area = document.getElementById('chatArea');
   if (!area) return;
@@ -4321,10 +4895,108 @@ function appendChatBubble(isUser, text) {
     bubbleDiv.innerHTML = `<div class="chat-bubble bubble-user">${text}</div>`;
   } else {
     bubbleDiv.style = 'display:flex; flex-direction:column; gap:4px;';
-    bubbleDiv.innerHTML = `<div class="bubble-header"><div class="ai-avatar">✦</div> BíbliaViva IA</div><div class="chat-bubble bubble-ai">${text}</div>`;
+    bubbleDiv.innerHTML = `
+      <div class="bubble-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="ai-avatar">✦</div> BíbliaViva IA
+        </div>
+        <button class="chat-tts-btn" onclick="toggleChatBubbleTts(this)" style="background: transparent; border: none; font-size: 14px; cursor: pointer; color: var(--accent-purple); padding: 4px 8px; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;" title="Ouvir resposta">🔊</button>
+      </div>
+      <div class="chat-bubble bubble-ai">${text}</div>
+    `;
+
+    // Disparar pre-fetching do TTS em segundo plano imediatamente
+    const btn = bubbleDiv.querySelector('.chat-tts-btn');
+    if (btn) {
+      preFetchBubbleTts(btn, text);
+    }
   }
   area.appendChild(bubbleDiv);
 }
+
+window.chatAudio = null;
+window.activeTtsButton = null;
+
+async function toggleChatBubbleTts(btn) {
+  const headerDiv = btn.closest('div.bubble-header');
+  if (!headerDiv) return;
+  const bubble = headerDiv.parentNode.querySelector('.bubble-ai');
+  if (!bubble) return;
+  const text = bubble.innerHTML;
+
+  // Se já for o áudio do chat atual e estiver tocando/pausado
+  if (window.chatAudio && window.activeTtsButton === btn) {
+    if (!window.chatAudio.paused) {
+      window.chatAudio.pause();
+      btn.innerText = '🔊';
+    } else {
+      // Pausar o áudio do capítulo se estiver tocando
+      if (window.currentAudio) {
+        window.currentAudio.pause();
+        const playBtn = document.getElementById('btn-audio-play');
+        if (playBtn) playBtn.innerText = '▶';
+      }
+      try {
+        await window.chatAudio.play();
+        btn.innerText = '⏸';
+      } catch (playErr) {
+        console.error('Erro ao retomar áudio do chat:', playErr);
+        showFeedback('⚠️ Clique para reproduzir o áudio.');
+        btn.innerText = '🔊';
+      }
+    }
+    return;
+  }
+
+  // Se houver outro áudio de chat tocando, pausá-lo e resetar o ícone
+  if (window.chatAudio) {
+    window.chatAudio.pause();
+    if (window.activeTtsButton) {
+      window.activeTtsButton.innerText = '🔊';
+    }
+  }
+
+  // Pausar o áudio do capítulo principal se estiver tocando
+  if (window.currentAudio) {
+    window.currentAudio.pause();
+    const playBtn = document.getElementById('btn-audio-play');
+    if (playBtn) playBtn.innerText = '▶';
+  }
+
+  btn.innerText = '⏳';
+  window.activeTtsButton = btn;
+
+  // Se já tivermos o áudio pré-carregado
+  if (btn.dataset.audioBase64) {
+    playBase64Tts(btn, btn.dataset.audioBase64);
+  } else {
+    // "Abençoar" (Bless) o elemento de áudio de forma síncrona sob o gesto do usuário para contornar políticas de autoplay estritas
+    if (!window.chatAudio) {
+      window.chatAudio = new Audio();
+    }
+    window.chatAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+    window.chatAudio.play().catch(err => console.warn('Silence playback blessing failed:', err));
+
+    // Se já estiver em processo de carregamento secundário, preFetchBubbleTts cuidará de disparar o áudio ao concluir.
+    // Caso contrário (como bolhas históricas), disparamos o carregamento sob demanda agora.
+    if (btn.dataset.ttsStatus !== 'loading') {
+      preFetchBubbleTts(btn, text);
+    }
+  }
+}
+
+function toggleAutoTts(enabled) {
+  localStorage.setItem('chatAutoTts', enabled);
+  if (enabled) {
+    // Bless/ativar áudio síncrono no clique do toggle
+    if (!window.chatAudio) {
+      window.chatAudio = new Audio();
+    }
+    window.chatAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+    window.chatAudio.play().catch(e => console.warn('Falha na ativação prévia do áudio no toggle:', e));
+  }
+}
+
 
 let recognition = null;
 let isListening = false;
@@ -4428,6 +5100,15 @@ async function sendChat() {
   const val = input.value.trim();
   if (!val) return;
 
+  // Abençoar/Ativar o elemento de áudio de forma síncrona sob o gesto de envio do usuário para contornar autoplay policy de navegadores estritos no auto-leitura
+  if (localStorage.getItem('chatAutoTts') === 'true') {
+    if (!window.chatAudio) {
+      window.chatAudio = new Audio();
+    }
+    window.chatAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+    window.chatAudio.play().catch(e => console.warn('Falha na ativação prévia do áudio no send:', e));
+  }
+
   const area = document.getElementById('chatArea');
   
   // Remove suggestions chips if present
@@ -4463,6 +5144,15 @@ async function sendChat() {
       area.removeChild(typingDiv);
       appendChatBubble(false, reply);
       scrollToBottom();
+
+      // Se a auto-leitura estiver ativa, iniciar automaticamente
+      if (localStorage.getItem('chatAutoTts') === 'true') {
+        const ttsBtns = area.querySelectorAll('.chat-tts-btn');
+        if (ttsBtns.length > 0) {
+          const lastBtn = ttsBtns[ttsBtns.length - 1];
+          toggleChatBubbleTts(lastBtn);
+        }
+      }
     } else {
       throw new Error(json.message || 'Erro ao processar a resposta da IA.');
     }
@@ -4474,18 +5164,9 @@ async function sendChat() {
   }
 }
 
-function switchPage(name) {
-  pages.forEach(p => {
-    document.getElementById('page-'+p).classList.remove('active');
-    const tab = document.getElementById('tab-'+p);
-    if (tab) tab.classList.remove('active');
-  });
-  document.getElementById('page-'+name).classList.add('active');
-  const tab = document.getElementById('tab-'+name);
-  if (tab) tab.classList.add('active');
-  document.getElementById('nav-title').textContent = titles[name];
-  window.scrollTo(0, 0);
+let isSwitchingPage = false;
 
+function triggerPageLoadActions(name) {
   if (name === 'quests') {
     loadQuests();
   }
@@ -4500,6 +5181,11 @@ function switchPage(name) {
     const label = document.getElementById('ia-section-label');
     if (label) label.textContent = `Assistente Bíblico · ${currentBook} ${currentChapter}`;
     
+    const toggleEl = document.getElementById('chat-auto-tts-toggle');
+    if (toggleEl) {
+      toggleEl.checked = localStorage.getItem('chatAutoTts') === 'true';
+    }
+
     const input = document.getElementById('chatInput');
     if (input) {
       input.addEventListener('keypress', function(e) {
@@ -4507,16 +5193,249 @@ function switchPage(name) {
           sendChat();
         }
       });
+      input.placeholder = `Faça uma pergunta sobre ${currentBook} ${currentChapter}…`;
     }
-    if (input) input.placeholder = `Faça uma pergunta sobre ${currentBook} ${currentChapter}…`;
-
     loadChatHistory();
   }
-
-  if (name === 'sermons') {
-    initSermonsPageBookChips();
-    loadSermonsForBook(currentBook);
+  if (name === 'ranking') {
+    loadRanking();
   }
+}
+
+function switchPage(name) {
+  if (isSwitchingPage) return;
+  
+  if (window.chatAudio) {
+    window.chatAudio.pause();
+    window.chatAudio = null;
+    if (window.activeTtsButton) window.activeTtsButton.innerText = '🔊';
+    window.activeTtsButton = null;
+  }
+
+  const newPage = document.getElementById('page-'+name);
+  if (!newPage || newPage.classList.contains('active')) return;
+
+  const currentActive = document.querySelector('.page.active');
+  
+  if (currentActive) {
+    isSwitchingPage = true;
+    currentActive.classList.add('exiting');
+    
+    pages.forEach(p => {
+      const tab = document.getElementById('tab-'+p);
+      if (tab) tab.classList.remove('active');
+    });
+    const tab = document.getElementById('tab-'+name);
+    if (tab) tab.classList.add('active');
+
+    setTimeout(() => {
+      currentActive.classList.remove('active', 'exiting');
+      
+      newPage.classList.add('active');
+      document.getElementById('nav-title').textContent = titles[name];
+      window.scrollTo(0, 0);
+      
+      triggerPageLoadActions(name);
+      
+      isSwitchingPage = false;
+    }, 280); 
+  } else {
+    newPage.classList.add('active');
+    pages.forEach(p => {
+      const tab = document.getElementById('tab-'+p);
+      if (tab) tab.classList.remove('active');
+    });
+    const tab = document.getElementById('tab-'+name);
+    if (tab) tab.classList.add('active');
+    
+    document.getElementById('nav-title').textContent = titles[name];
+    window.scrollTo(0, 0);
+    triggerPageLoadActions(name);
+  }
+}
+
+function switchLeituraTab(tab) {
+  const segBible = document.getElementById('leitura-segment-bible');
+  const segSermons = document.getElementById('leitura-segment-sermons');
+  const contentBible = document.getElementById('leitura-content-bible');
+  const contentSermons = document.getElementById('leitura-content-sermons');
+  
+  if (!segBible || !segSermons || !contentBible || !contentSermons) return;
+
+  if (tab === 'bible') {
+    segBible.classList.add('active');
+    segSermons.classList.remove('active');
+    contentBible.style.display = 'block';
+    contentSermons.style.display = 'none';
+  } else {
+    segSermons.classList.add('active');
+    segBible.classList.remove('active');
+    contentSermons.style.display = 'block';
+    contentBible.style.display = 'none';
+    
+    // Load sermons if not loaded
+    if (!document.getElementById('sermons-page-list-container').innerHTML.includes('sermon-card')) {
+      initSermonsPageBookChips();
+      loadSermonsForBook(currentBook);
+    }
+  }
+}
+
+async function loadRanking() {
+  const container = document.getElementById('ranking-list-container');
+  if (!container) return;
+  container.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--label2);">Carregando ranking...</div>';
+
+  try {
+    const res = await fetch(`${API_URL}/users/ranking`);
+    const json = await res.json();
+    if (json.status !== 'success') throw new Error(json.message);
+    renderRanking(json.data);
+  } catch (err) {
+    console.error('Erro ao carregar o ranking:', err);
+    container.innerHTML = `<div style="padding: 30px; text-align: center; color: var(--red);">Erro ao carregar o ranking.</div>`;
+  }
+}
+
+async function openUserProfileDetails(userId) {
+  const modal = document.getElementById('ranking-details-modal');
+  if (!modal) return;
+  
+  // Open the modal first and show loading state
+  modal.classList.add('active');
+  
+  document.getElementById('ranking-detail-name').innerText = 'Carregando...';
+  document.getElementById('ranking-detail-email').innerText = '...';
+  document.getElementById('ranking-detail-level').innerText = '--';
+  document.getElementById('ranking-detail-xp').innerText = '--';
+  document.getElementById('ranking-detail-streak').innerText = '--';
+  document.getElementById('ranking-detail-chapters').innerText = '--';
+  document.getElementById('ranking-detail-quests').innerText = '--';
+  document.getElementById('ranking-detail-joined').innerText = '--';
+  
+  // Set avatar initials or 👤 placeholder
+  const avatarEl = document.getElementById('ranking-detail-avatar');
+  avatarEl.innerText = '👤';
+  avatarEl.style.background = 'linear-gradient(135deg, #3B82F6, #8B5CF6)';
+
+  try {
+    const res = await fetch(`${API_URL}/users/${userId}/details`);
+    const json = await res.json();
+    if (json.status !== 'success') throw new Error(json.message);
+    
+    const u = json.data;
+    
+    // Set text contents
+    document.getElementById('ranking-detail-name').innerText = u.name || 'Discípulo';
+    document.getElementById('ranking-detail-email').innerText = u.email || '';
+    document.getElementById('ranking-detail-level').innerText = u.level || 1;
+    document.getElementById('ranking-detail-xp').innerText = u.xp || 0;
+    
+    // Streak with conditional icon styling
+    const streak = u.streakDays || 0;
+    document.getElementById('ranking-detail-streak').innerText = streak > 0 ? `${streak} ${streak === 1 ? 'dia' : 'dias'}` : '0 dias';
+    
+    document.getElementById('ranking-detail-chapters').innerText = u.chaptersRead || 0;
+    document.getElementById('ranking-detail-quests').innerText = u.questsCompleted || 0;
+    
+    // Member since date parsing
+    if (u.createdAt) {
+      const date = new Date(u.createdAt);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('ranking-detail-joined').innerText = date.toLocaleDateString('pt-BR', options);
+    } else {
+      document.getElementById('ranking-detail-joined').innerText = '--';
+    }
+
+    // Set avatar initials
+    if (u.name) {
+      const initials = u.name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      avatarEl.innerText = initials || '👤';
+      
+      // Random/deterministic nice colors for different users
+      const colors = [
+        'linear-gradient(135deg, #3B82F6, #8B5CF6)', // Blue violet
+        'linear-gradient(135deg, #EC4899, #8B5CF6)', // Pink purple
+        'linear-gradient(135deg, #10B981, #3B82F6)', // Green blue
+        'linear-gradient(135deg, #F59E0B, #EF4444)', // Amber red
+        'linear-gradient(135deg, #06B6D4, #3B82F6)'  // Cyan blue
+      ];
+      const colorIndex = userId % colors.length;
+      avatarEl.style.background = colors[colorIndex];
+    }
+  } catch (err) {
+    console.error('Erro ao buscar detalhes do perfil:', err);
+    document.getElementById('ranking-detail-name').innerText = 'Erro ao carregar';
+    showFeedback('Não foi possível carregar os detalhes do usuário.');
+  }
+}
+
+function closeRankingDetailsModal() {
+  const modal = document.getElementById('ranking-details-modal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+function renderRanking(users) {
+  const container = document.getElementById('ranking-list-container');
+  if (!container) return;
+
+  if (!users || users.length === 0) {
+    container.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--label2);">Nenhum usuário encontrado.</div>';
+    return;
+  }
+
+  let html = '<div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;">';
+  
+  users.forEach((u, index) => {
+    const isMe = currentUser && u.id === currentUser.id;
+    const position = index + 1;
+    let badge = `#${position}`;
+    if (position === 1) badge = '🥇';
+    if (position === 2) badge = '🥈';
+    if (position === 3) badge = '🥉';
+
+    // Generate initials for the avatar on the card
+    let initials = '👤';
+    if (u.name) {
+      initials = u.name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    }
+
+    const colors = [
+      'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+      'linear-gradient(135deg, #EC4899, #8B5CF6)',
+      'linear-gradient(135deg, #10B981, #3B82F6)',
+      'linear-gradient(135deg, #F59E0B, #EF4444)',
+      'linear-gradient(135deg, #06B6D4, #3B82F6)'
+    ];
+    const colorIndex = u.id % colors.length;
+    const avatarBg = colors[colorIndex];
+
+    html += `
+      <div onclick="openUserProfileDetails(${u.id})" style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: ${isMe ? '#E3F2FD' : '#FFFFFF'}; border-radius: 16px; border: ${isMe ? '2px solid #3B82F6' : '0.5px solid rgba(0,0,0,0.05)'}; cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease;" onmousedown="this.style.transform='scale(0.98)'; this.style.opacity='0.9';" onmouseup="this.style.transform='none'; this.style.opacity='1';" onmouseleave="this.style.transform='none'; this.style.opacity='1';">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #8E8E93;">
+            ${badge}
+          </div>
+          <div style="width: 48px; height: 48px; border-radius: 24px; background: ${avatarBg}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #FFFFFF;">
+            ${initials}
+          </div>
+          <div>
+            <div style="font-size: 16px; font-weight: 600; color: var(--text-primary);">${isMe ? 'Você (' + (u.name || 'Usuário') + ')' : (u.name || 'Usuário')}</div>
+            <div style="font-size: 13px; color: var(--label2);">Nível ${u.level || 1}</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 17px; font-weight: 700; color: #3B82F6;">${u.xp || 0}</div>
+          <div style="font-size: 12px; color: var(--label2); font-weight: 500;">XP</div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
 }
 
 function showFeedback(msg) {
@@ -4849,6 +5768,14 @@ async function claimQuizRewards() {
 }
 window.currentAudio = null;
 async function playChapterAudio() {
+  // Pausar áudio do chat se estiver tocando
+  if (window.chatAudio) {
+    window.chatAudio.pause();
+    if (window.activeTtsButton) {
+      window.activeTtsButton.innerText = '🔊';
+    }
+  }
+
   const btn = document.getElementById('btn-audio-play');
   
   if (window.currentAudio) {
@@ -4867,17 +5794,20 @@ async function playChapterAudio() {
 
   try {
     const voiceSpeed = localStorage.getItem('voiceSpeed') || '1.0';
-    const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}`);
+    const defaultVoice = localStorage.getItem('profile_default_voice') || 'pt-BR-Neural2-B';
+    const transParam = currentTranslation ? `&translation=${currentTranslation}` : '';
+    const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}&voice=${defaultVoice}${transParam}`);
     const json = await res.json();
     
     if (json.status !== 'success' || !json.data.audioBase64) {
       throw new Error(json.message || 'Erro ao gerar o áudio');
     }
     
-    const audioUrl = `data:audio/mp3;base64,${json.data.audioBase64}`;
+    const audioUrl = `data:audio/mpeg;base64,${json.data.audioBase64}`;
     window.currentAudio = new Audio(audioUrl);
     
     window.currentAudio.addEventListener('timeupdate', () => {
+      if (!window.currentAudio) return;
       const prog = document.getElementById('audio-progress');
       const timeLabel = document.getElementById('audio-time');
       if (prog && window.currentAudio.duration) {
@@ -4987,17 +5917,35 @@ async function goToNextChapter(autoPlayAudio = false) {
 // ==========================================
 let tempBook = 'Mateus';
 let tempChapter = 5;
+let tempTranslation = 'ARA';
+
+const AVAILABLE_TRANSLATIONS = [
+  { id: 'ARA', name: 'Almeida Revista e Atualizada' },
+  { id: 'ARC09', name: 'Almeida Revista e Corrigida' },
+  { id: 'ACF11', name: 'Almeida Corrigida Fiel' },
+  { id: 'NAA', name: 'Nova Almeida Atualizada' },
+  { id: 'NVIPT', name: 'Nova Versão Internacional' },
+  { id: 'NVT', name: 'Nova Versão Transformadora' },
+  { id: 'NTLH', name: 'Nova Tradução na Linguagem de Hoje' },
+  { id: 'KJA', name: 'King James Atualizada' },
+  { id: 'NBV07', name: 'Nova Bíblia Viva' },
+  { id: 'ALM21', name: 'Almeida Século 21' }
+];
 
 function updateCustomSelectTriggers() {
   const customBook = document.getElementById('custom-book-trigger');
   const customChapter = document.getElementById('custom-chapter-trigger');
+  const customTranslation = document.getElementById('custom-translation-trigger');
+  
   if (customBook) customBook.textContent = currentBook;
   if (customChapter) customChapter.textContent = `Capítulo ${currentChapter}`;
+  if (customTranslation) customTranslation.textContent = currentTranslation;
 }
 
 function openAppleBibleSelectorModal(startTab) {
   tempBook = currentBook;
   tempChapter = currentChapter;
+  tempTranslation = currentTranslation;
   
   const modal = document.getElementById('apple-bible-selector-modal');
   if (modal) modal.classList.add('active');
@@ -5013,21 +5961,35 @@ function closeAppleBibleSelectorModal() {
 function switchSelectorSegment(tab) {
   const segBook = document.getElementById('segment-book');
   const segChapter = document.getElementById('segment-chapter');
+  const segTranslation = document.getElementById('segment-translation');
   const booksContainer = document.getElementById('selector-books-container');
   const chaptersContainer = document.getElementById('selector-chapters-container');
+  const translationsContainer = document.getElementById('selector-translations-container');
   
   if (tab === 'book') {
     if (segBook) segBook.classList.add('active');
     if (segChapter) segChapter.classList.remove('active');
+    if (segTranslation) segTranslation.classList.remove('active');
     if (booksContainer) booksContainer.style.display = 'block';
     if (chaptersContainer) chaptersContainer.style.display = 'none';
+    if (translationsContainer) translationsContainer.style.display = 'none';
     renderAppleBooks();
-  } else {
+  } else if (tab === 'chapter') {
     if (segBook) segBook.classList.remove('active');
     if (segChapter) segChapter.classList.add('active');
+    if (segTranslation) segTranslation.classList.remove('active');
     if (booksContainer) booksContainer.style.display = 'none';
     if (chaptersContainer) chaptersContainer.style.display = 'block';
+    if (translationsContainer) translationsContainer.style.display = 'none';
     renderAppleChapters();
+  } else if (tab === 'translation') {
+    if (segBook) segBook.classList.remove('active');
+    if (segChapter) segChapter.classList.remove('active');
+    if (segTranslation) segTranslation.classList.add('active');
+    if (booksContainer) booksContainer.style.display = 'none';
+    if (chaptersContainer) chaptersContainer.style.display = 'none';
+    if (translationsContainer) translationsContainer.style.display = 'block';
+    renderAppleTranslations();
   }
 }
 
@@ -5125,9 +6087,11 @@ function confirmAppleBibleSelection() {
   
   let bookChanged = tempBook !== currentBook;
   let chapterChanged = tempChapter !== currentChapter;
+  let translationChanged = tempTranslation !== currentTranslation;
   
   currentBook = tempBook;
   currentChapter = tempChapter;
+  currentTranslation = tempTranslation;
   
   if (selectBook) selectBook.value = currentBook;
   
@@ -5140,10 +6104,46 @@ function confirmAppleBibleSelection() {
       selectChapter.value = currentChapter;
     }
     onChapterChange();
+  } else if (translationChanged) {
+    onTranslationChange();
   }
   
   updateCustomSelectTriggers();
   closeAppleBibleSelectorModal();
+}
+
+function renderAppleTranslations() {
+  const container = document.getElementById('selector-translations-container');
+  if (!container) return;
+  
+  let html = '<div class="ios-group-title" style="margin-top:10px;">Escolha a Tradução</div><div class="ios-group-list">';
+  
+  AVAILABLE_TRANSLATIONS.forEach(t => {
+    const isSelected = t.id === tempTranslation ? ' selected' : '';
+    html += `
+      <div class="ios-row${isSelected}" onclick="selectAppleTranslation('${t.id}')">
+        <div class="ios-row-left">
+          <span class="ios-row-icon">📖</span>
+          <span class="ios-row-name">${t.name} <span style="font-size: 11px; color: var(--label2); margin-left: 6px;">(${t.id})</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="ios-row-check">✓</span>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function selectAppleTranslation(transId) {
+  tempTranslation = transId;
+  renderAppleTranslations();
+  // Confirm selection immediately on tap for streamlined mobile UX
+  setTimeout(() => {
+    confirmAppleBibleSelection();
+  }, 100);
 }
 
 // ==========================================
@@ -5202,6 +6202,13 @@ function openAppleProfileModal(event) {
   }
   updateVoiceSpeedLabel(voiceSpeed);
 
+  // Populate Default Voice from localStorage
+  const defaultVoice = localStorage.getItem('profile_default_voice') || 'pt-BR-Neural2-B';
+  const voiceSelect = document.getElementById('profile-default-voice');
+  if (voiceSelect) {
+    voiceSelect.value = defaultVoice;
+  }
+
   // Populate Daily Goal from localStorage
   const dailyGoal = localStorage.getItem('dailyGoal') || '100';
   const goalSelect = document.getElementById('profile-daily-goal');
@@ -5246,6 +6253,19 @@ function updateVoiceSpeedLabel(val) {
   }
 }
 
+function updateDefaultVoice(val) {
+  localStorage.setItem('profile_default_voice', val);
+  
+  // Clean current audio so it uses the new voice next time
+  if (window.currentAudio) {
+    window.currentAudio.pause();
+    window.currentAudio.src = "";
+    window.currentAudio = null;
+    const btn = document.getElementById('btn-audio-play');
+    if (btn) btn.textContent = '▶';
+  }
+}
+
 async function saveAppleProfileData() {
   const nameInput = document.getElementById('profile-name-input');
   const emailInput = document.getElementById('profile-email-input');
@@ -5258,7 +6278,7 @@ async function saveAppleProfileData() {
   if (!nameInput || !emailInput || !speedSlider || !goalSelect || !notificationsCheckbox || !themeSelect || !saveBtn) return;
 
   const name = nameInput.value.trim();
-  const email = emailInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
 
   if (name.length < 2) {
     showFeedback('⚠️ Nome deve ter pelo menos 2 caracteres');
@@ -5291,6 +6311,7 @@ async function saveAppleProfileData() {
 
     // Update frontend currentUser state
     currentUser = json.data;
+    localStorage.setItem('userEmail', currentUser.email);
 
     // 2. Persist local configurations in localStorage
     const voiceSpeed = speedSlider.value;

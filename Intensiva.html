@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Intensivas · Bíblia Viva</title>
+<meta name="description" content="Trilhas temáticas de leitura bíblica guiada — aprofunde seu estudo com intensivas sobre Fé, Perdão, Ansiedade e mais.">
+<style>
+/* ━━━━━━━━━ RESET & BASE ━━━━━━━━━ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  background: #F2F2F7;
+  color: #000;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ━━━━━━━━━ HEADER ━━━━━━━━━ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(242, 242, 247, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid rgba(0,0,0,0.06);
+}
+.header-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  color: #007AFF;
+  text-decoration: none;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+}
+.header-back svg {
+  width: 20px;
+  height: 20px;
+  stroke: #007AFF;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.header-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.header-spacer { width: 44px; }
+
+/* ━━━━━━━━━ SUBTITLE ━━━━━━━━━ */
+.page-subtitle {
+  font-size: 13px;
+  color: #8E8E93;
+  padding: 12px 16px 4px;
+}
+
+/* ━━━━━━━━━ INTENSIVA CARD (LIST) ━━━━━━━━━ */
+.cards-container {
+  padding: 8px 16px 32px;
+}
+.intensiva-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.intensiva-card:active { transform: scale(0.98); }
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.card-tema {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.2;
+}
+.card-tema-icone { font-size: 18px; }
+.pill {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.pill-nova { color: #fff; }
+.pill-progresso { background: #E5E5EA; color: #636366; }
+.pill-concluida { background: #34C759; color: #fff; }
+.card-desc {
+  font-size: 13px;
+  color: #8E8E93;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.progress-track {
+  height: 5px;
+  border-radius: 3px;
+  background: #F2F2F7;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .4s ease;
+}
+.card-meta {
+  font-size: 11px;
+  color: #8E8E93;
+  margin-top: 6px;
+}
+
+/* ━━━━━━━━━ HERO (DETAIL) ━━━━━━━━━ */
+.hero-banner {
+  border-radius: 16px;
+  padding: 20px 16px;
+  margin: 8px 16px 16px;
+}
+.hero-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-icone { font-size: 32px; line-height: 1; }
+.hero-tema {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.hero-desc {
+  font-size: 13px;
+  color: #636366;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+.hero-progress-track {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.08);
+  margin-top: 14px;
+  overflow: hidden;
+}
+.hero-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+.hero-meta {
+  font-size: 12px;
+  color: #636366;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* ━━━━━━━━━ ETAPAS LIST ━━━━━━━━━ */
+.etapas-container {
+  background: #fff;
+  border-radius: 16px;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  margin: 0 16px 16px;
+  overflow: hidden;
+}
+.etapa-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  border-bottom: 0.5px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s ease;
+}
+.etapa-row:active { background: rgba(0,0,0,0.03); }
+.etapa-row:last-child { border-bottom: none; }
+
+/* Checkbox */
+.etapa-check {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .2s ease;
+  -webkit-tap-highlight-color: transparent;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+}
+.etapa-check.marcado {
+  border-color: transparent;
+}
+.etapa-check.marcado::after {
+  content: '✓';
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Number badge */
+.etapa-num {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Corpo */
+.etapa-corpo { flex: 1; min-width: 0; }
+.etapa-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  line-height: 1.3;
+}
+.etapa-ref {
+  font-size: 12px;
+  color: #8E8E93;
+  margin-top: 1px;
+}
+
+/* Botão Ler */
+.etapa-ler {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s ease;
+  min-height: 32px;
+}
+.etapa-ler:active { opacity: 0.7; }
+
+/* ━━━━━━━━━ CONGRATULATIONS CARD ━━━━━━━━━ */
+.congrats-card {
+  border-radius: 14px;
+  padding: 20px 16px;
+  text-align: center;
+  margin: 0 16px 32px;
+  border-width: 1px;
+  border-style: solid;
+}
+.congrats-icone { font-size: 40px; margin-bottom: 8px; }
+.congrats-titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 4px;
+}
+.congrats-texto {
+  font-size: 13px;
+  color: #636366;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+.congrats-btn {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s ease;
+}
+.congrats-btn:active { opacity: 0.8; }
+
+/* ━━━━━━━━━ VIEW TOGGLE ━━━━━━━━━ */
+.view { display: none; }
+.view.ativa { display: block; }
+
+/* ━━━━━━━━━ ANIMATIONS ━━━━━━━━━ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.intensiva-card,
+.etapa-row {
+  animation: fadeIn .3s ease both;
+}
+.intensiva-card:nth-child(2) { animation-delay: .05s; }
+.intensiva-card:nth-child(3) { animation-delay: .1s; }
+.etapa-row:nth-child(2) { animation-delay: .03s; }
+.etapa-row:nth-child(3) { animation-delay: .06s; }
+.etapa-row:nth-child(4) { animation-delay: .09s; }
+.etapa-row:nth-child(5) { animation-delay: .12s; }
+.etapa-row:nth-child(6) { animation-delay: .15s; }
+.etapa-row:nth-child(7) { animation-delay: .18s; }
+</style>
+</head>
+<body>
+
+<!-- ========== VIEW 1: LISTA ========== -->
+<div class="view ativa" id="view-lista">
+  <div class="header">
+    <a class="header-back" href="bibliaviva.html" title="Voltar para Missões">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </a>
+    <div class="header-title">Intensivas</div>
+    <div class="header-spacer"></div>
+  </div>
+  <div class="page-subtitle">Escolha uma trilha temática e aprofunde seu estudo.</div>
+  <div class="cards-container" id="cards-container"></div>
+</div>
+
+<!-- ========== VIEW 2: DETALHE ========== -->
+<div class="view" id="view-detalhe">
+  <div class="header">
+    <button class="header-back" onclick="voltarParaLista()" title="Voltar">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <div class="header-title" id="detalhe-header-title"></div>
+    <div class="header-spacer"></div>
+  </div>
+  <div id="detalhe-content"></div>
+</div>
+
+<script>
+/* ━━━━━━━━━ DADOS ━━━━━━━━━ */
+const intensivas = [
+  {
+    id: "fe-01",
+    tema: "Fé",
+    descricao: "Entenda o que é fé e como ela age na sua vida.",
+    icone: "🙏",
+    cor: "#3B82F6",
+    totalEtapas: 7,
+    etapas: [
+      { ordem: 1, livro: "Hebreus",  capitulo: 11, titulo: "A definição de fé"           },
+      { ordem: 2, livro: "Mateus",   capitulo: 17, titulo: "Fé do tamanho de um grão"    },
+      { ordem: 3, livro: "Romanos",  capitulo: 10, titulo: "A fé vem pelo ouvir"         },
+      { ordem: 4, livro: "Tiago",    capitulo: 2,  titulo: "Fé sem obras é morta"        },
+      { ordem: 5, livro: "Marcos",   capitulo: 11, titulo: "Fé que move montanhas"       },
+      { ordem: 6, livro: "João",     capitulo: 20, titulo: "Bem-aventurados os que crêm" },
+      { ordem: 7, livro: "Efésios",  capitulo: 6,  titulo: "O escudo da fé"              }
+    ]
+  },
+  {
+    id: "perdao-01",
+    tema: "Perdão",
+    descricao: "Uma jornada sobre perdoar e ser perdoado.",
+    icone: "🕊️",
+    cor: "#8B5CF6",
+    totalEtapas: 6,
+    etapas: [
+      { ordem: 1, livro: "Mateus",     capitulo: 18, titulo: "Perdoar setenta vezes sete"  },
+      { ordem: 2, livro: "Lucas",      capitulo: 15, titulo: "O filho pródigo"              },
+      { ordem: 3, livro: "Efésios",    capitulo: 4,  titulo: "Perdoai uns aos outros"       },
+      { ordem: 4, livro: "Salmos",     capitulo: 51, titulo: "Cria em mim um coração puro"  },
+      { ordem: 5, livro: "Romanos",    capitulo: 8,  titulo: "Nenhuma condenação"           },
+      { ordem: 6, livro: "Colossenses",capitulo: 3,  titulo: "Revesti-vos de misericórdia"  }
+    ]
+  },
+  {
+    id: "ansiedade-01",
+    tema: "Ansiedade",
+    descricao: "Encontre paz nos textos que falam sobre confiar em Deus.",
+    icone: "🌿",
+    cor: "#10B981",
+    totalEtapas: 5,
+    etapas: [
+      { ordem: 1, livro: "Filipenses", capitulo: 4,  titulo: "A paz que excede o entendimento"  },
+      { ordem: 2, livro: "Mateus",     capitulo: 6,  titulo: "Não andeis ansiosos"               },
+      { ordem: 3, livro: "Salmos",     capitulo: 23, titulo: "O Senhor é meu pastor"             },
+      { ordem: 4, livro: "1 Pedro",    capitulo: 5,  titulo: "Lançai sobre Ele a vossa ansiedade"},
+      { ordem: 5, livro: "Isaías",     capitulo: 41, titulo: "Não temas, porque eu sou contigo"  }
+    ]
+  }
+];
+
+/* ━━━━━━━━━ PROGRESSO (localStorage) ━━━━━━━━━ */
+function getProgresso(intensivaId) {
+  const raw = localStorage.getItem('intensiva_' + intensivaId);
+  return raw ? JSON.parse(raw) : { etapasConcluidas: [] };
+}
+
+function marcarEtapa(intensivaId, ordem) {
+  const p = getProgresso(intensivaId);
+  if (!p.etapasConcluidas.includes(ordem)) {
+    p.etapasConcluidas.push(ordem);
+    localStorage.setItem('intensiva_' + intensivaId, JSON.stringify(p));
+  }
+  renderizarTudo();
+}
+
+function desmarcarEtapa(intensivaId, ordem) {
+  const p = getProgresso(intensivaId);
+  p.etapasConcluidas = p.etapasConcluidas.filter(function(e) { return e !== ordem; });
+  localStorage.setItem('intensiva_' + intensivaId, JSON.stringify(p));
+  renderizarTudo();
+}
+
+function percentual(intensivaId, total) {
+  const p = getProgresso(intensivaId);
+  return Math.round((p.etapasConcluidas.length / total) * 100);
+}
+
+/* ━━━━━━━━━ VIEW STATE ━━━━━━━━━ */
+let viewAtual = 'lista';
+let intensivaAtiva = null;
+
+function irParaDetalhe(id) {
+  intensivaAtiva = intensivas.find(function(i) { return i.id === id; });
+  viewAtual = 'detalhe';
+  renderizarTudo();
+  window.scrollTo(0, 0);
+}
+
+function voltarParaLista() {
+  viewAtual = 'lista';
+  intensivaAtiva = null;
+  renderizarTudo();
+  window.scrollTo(0, 0);
+}
+
+/* ━━━━━━━━━ NAVEGAÇÃO PARA LEITURA ━━━━━━━━━ */
+function irParaLeitura(livro, capitulo) {
+  // Navega para a aba Leitura do app principal passando livro e capítulo
+  window.location.href = 'bibliaviva.html?livro=' + encodeURIComponent(livro) + '&capitulo=' + capitulo;
+}
+
+/* ━━━━━━━━━ RENDER ━━━━━━━━━ */
+function renderizarTudo() {
+  // Toggle views
+  document.getElementById('view-lista').classList.toggle('ativa', viewAtual === 'lista');
+  document.getElementById('view-detalhe').classList.toggle('ativa', viewAtual === 'detalhe');
+
+  if (viewAtual === 'lista') {
+    renderizarLista();
+  } else {
+    renderizarDetalhe();
+  }
+}
+
+function renderizarLista() {
+  const container = document.getElementById('cards-container');
+  let html = '';
+
+  intensivas.forEach(function(int) {
+    const pct = percentual(int.id, int.totalEtapas);
+    const prog = getProgresso(int.id);
+    const concluidas = prog.etapasConcluidas.length;
+
+    // Pill
+    let pillHtml = '';
+    if (pct === 0) {
+      pillHtml = '<span class="pill pill-nova" style="background:' + int.cor + '">Nova</span>';
+    } else if (pct < 100) {
+      pillHtml = '<span class="pill pill-progresso">' + pct + '%</span>';
+    } else {
+      pillHtml = '<span class="pill pill-concluida">✓ Concluída</span>';
+    }
+
+    html += ''
+      + '<div class="intensiva-card" onclick="irParaDetalhe(\'' + int.id + '\')">'
+      +   '<div class="card-top">'
+      +     '<div class="card-tema">'
+      +       '<span class="card-tema-icone">' + int.icone + '</span>'
+      +       '<span>' + int.tema + '</span>'
+      +     '</div>'
+      +     pillHtml
+      +   '</div>'
+      +   '<div class="card-desc">' + int.descricao + '</div>'
+      +   '<div class="progress-track">'
+      +     '<div class="progress-fill" style="width:' + pct + '%; background:' + int.cor + '"></div>'
+      +   '</div>'
+      +   '<div class="card-meta">' + concluidas + '/' + int.totalEtapas + ' capítulos</div>'
+      + '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function renderizarDetalhe() {
+  if (!intensivaAtiva) return;
+
+  const int = intensivaAtiva;
+  const pct = percentual(int.id, int.totalEtapas);
+  const prog = getProgresso(int.id);
+  const concluidas = prog.etapasConcluidas.length;
+
+  // Header title
+  document.getElementById('detalhe-header-title').textContent = int.tema;
+
+  let html = '';
+
+  // Hero banner
+  html += ''
+    + '<div class="hero-banner" style="background:' + hexToRgba(int.cor, 0.10) + '">'
+    +   '<div class="hero-row">'
+    +     '<div class="hero-icone">' + int.icone + '</div>'
+    +     '<div class="hero-tema" style="color:' + int.cor + '">' + int.tema + '</div>'
+    +   '</div>'
+    +   '<div class="hero-desc">' + int.descricao + '</div>'
+    +   '<div class="hero-progress-track">'
+    +     '<div class="hero-progress-fill" style="width:' + pct + '%; background:' + int.cor + '"></div>'
+    +   '</div>'
+    +   '<div class="hero-meta">' + pct + '% concluído · ' + concluidas + ' de ' + int.totalEtapas + ' capítulos</div>'
+    + '</div>';
+
+  // Etapas
+  html += '<div class="etapas-container">';
+  int.etapas.forEach(function(etapa) {
+    const isMarcado = prog.etapasConcluidas.includes(etapa.ordem);
+    const checkClass = isMarcado ? 'etapa-check marcado' : 'etapa-check';
+    const checkStyle = isMarcado
+      ? 'background:' + int.cor + '; border-color:' + int.cor + ';'
+      : '';
+
+    html += ''
+      + '<div class="etapa-row">'
+      +   '<div class="' + checkClass + '" style="' + checkStyle + '" '
+      +     'onclick="event.stopPropagation(); ' + (isMarcado ? 'desmarcarEtapa' : 'marcarEtapa') + '(\'' + int.id + '\', ' + etapa.ordem + ')" '
+      +     'role="checkbox" aria-checked="' + isMarcado + '" tabindex="0">'
+      +   '</div>'
+      +   '<div class="etapa-num" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '">' + etapa.ordem + '</div>'
+      +   '<div class="etapa-corpo">'
+      +     '<div class="etapa-titulo">' + etapa.titulo + '</div>'
+      +     '<div class="etapa-ref">' + etapa.livro + ' ' + etapa.capitulo + '</div>'
+      +   '</div>'
+      +   '<button class="etapa-ler" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '" '
+      +     'onclick="event.stopPropagation(); irParaLeitura(\'' + etapa.livro + '\', ' + etapa.capitulo + ')">'
+      +     'Ler'
+      +   '</button>'
+      + '</div>';
+  });
+  html += '</div>';
+
+  // Congratulations card
+  if (pct === 100) {
+    html += ''
+      + '<div class="congrats-card" style="background:' + hexToRgba(int.cor, 0.08) + '; border-color:' + hexToRgba(int.cor, 0.20) + '">'
+      +   '<div class="congrats-icone">🎉</div>'
+      +   '<div class="congrats-titulo">Intensiva concluída!</div>'
+      +   '<div class="congrats-texto">Você completou todos os ' + int.totalEtapas + ' capítulos sobre ' + int.tema + '.</div>'
+      +   '<button class="congrats-btn" style="background:' + int.cor + '" onclick="voltarParaLista()">Explorar outras trilhas</button>'
+      + '</div>';
+  }
+
+  document.getElementById('detalhe-content').innerHTML = html;
+}
+
+/* ━━━━━━━━━ HELPERS ━━━━━━━━━ */
+function hexToRgba(hex, alpha) {
+  var r = parseInt(hex.slice(1, 3), 16);
+  var g = parseInt(hex.slice(3, 5), 16);
+  var b = parseInt(hex.slice(5, 7), 16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+}
+
+/* ━━━━━━━━━ INIT ━━━━━━━━━ */
+document.addEventListener('DOMContentLoaded', function() {
+  renderizarTudo();
+});
+</script>
+</body>
+</html>

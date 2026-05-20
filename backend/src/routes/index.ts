@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { getUserStats, addXpToUser, updateUserProfile, registerUser } from '../controllers/user.controller';
+import { getUserStats, addXpToUser, updateUserProfile, registerUser, getRanking, getUserDetails, checkUserEmail } from '../controllers/user.controller';
 import { saveProgress } from '../controllers/progress.controller';
+import { adminLogin, getAdminStats, getAdminUsers, deleteUser } from '../controllers/admin.controller';
+
 
 import { getQuests, completeQuest } from '../controllers/quest.controller';
-import { saveChat, getChatHistory } from '../controllers/chat.controller';
-import { getBooks, getChapter, getChapterAudio } from '../controllers/bible.controller';
+import { saveChat, getChatHistory, getChatTts } from '../controllers/chat.controller';
+import { getBooks, getChapter, getChapterAudio, getTranslations } from '../controllers/bible.controller';
 import { getQuizForBook } from '../controllers/quiz.controller';
 import { getSermons, refreshBookSermons, updateUserPlan } from '../controllers/sermon.controller';
 import { z } from 'zod';
@@ -12,7 +14,21 @@ import { validate } from '../middlewares/validate';
 
 const router = Router();
 
+// Admin Routes
+router.post('/admin/login', adminLogin);
+router.get('/admin/stats', getAdminStats);
+router.get('/admin/users', getAdminUsers);
+router.delete('/admin/users/:id', deleteUser);
+
+router.get('/users/ranking', getRanking);
+
+router.get('/users/:id/details', getUserDetails);
 router.get('/users/me', getUserStats);
+router.post('/users/check-email', validate(z.object({
+  body: z.object({
+    email: z.string().email('E-mail inválido'),
+  })
+})), checkUserEmail);
 router.post('/users/register', validate(z.object({
   body: z.object({
     name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
@@ -73,9 +89,17 @@ router.post('/chat', validate(z.object({
   })
 })), saveChat);
 
+router.post('/chat/tts', validate(z.object({
+  body: z.object({
+    text: z.string().min(1)
+  })
+})), getChatTts);
+
+
 router.get('/bible/:book/:chapter/audio', getChapterAudio);
 
 router.get('/bible/books', getBooks);
+router.get('/bible/translations', getTranslations);
 router.get('/books', getBooks);
 router.get('/bible/:book/:chapter', getChapter);
 

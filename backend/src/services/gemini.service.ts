@@ -2,8 +2,8 @@ import '../env';
 import { getSystemInstruction } from './aiPrompt';
 
 // Modelos configurados com fallback automático para evitar problemas de limite de requisições (429)
-const PRIMARY_MODEL = 'gemini-2.5-flash';
-const FALLBACK_MODEL = 'gemini-1.5-flash';
+const PRIMARY_MODEL = 'gemini-1.5-flash';
+const FALLBACK_MODEL = 'gemini-1.5-flash-8b';
 
 async function fetchGeminiWithFallback(payload: any, apiKey: string) {
   const tryModel = async (modelName: string) => {
@@ -119,7 +119,7 @@ export async function generateChapterSummary(
       },
       generationConfig: {
         temperature: 0.6,
-        maxOutputTokens: 300
+        maxOutputTokens: 800
       }
     };
 

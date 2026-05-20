@@ -1,9 +1,9 @@
 /**
  * BibliaViva — Sermon Player Module
- * Encapsulates sermon video playback, sharing, custom native media controls (Play/Pause, Mute, Fullscreen)
- * and interactions with the official YouTube IFrame Player API.
+ * Encapsulates sermon video playback, sharing, using the original, native 
+ * YouTube IFrame Player with standard controls (timeline, play/pause, seek, volume).
  * 
- * Follows Apple HIG standards and Touch-First mobile principles.
+ * Follows Apple HIG standards and Touch-First mobile principles for the sheet container.
  */
 
 // Global player states
@@ -17,11 +17,80 @@ let ytApiLoaded = false;
  * Dynamically injects the premium Apple HIG Bottom Sheet Modal into the DOM if it's not present.
  * Decouples the HTML structure entirely from bibliaviva.html.
  */
+function togglePlayPause() {
+  if (ytPlayer && typeof ytPlayer.getPlayerState === 'function') {
+    const state = ytPlayer.getPlayerState();
+    if (state === 1) { // YT.PlayerState.PLAYING
+      ytPlayer.pauseVideo();
+    } else {
+      ytPlayer.playVideo();
+    }
+  }
+}
+
+function toggleSimulatedFullscreen(event) {
+  if (event) event.stopPropagation();
+  const modal = document.getElementById('youtube-player-modal');
+  if (!modal) return;
+  
+  const isCurrentlyFS = modal.classList.contains('fullscreen-active');
+  if (isCurrentlyFS) {
+    modal.classList.remove('fullscreen-active');
+    modal.classList.remove('rotated');
+  } else {
+    modal.classList.add('fullscreen-active');
+  }
+}
+
+function toggleRotation(event) {
+  if (event) event.stopPropagation();
+  const modal = document.getElementById('youtube-player-modal');
+  if (!modal) return;
+  
+  modal.classList.toggle('rotated');
+  
+  if (window.showFeedback) {
+    const isRotated = modal.classList.contains('rotated');
+    window.showFeedback(isRotated ? '🔄 Vídeo rotacionado' : '🔄 Orientação restaurada');
+  }
+}
+
+// Auto-fullscreen on mobile landscape rotation
+window.addEventListener('resize', () => {
+  const modal = document.getElementById('youtube-player-modal');
+  if (!modal || !modal.classList.contains('active')) return;
+  
+  const isLandscape = window.innerWidth > window.innerHeight;
+  // Standard mobile/tablet breakpoint
+  const isMobile = window.innerWidth < 920 || window.innerHeight < 500;
+  
+  if (isLandscape && isMobile) {
+    if (!modal.classList.contains('fullscreen-active')) {
+      modal.classList.add('fullscreen-active');
+    }
+  } else if (!isLandscape && modal.classList.contains('fullscreen-active')) {
+    modal.classList.remove('fullscreen-active');
+    modal.classList.remove('rotated');
+  }
+});
+
 function ensureSermonModalInjected() {
   if (document.getElementById('youtube-player-modal')) return;
 
   const modalHtml = `
     <div class="ios-sheet-overlay" id="youtube-player-modal">
+      <!-- Simulated Fullscreen Floating Controls -->
+      <button class="sermon-fs-control-btn exit-fs" id="sermon-fs-exit-btn" onclick="toggleSimulatedFullscreen(event)" title="Sair da Tela Cheia">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4"></path>
+        </svg>
+      </button>
+      <button class="sermon-fs-control-btn rotate-fs" id="sermon-fs-rotate-btn" onclick="toggleRotation(event)" title="Rotacionar Vídeo">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+      </button>
+
       <div class="ios-sheet" onclick="event.stopPropagation()">
         <div class="ios-sheet-grabber"></div>
         <div class="ios-sheet-header">
@@ -37,39 +106,15 @@ function ensureSermonModalInjected() {
         </div>
         <div class="ios-sheet-content ios-sheet-content-sermon">
           <div class="sermon-video-wrapper">
+            <!-- Floating Glassmorphic Fullscreen trigger button -->
+            <button class="sermon-video-fs-btn" id="sermon-video-fs-btn" onclick="toggleSimulatedFullscreen(event)" title="Tela Cheia">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+              </svg>
+            </button>
             <div id="youtube-player-iframe-container">
               <div id="sermon-youtube-player-target"></div>
             </div>
-            <div class="sermon-video-touch-overlay"></div>
-          </div>
-          
-          <!-- Native Custom Media Controls (Apple HIG) -->
-          <div class="sermon-custom-controls">
-            <button class="sermon-control-btn secondary" id="sermon-control-mute" title="Silenciar">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <g id="sermon-mute-icon">
-                  <!-- Unmute Icon by Default -->
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                </g>
-              </svg>
-            </button>
-            
-            <button class="sermon-control-btn primary" id="sermon-control-play" title="Reproduzir/Pausar">
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-                <g id="sermon-play-icon">
-                  <!-- Pause Icon by Default -->
-                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </g>
-              </svg>
-            </button>
-            
-            <button class="sermon-control-btn secondary" id="sermon-control-fullscreen" title="Tela Cheia">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <g id="sermon-fullscreen-icon">
-                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                </g>
-              </svg>
-            </button>
           </div>
           
           <div class="sermon-modal-details-container">
@@ -100,66 +145,6 @@ function ensureSermonModalInjected() {
   modalEl.addEventListener('click', () => {
     closeSermonPlayer();
   });
-
-  // Bind premium touch-first event listeners to overlay and controls to completely block click-through/redirects
-  const overlay = modalEl.querySelector('.sermon-video-touch-overlay');
-  const btnMute = modalEl.querySelector('#sermon-control-mute');
-  const btnPlay = modalEl.querySelector('#sermon-control-play');
-  const btnFullscreen = modalEl.querySelector('#sermon-control-fullscreen');
-
-  let lastToggleTime = 0;
-  const handleOverlayToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const now = Date.now();
-    if (now - lastToggleTime < 350) return;
-    lastToggleTime = now;
-    toggleSermonPlay(e);
-  };
-
-  if (overlay) {
-    // Intercept click and touch actions cleanly
-    ['click', 'touchend'].forEach(evt => {
-      overlay.addEventListener(evt, handleOverlayToggle, { passive: false });
-    });
-    // Stop all raw pointer propagation to prevent underlying iframe receiving gestures
-    ['touchstart', 'pointerdown', 'pointerup', 'mousedown', 'mouseup'].forEach(evt => {
-      overlay.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }, { passive: false });
-    });
-  }
-
-  if (btnMute) {
-    ['click', 'touchend'].forEach(evt => {
-      btnMute.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleSermonMute(e);
-      }, { passive: false });
-    });
-  }
-
-  if (btnPlay) {
-    ['click', 'touchend'].forEach(evt => {
-      btnPlay.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleSermonPlay(e);
-      }, { passive: false });
-    });
-  }
-
-  if (btnFullscreen) {
-    ['click', 'touchend'].forEach(evt => {
-      btnFullscreen.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleSermonFullscreen(e);
-      }, { passive: false });
-    });
-  }
 }
 
 /**
@@ -201,35 +186,7 @@ function loadYouTubeAPI() {
 }
 
 /**
- * Update SVG icons inside custom player controls to reflect active states.
- */
-function updateSermonControlsUI() {
-  const playIcon = document.getElementById('sermon-play-icon');
-  const muteIcon = document.getElementById('sermon-mute-icon');
-
-  if (playIcon) {
-    if (window.sermonVideoPlaying) {
-      // Pause Icon
-      playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-    } else {
-      // Play Icon
-      playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-    }
-  }
-
-  if (muteIcon) {
-    if (window.sermonVideoMuted) {
-      // Volume Off/Mute Icon
-      muteIcon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
-    } else {
-      // Volume Up/Unmute Icon
-      muteIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
-    }
-  }
-}
-
-/**
- * Play a YouTube video inside the Apple HIG Bottom Sheet, leveraging the official YT API.
+ * Play a YouTube video inside the Apple HIG Bottom Sheet, leveraging the official YT API with standard controls.
  */
 function playSermonVideo(videoId, title, channel, description) {
   ensureSermonModalInjected();
@@ -281,7 +238,7 @@ function playSermonVideo(videoId, title, channel, description) {
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
 
-  // Load YouTube API and instantiate robust YT.Player
+  // Load YouTube API and instantiate YT.Player
   loadYouTubeAPI().then(() => {
     // If player already exists, just load video
     if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
@@ -291,7 +248,17 @@ function playSermonVideo(videoId, title, channel, description) {
         });
         window.sermonVideoPlaying = true;
         window.sermonVideoMuted = false;
-        updateSermonControlsUI();
+
+        // Ensure iframe attributes are maintained on reuse
+        const iframe = ytPlayer.getIframe();
+        if (iframe) {
+          iframe.setAttribute('allowfullscreen', 'true');
+          iframe.setAttribute('webkitallowfullscreen', 'true');
+          iframe.setAttribute('mozallowfullscreen', 'true');
+          iframe.setAttribute('msallowfullscreen', 'true');
+          iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen');
+          iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox');
+        }
         return;
       } catch (e) {
         console.warn("Could not reuse existing YT.Player, destroying and rebuilding...", e);
@@ -306,20 +273,20 @@ function playSermonVideo(videoId, title, channel, description) {
       container.innerHTML = '<div id="sermon-youtube-player-target"></div>';
     }
 
-    // Create new player instance
+    // Create new player instance with standard controls enabled
     ytPlayer = new YT.Player('sermon-youtube-player-target', {
       height: '100%',
       width: '100%',
       videoId: videoId,
       playerVars: {
         'autoplay': 1,
-        'controls': 0, // Hides native controls completely to prevent redirects
-        'disablekb': 1, // Disable keyboard shortcuts
-        'fs': 0, // Disable native full screen button
-        'iv_load_policy': 3, // Hide video annotations
-        'modestbranding': 1, // Minimize YouTube branding
-        'rel': 0, // Related videos only from same channel
-        'playsinline': 1, // Play inline on iOS Safari
+        'controls': 1, // Enable the original native YouTube control bar with timeline/scrubber
+        'disablekb': 0, // Enable native keyboard shortcuts
+        'fs': 1, // Enable the native YouTube fullscreen button
+        'iv_load_policy': 1, // Show video annotations
+        'modestbranding': 1, // Premium branding: hides YouTube logo from control bar
+        'rel': 0, // Related videos only from the same channel
+        'playsinline': 1, // Play inline on iOS Safari within the bottom sheet
         'enablejsapi': 1,
         'origin': window.location.origin
       },
@@ -328,7 +295,17 @@ function playSermonVideo(videoId, title, channel, description) {
           event.target.playVideo();
           window.sermonVideoPlaying = true;
           window.sermonVideoMuted = event.target.isMuted();
-          updateSermonControlsUI();
+
+          // Force fullscreen capabilities on the dynamically created iframe element
+          const iframe = event.target.getIframe();
+          if (iframe) {
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('webkitallowfullscreen', 'true');
+            iframe.setAttribute('mozallowfullscreen', 'true');
+            iframe.setAttribute('msallowfullscreen', 'true');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen');
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox');
+          }
         },
         'onStateChange': (event) => {
           // YT.PlayerState.PLAYING = 1, YT.PlayerState.PAUSED = 2, YT.PlayerState.ENDED = 0
@@ -337,7 +314,6 @@ function playSermonVideo(videoId, title, channel, description) {
           } else if (event.data === 2 || event.data === 0) {
             window.sermonVideoPlaying = false;
           }
-          updateSermonControlsUI();
         }
       }
     });
@@ -353,6 +329,7 @@ function closeSermonPlayer() {
   if (modal) {
     modal.classList.remove('active');
     modal.classList.remove('fullscreen-active');
+    modal.classList.remove('rotated');
   }
   
   if (ytPlayer) {
@@ -373,95 +350,7 @@ function closeSermonPlayer() {
   window.sermonVideoPlaying = false;
   window.sermonVideoMuted = false;
   
-  // Reset fullscreen button icon and title
-  const fullscreenIcon = document.getElementById('sermon-fullscreen-icon');
-  const fullscreenBtn = document.getElementById('sermon-control-fullscreen');
-  if (fullscreenIcon) {
-    fullscreenIcon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
-  }
-  if (fullscreenBtn) {
-    fullscreenBtn.title = "Tela Cheia";
-  }
-  
   document.body.style.overflow = ''; // Restore background scroll
-}
-
-/**
- * Toggle Sermon Play/Pause natively using robust YT API calls.
- */
-function toggleSermonPlay(event) {
-  if (event) event.stopPropagation();
-  if (!ytPlayer) return;
-  
-  try {
-    const state = typeof ytPlayer.getPlayerState === 'function' ? ytPlayer.getPlayerState() : null;
-    if (state === 1) { // Playing
-      ytPlayer.pauseVideo();
-      window.sermonVideoPlaying = false;
-      if (window.showFeedback) window.showFeedback('⏸️ Vídeo pausado');
-    } else { // Paused, ended, etc
-      ytPlayer.playVideo();
-      window.sermonVideoPlaying = true;
-      if (window.showFeedback) window.showFeedback('▶️ Vídeo reproduzindo');
-    }
-  } catch (e) {
-    console.error('Error toggling Play state via YouTube API:', e);
-  }
-  updateSermonControlsUI();
-}
-
-/**
- * Toggle Sermon Mute/Unmute natively using robust YT API calls.
- */
-function toggleSermonMute(event) {
-  if (event) event.stopPropagation();
-  if (!ytPlayer) return;
-  
-  try {
-    const isMuted = typeof ytPlayer.isMuted === 'function' ? ytPlayer.isMuted() : window.sermonVideoMuted;
-    if (isMuted) {
-      ytPlayer.unMute();
-      window.sermonVideoMuted = false;
-      if (window.showFeedback) window.showFeedback('🔊 Áudio ativado');
-    } else {
-      ytPlayer.mute();
-      window.sermonVideoMuted = true;
-      if (window.showFeedback) window.showFeedback('🔇 Vídeo silenciado');
-    }
-  } catch (e) {
-    console.error('Error toggling Mute state via YouTube API:', e);
-  }
-  updateSermonControlsUI();
-}
-
-/**
- * Toggle Fullscreen via CSS simulated theater mode.
- * Bypasses iframe gesture and iOS Safari constraints completely.
- */
-function toggleSermonFullscreen(event) {
-  if (event) event.stopPropagation();
-  
-  const modal = document.getElementById('youtube-player-modal');
-  if (!modal) return;
-  
-  const fullscreenBtn = document.getElementById('sermon-control-fullscreen');
-  const fullscreenIcon = document.getElementById('sermon-fullscreen-icon');
-  
-  const isFullscreen = modal.classList.toggle('fullscreen-active');
-  
-  if (fullscreenIcon) {
-    if (isFullscreen) {
-      // Exit Fullscreen Icon (Shrink)
-      fullscreenIcon.innerHTML = '<path d="M4 14h6v6H8v-4H4v-2zm10 6h2v-4h4v-2h-6v6zM4 8h4V4h2v6H4V8zm14 0V4h-2v6h6V8h-4z"></path>';
-      if (fullscreenBtn) fullscreenBtn.title = "Sair da Tela Cheia";
-      if (window.showFeedback) window.showFeedback('📺 Modo tela cheia ativado');
-    } else {
-      // Enter Fullscreen Icon (Expand)
-      fullscreenIcon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
-      if (fullscreenBtn) fullscreenBtn.title = "Tela Cheia";
-      if (window.showFeedback) window.showFeedback('📺 Modo padrão ativado');
-    }
-  }
 }
 
 /**
@@ -506,13 +395,6 @@ function fallbackCopyLink(url) {
 /**
  * Legacy command fallback copy link.
  */
-// Ensure modal is injected into the DOM as soon as possible
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', ensureSermonModalInjected);
-} else {
-  ensureSermonModalInjected();
-}
-
 function fallbackCopyLinkCommand(url) {
   const textArea = document.createElement("textarea");
   textArea.value = url;
@@ -530,4 +412,11 @@ function fallbackCopyLinkCommand(url) {
     if (window.showFeedback) window.showFeedback('❌ Falha ao copiar link');
   }
   document.body.removeChild(textArea);
+}
+
+// Ensure modal is injected into the DOM as soon as possible
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', ensureSermonModalInjected);
+} else {
+  ensureSermonModalInjected();
 }

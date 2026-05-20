@@ -122,20 +122,49 @@
   border: none;
   z-index: 1;
 }
-
-/* Invisible overlay that captures clicks on mobile/emulator to toggle play/pause 
-   and completely prevents YouTube native redirect overlays. */
-.sermon-video-touch-overlay {
+/* Floating glassmorphic button to trigger simulated fullscreen */
+.sermon-video-fs-btn {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-  background: rgba(0, 0, 0, 0.001); /* Physical opacity to intercept touches on iOS Safari and emulators, blocking YouTube redirects */
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(20, 20, 25, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  outline: none;
   -webkit-tap-highlight-color: transparent;
-  pointer-events: auto; /* Ensure active pointer interception */
+}
+
+.sermon-video-fs-btn:hover {
+  transform: scale(1.08);
+  background: rgba(20, 20, 25, 0.85);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.sermon-video-fs-btn:active {
+  transform: scale(0.95);
+}
+
+.light-theme .sermon-video-fs-btn {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1c1c1e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .sermon-video-fs-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
 }
 
 /* 3. Custom Media Controls (Apple HIG) */
@@ -345,6 +374,7 @@
   justify-content: center;
   align-items: center;
   box-shadow: none !important;
+  transform: none !important; /* Overrides any sliding translation from bibliaviva.html */
 }
 
 /* Distraction-free: hide grabber, header, details */
@@ -354,27 +384,44 @@
   display: none !important;
 }
 
+/* Stretch the sheet content to full screen with zero padding */
+#youtube-player-modal.fullscreen-active .ios-sheet-content-sermon {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background: #000000 !important;
+}
+
 /* Scale and center video responsively with standard 16:9 ratio */
 #youtube-player-modal.fullscreen-active .sermon-video-wrapper {
-  width: 100vw;
-  height: 56.25vw; /* strict 16:9 height for 100vw width */
-  max-width: 100vw;
-  max-height: 100vh;
+  width: 100vw !important;
+  height: 56.25vw !important; /* strict 16:9 height for 100vw width */
+  max-width: 100vw !important;
+  max-height: 100vh !important;
   margin: auto !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   border: none !important;
-  background: #000000;
-  transition: none;
+  background: #000000 !important;
+  transition: none !important;
+  aspect-ratio: auto !important;
 }
 
 /* On landscape screens or wide viewports, calculate width based on height */
 @media (min-aspect-ratio: 16/9) {
   #youtube-player-modal.fullscreen-active .sermon-video-wrapper {
-    height: 100vh;
-    width: 177.78vh; /* strict 16:9 width for 100vh height */
-    max-width: 100vw;
-    max-height: 100vh;
+    height: 100vh !important;
+    width: 177.78vh !important; /* strict 16:9 width for 100vh height */
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    aspect-ratio: auto !important;
   }
 }
 
@@ -427,9 +474,102 @@
   transform: scale(0.9);
 }
 
-/* Safe area support for notch/indicator on iPhone fullscreen */
-@supports (padding: env(safe-area-inset-bottom)) {
-  #youtube-player-modal.fullscreen-active .sermon-custom-controls {
-    bottom: calc(24px + env(safe-area-inset-bottom));
-  }
+/* Hide standard simulated fullscreen trigger button when fullscreen is active */
+#youtube-player-modal.fullscreen-active .sermon-video-fs-btn {
+  display: none !important;
+}
+
+/* Simulated Fullscreen Floating Controls (Exit FS, Rotate) */
+#youtube-player-modal .sermon-fs-control-btn {
+  display: none; /* Hidden in normal sheet view */
+}
+
+#youtube-player-modal.fullscreen-active .sermon-fs-control-btn {
+  display: flex !important;
+  position: fixed;
+  z-index: 10000000;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(20, 20, 25, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#youtube-player-modal.fullscreen-active .sermon-fs-control-btn:hover {
+  transform: scale(1.08);
+  background: rgba(20, 20, 25, 0.85);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+#youtube-player-modal.fullscreen-active .sermon-fs-control-btn:active {
+  transform: scale(0.95);
+}
+
+#youtube-player-modal.fullscreen-active .sermon-fs-control-btn.exit-fs {
+  top: 24px;
+  left: 24px;
+}
+
+#youtube-player-modal.fullscreen-active .sermon-fs-control-btn.rotate-fs {
+  top: 24px;
+  right: 24px;
+}
+
+#youtube-player-modal.fullscreen-active .sermon-fs-control-btn svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#youtube-player-modal.rotated .sermon-fs-control-btn.rotate-fs svg {
+  transform: rotate(180deg);
+}
+
+/* 90-degree Rotation Transform Fallback Styles */
+#youtube-player-modal.fullscreen-active.rotated .sermon-video-wrapper {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 177.78vw !important; /* aspect ratio 16:9 on width */
+  height: 100vw !important;
+  max-width: 100vh !important;
+  max-height: 56.25vh !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center center !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  z-index: 99999 !important;
+}
+
+/* Ensure the wrapper goes fully black and centers the iframe in browser fullscreen */
+.sermon-video-wrapper:fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  background: #000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.sermon-video-wrapper:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  background: #000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0 !important;
+  border: none !important;
 }

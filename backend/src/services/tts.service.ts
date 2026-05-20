@@ -1,6 +1,6 @@
 import '../env';
 
-export async function generateAudio(text: string, speakingRate?: number): Promise<string> {
+export async function generateAudio(text: string, speakingRate?: number, voiceName?: string): Promise<string> {
   const apiKey = process.env.GOOGLE_TTS_API_KEY;
   if (!apiKey) {
     throw new Error('GOOGLE_TTS_API_KEY não configurada no ambiente.');
@@ -12,8 +12,8 @@ export async function generateAudio(text: string, speakingRate?: number): Promis
   const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
   const payload = {
     input: { text: safeText },
-    // A voz Neural2 em pt-BR costuma ser muito natural e premium
-    voice: { languageCode: 'pt-BR', name: 'pt-BR-Neural2-B' },
+    // Permite escolha da voz padrão
+    voice: { languageCode: 'pt-BR', name: voiceName || 'pt-BR-Neural2-B' },
     audioConfig: { 
       audioEncoding: 'MP3' as const,
       speakingRate: speakingRate || 1.0

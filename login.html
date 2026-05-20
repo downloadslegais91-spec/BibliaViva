@@ -997,41 +997,99 @@
       }
     }
 
-    // Mock functions for visual validation showcase without touching auth logic
-    function simulateLogin() {
-      const email = document.getElementById('email').value;
+    async function simulateLogin() {
+      const email = document.getElementById('email').value.trim().toLowerCase();
       const pass = document.getElementById('password').value;
       
       const emailGroup = document.getElementById('group-email');
       const passGroup = document.getElementById('group-password');
+      const emailError = emailGroup.querySelector('.error-msg');
       
       emailGroup.classList.remove('has-error');
       passGroup.classList.remove('has-error');
+      emailError.textContent = 'Por favor, insira um e-mail válido.';
 
+      // Check if it is the admin credentials first
+      const isAdmin = (email === 'admin' || email === 'admin@gmail.com') && pass === 'admin123';
+
+      if (isAdmin) {
+        // Visual Success for Admin
+        const btn = document.querySelector('.btn-primary');
+        btn.textContent = 'Entrando como Admin...';
+        btn.style.opacity = '0.8';
+
+        // Save admin token and state
+        sessionStorage.setItem('adminToken', 'admin-secret-token');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', 'Administrador');
+
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 1000);
+        return;
+      }
+
+      let hasValidationError = false;
       if (!email.includes('@')) {
         emailGroup.classList.add('has-error');
+        hasValidationError = true;
       }
       if (pass.length < 6) {
         passGroup.classList.add('has-error');
+        hasValidationError = true;
       }
 
-      if (email.includes('@') && pass.length >= 6) {
-        // Sucesso visual
-        const btn = document.querySelector('.btn-primary');
-        const oldText = btn.textContent;
-        btn.textContent = 'Entrando...';
-        btn.style.opacity = '0.8';
+      if (hasValidationError) {
+        return;
+      }
 
-        // Salva estado de login localmente
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userEmail', email);
-        const namePart = email.split('@')[0];
-        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-        localStorage.setItem('userName', formattedName);
+      // Proactive Email Registration Check
+      const btn = document.querySelector('.btn-primary');
+      const oldText = btn.textContent;
+      btn.textContent = 'Verificando...';
+      btn.disabled = true;
+      btn.style.opacity = '0.8';
 
-        setTimeout(() => {
-          window.location.href = 'bibliaviva.html';
-        }, 1000);
+      try {
+        const response = await fetch('/api/users/check-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && resData.status === 'success') {
+          // E-mail existe, login aprovado!
+          btn.textContent = 'Entrando...';
+
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('userEmail', email);
+          localStorage.setItem('userName', resData.data.name);
+
+          setTimeout(() => {
+            window.location.href = 'bibliaviva.html';
+          }, 1000);
+        } else {
+          // E-mail não cadastrado
+          btn.textContent = oldText;
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          
+          emailError.textContent = 'Este e-mail não possui cadastro. Crie uma conta no link abaixo.';
+          emailGroup.classList.add('has-error');
+        }
+      } catch (err) {
+        console.error('Erro ao verificar e-mail:', err);
+        btn.textContent = oldText;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        
+        emailError.textContent = 'Erro de conexão com o servidor. Verifique se o servidor está ativo.';
+        emailGroup.classList.add('has-error');
       }
     }
 
@@ -1157,7 +1215,7 @@
 
     function submitAppleLogin() {
       const emailInput = document.getElementById('apple-email');
-      const email = emailInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
       const group = document.getElementById('apple-custom-group');
       
       group.classList.remove('has-error');

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
 import { generateChatReply } from '../services/gemini.service';
 import { resolveUserId } from '../services/auth';
+import { generateAudio } from '../services/tts.service';
 
 export const saveChat = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -71,5 +72,30 @@ export const getChatHistory = async (req: Request, res: Response, next: NextFunc
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const getChatTts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { text, voice } = req.body;
+    if (!text || typeof text !== 'string') {
+      res.status(400).json({ status: 'error', message: 'Texto inválido' });
+      return;
+    }
+
+    // Limpar o texto de tags HTML (como <strong>, etc.) antes de passar para o TTS
+    const cleanText = text.replace(/<[^>]*>/g, '');
+
+    const audioBase64 = await generateAudio(cleanText, 1.0, voice);
+    res.json({
+      status: 'success',
+      data: { audioBase64 }
+    });
+  } catch (error: any) {
+    console.error("Audio generation for chat failed:", error.message);
+    res.status(500).json({ 
+      status: 'error', 
+      message: 'Erro na geração de áudio (as credenciais do Google Cloud podem estar ausentes).'
+    });
   }
 };

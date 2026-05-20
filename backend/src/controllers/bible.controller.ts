@@ -118,22 +118,83 @@ const APOCRYPHAL_BIBLE: Record<string, Record<number, Array<{ number: number; te
   }
 };
 
-const ENGLISH_MAPPING: Record<string, string> = {
-  'genesis': 'genesis', 'exodo': 'exodus', 'levitico': 'leviticus', 'numeros': 'numbers', 'deuteronomio': 'deuteronomy',
-  'josue': 'joshua', 'juizes': 'judges', 'rute': 'ruth', '1samuel': '1 samuel', '2samuel': '2 samuel',
-  '1reis': '1 kings', '2reis': '2 kings', '1cronicas': '1 chronicles', '2cronicas': '2 chronicles',
-  'esdras': 'ezra', 'neemias': 'nehemiah', 'ester': 'esther', 'jo': 'job', 'salmos': 'psalms', 'proverbios': 'proverbs',
-  'eclesiastes': 'ecclesiastes', 'canticos': 'song of solomon', 'isaias': 'isaiah', 'jeremias': 'jeremiah',
-  'lamentacoes': 'lamentations', 'ezequiel': 'ezekiel', 'daniel': 'daniel', 'oseias': 'hosea', 'joel': 'joel',
-  'amos': 'amos', 'obadias': 'obadiah', 'jonas': 'jonah', 'miqueias': 'micah', 'naum': 'nahum', 'habacuque': 'habakkuk',
-  'sofonias': 'zephaniah', 'ageu': 'haggai', 'zacarias': 'zechariah', 'malaquias': 'malachi',
-  'mateus': 'matthew', 'marcos': 'mark', 'lucas': 'luke', 'joao': 'john', 'atos': 'acts',
-  'romanos': 'romans', '1corintios': '1 corinthians', '2corintios': '2 corinthians', 'galatas': 'galatians',
-  'efesios': 'ephesians', 'filipenses': 'philippians', 'colossenses': 'colossians', '1tessalonicenses': '1 thessalonians',
-  '2tessalonicenses': '2 thessalonians', '1timoteo': '1 timothy', '2timoteo': '2 timothy', 'tito': 'titus',
-  'filemom': 'philemon', 'hebreus': 'hebrews', 'tiago': 'james', '1pedro': '1 peter', '2pedro': '2 peter',
-  '1joao': '1 john', '2joao': '2 john', '3joao': '3 john', 'judas': 'jude', 'apocalipse': 'revelation'
+// Mapeamento: chave interna do livro -> bookid numérico usado pelo Bolls.life
+// Ordem padrão protestante: Gn=1 ... Ap=66
+const BOLLS_BOOKID_MAP: Record<string, number> = {
+  'genesis': 1, 'exodo': 2, 'levitico': 3, 'numeros': 4, 'deuteronomio': 5,
+  'josue': 6, 'juizes': 7, 'rute': 8, '1samuel': 9, '2samuel': 10,
+  '1reis': 11, '2reis': 12, '1cronicas': 13, '2cronicas': 14,
+  'esdras': 15, 'neemias': 16, 'ester': 17, 'jo': 18, 'salmos': 19, 'proverbios': 20,
+  'eclesiastes': 21, 'canticos': 22, 'isaias': 23, 'jeremias': 24,
+  'lamentacoes': 25, 'ezequiel': 26, 'daniel': 27, 'oseias': 28, 'joel': 29,
+  'amos': 30, 'obadias': 31, 'jonas': 32, 'miqueias': 33, 'naum': 34, 'habacuque': 35,
+  'sofonias': 36, 'ageu': 37, 'zacarias': 38, 'malaquias': 39,
+  'mateus': 40, 'marcos': 41, 'lucas': 42, 'joao': 43, 'atos': 44,
+  'romanos': 45, '1corintios': 46, '2corintios': 47, 'galatas': 48,
+  'efesios': 49, 'filipenses': 50, 'colossenses': 51, '1tessalonicenses': 52,
+  '2tessalonicenses': 53, '1timoteo': 54, '2timoteo': 55, 'tito': 56,
+  'filemom': 57, 'hebreus': 58, 'tiago': 59, '1pedro': 60, '2pedro': 61,
+  '1joao': 62, '2joao': 63, '3joao': 64, 'judas': 65, 'apocalipse': 66
 };
+
+// Tradução padrão: Almeida Revista e Atualizada (ARA, 1993)
+const DEFAULT_TRANSLATION = 'ARA';
+
+// Traduções disponíveis para o seletor do frontend
+export const AVAILABLE_TRANSLATIONS = [
+  { id: 'ARA', name: 'Almeida Revista e Atualizada', shortName: 'ARA', year: 1993 },
+  { id: 'ARC09', name: 'Almeida Revista e Corrigida', shortName: 'ARC', year: 2009 },
+  { id: 'ACF11', name: 'Almeida Corrigida Fiel', shortName: 'ACF', year: 2011 },
+  { id: 'NAA', name: 'Nova Almeida Atualizada', shortName: 'NAA', year: 2017 },
+  { id: 'NVIPT', name: 'Nova Versão Internacional', shortName: 'NVI', year: 2001 },
+  { id: 'NVT', name: 'Nova Versão Transformadora', shortName: 'NVT', year: 2016 },
+  { id: 'NTLH', name: 'Nova Tradução na Linguagem de Hoje', shortName: 'NTLH', year: 2000 },
+  { id: 'KJA', name: 'King James Atualizada', shortName: 'KJA', year: 2001 },
+  { id: 'NBV07', name: 'Nova Bíblia Viva', shortName: 'NBV', year: 2007 },
+  { id: 'ALM21', name: 'Almeida Século 21', shortName: 'A21', year: 2021 },
+];
+
+const VALID_TRANSLATION_IDS = new Set(AVAILABLE_TRANSLATIONS.map(t => t.id));
+
+export const getTranslations = async (req: Request, res: Response) => {
+  res.json({
+    status: 'success',
+    data: AVAILABLE_TRANSLATIONS
+  });
+};
+
+function stripHtmlTags(html: string): string {
+  return html.replace(/<[^>]*>/g, '').trim();
+}
+
+async function fetchChapterFromBolls(bookKey: string, chapter: number, translation?: string): Promise<Array<{ number: number; text: string }>> {
+  const bookId = BOLLS_BOOKID_MAP[bookKey];
+  if (!bookId) {
+    throw new Error(`Book ID não encontrado para: ${bookKey}`);
+  }
+
+  const trans = (translation && VALID_TRANSLATION_IDS.has(translation)) ? translation : DEFAULT_TRANSLATION;
+  const url = `https://bolls.life/get-text/${trans}/${bookId}/${chapter}/`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Falha ao obter dados do Bolls.life para ${bookKey} cap. ${chapter} (HTTP ${response.status})`);
+  }
+
+  const json = await response.json();
+
+  if (!Array.isArray(json) || json.length === 0) {
+    throw new Error(`Nenhum versículo retornado pelo Bolls.life para ${bookKey} cap. ${chapter}`);
+  }
+
+  const verses = json.map((item: any) => ({
+    number: item.verse,
+    text: stripHtmlTags(item.text)
+  }));
+
+  return verses;
+}
+
 
 const LOCAL_FALLBACK_VERSES = [
   { number: 1, text: "Vendo Jesus as multidões, subiu ao monte e, depois de se sentar, os seus discípulos se aproximaram dele." },
@@ -183,7 +244,6 @@ export const getChapter = async (req: Request, res: Response, next: NextFunction
       return;
     }
 
-    const englishBookName = ENGLISH_MAPPING[bookConfig.key];
     let verses: Array<{ number: number; text: string }> = [];
 
     if (bookConfig.isCanonical === false) {
@@ -196,20 +256,11 @@ export const getChapter = async (req: Request, res: Response, next: NextFunction
         ];
       }
     } else {
+      const translationParam = typeof req.query.translation === 'string' ? req.query.translation : undefined;
       try {
-        const url = `https://bible-api.com/${englishBookName}+${chapter}?translation=almeida`;
-        const response = await fetch(url);
-        if (response.ok) {
-          const json = await response.json();
-          verses = json.verses.map((v: any) => ({
-            number: v.verse,
-            text: v.text.trim()
-          }));
-        } else {
-          throw new Error('Falha ao obter dados de bible-api.com');
-        }
+        verses = await fetchChapterFromBolls(bookConfig.key, chapter, translationParam);
       } catch (fetchError) {
-        console.warn('Erro ao conectar com API externa da Bíblia. Usando fallback local para Mateus 5 se aplicável.', fetchError);
+        console.warn('Erro ao conectar com Bolls.life. Usando fallback local para Mateus 5 se aplicável.', fetchError);
         if (bookConfig.key === 'mateus' && chapter === 5) {
           verses = LOCAL_FALLBACK_VERSES;
         } else {
@@ -297,21 +348,11 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
         verses = bookData[chapterNum];
       }
     } else {
+      const translationParam = typeof req.query.translation === 'string' ? req.query.translation : undefined;
       try {
-        const englishBookName = ENGLISH_MAPPING[bookConfig.key];
-        const url = `https://bible-api.com/${englishBookName}+${chapterNum}?translation=almeida`;
-        const response = await fetch(url);
-        if (response.ok) {
-          const json = await response.json();
-          verses = json.verses.map((v: any) => ({
-            number: v.verse,
-            text: v.text.trim()
-          }));
-        } else {
-          throw new Error('Falha ao obter dados de bible-api.com');
-        }
+        verses = await fetchChapterFromBolls(bookConfig.key, chapterNum, translationParam);
       } catch (fetchError) {
-        console.warn('Erro ao conectar com API externa da Bíblia para áudio. Usando fallback local para Mateus 5 se aplicável.', fetchError);
+        console.warn('Erro ao conectar com Bolls.life para áudio. Usando fallback local para Mateus 5 se aplicável.', fetchError);
         if (bookConfig.key === 'mateus' && chapterNum === 5) {
           verses = LOCAL_FALLBACK_VERSES;
         } else {
@@ -334,6 +375,7 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
     textToRead += verses.map(v => v.text).join(' ');
 
     const speedParam = req.query.speed;
+    const voiceParam = req.query.voice as string | undefined;
     let speakingRate = 1.0;
     if (typeof speedParam === 'string') {
       const parsedSpeed = parseFloat(speedParam);
@@ -342,7 +384,7 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
       }
     }
 
-    const audioBase64 = await generateAudio(textToRead, speakingRate);
+    const audioBase64 = await generateAudio(textToRead, speakingRate, voiceParam);
     
     res.json({
       status: 'success',

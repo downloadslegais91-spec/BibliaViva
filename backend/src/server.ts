@@ -49,6 +49,10 @@ app.get('/registro', (req, res) => {
   res.sendFile(path.join(__dirname, '../../registro.html'));
 });
 
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../admin.html'));
+});
+
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {

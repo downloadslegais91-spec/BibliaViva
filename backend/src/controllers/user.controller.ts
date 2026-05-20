@@ -111,7 +111,9 @@ export const updateUserProfile = async (req: Request, res: Response, next: NextF
 
     const data: any = {};
     if (name !== undefined) data.name = name;
-    if (email !== undefined) data.email = email;
+    if (email !== undefined) {
+      data.email = email.trim().toLowerCase();
+    }
     if (questTemplate !== undefined) data.questTemplate = questTemplate;
 
     const updatedUser = await prisma.user.update({
@@ -141,9 +143,10 @@ export const updateUserProfile = async (req: Request, res: Response, next: NextF
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email } = req.body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
     // Check if email already exists
-    const existing = await prisma.user.findUnique({ where: { email } });
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (existing) {
       res.status(409).json({
         status: 'error',
@@ -156,7 +159,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     const newUser = await prisma.user.create({
       data: {
         name,
-        email,
+        email: normalizedEmail,
         xp: 0,
         level: 1,
         streakDays: 0,
@@ -200,3 +203,118 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const getRanking = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: [
+        { xp: 'desc' },
+        { level: 'desc' }
+      ],
+      take: 100,
+      select: {
+        id: true,
+        name: true,
+        xp: true,
+        level: true
+      }
+    });
+
+    res.json({
+      status: 'success',
+      data: users
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserDetails = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const userId = parseInt(id, 10);
+    if (isNaN(userId)) {
+      res.status(400).json({ status: 'error', message: 'ID de usuário inválido.' });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      res.status(404).json({ status: 'error', message: 'Usuário não encontrado.' });
+      return;
+    }
+
+    const chaptersCount = await prisma.readingProgress.count({
+      where: { userId }
+    });
+
+    const questsCount = await prisma.userQuest.count({
+      where: { userId, completed: true }
+    });
+
+    // Mask email for privacy
+    let maskedEmail = '';
+    if (user.email) {
+      const parts = user.email.split('@');
+      if (parts.length === 2) {
+        const name = parts[0];
+        const domain = parts[1];
+        maskedEmail = name.length > 2 
+          ? `${name.substring(0, 2)}***@${domain}` 
+          : `***@${domain}`;
+      }
+    }
+
+    res.json({
+      status: 'success',
+      data: {
+        id: user.id,
+        name: user.name,
+        email: maskedEmail,
+        xp: user.xp,
+        level: user.level,
+        streakDays: user.streakDays,
+        createdAt: user.createdAt,
+        plan: user.plan,
+        chaptersRead: chaptersCount,
+        questsCompleted: questsCount
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const checkUserEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail }
+    });
+
+    if (user) {
+      res.json({
+        status: 'success',
+        exists: true,
+        data: {
+          name: user.name,
+          email: user.email
+        }
+      });
+    } else {
+      res.status(404).json({
+        status: 'error',
+        exists: false,
+        message: 'Este e-mail não possui cadastro no sistema.'
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
