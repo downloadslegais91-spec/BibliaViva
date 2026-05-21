@@ -127,7 +127,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     }
 
     const { id } = req.params;
-    const userId = parseInt(id, 10);
+    const userId = parseInt(id as string, 10);
 
     if (isNaN(userId)) {
       res.status(400).json({ status: 'error', message: 'ID de usuário inválido.' });
