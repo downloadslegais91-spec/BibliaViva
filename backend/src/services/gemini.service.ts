@@ -1,9 +1,14 @@
 import '../env';
 import { getSystemInstruction } from './aiPrompt';
 
-// Modelos configurados com fallback automático para evitar problemas de limite de requisições (429)
-const PRIMARY_MODEL = 'gemini-2.5-flash';
-const FALLBACK_MODEL = 'gemini-2.5-flash-lite';
+// Lista de modelos ordenada por limites de cota disponíveis na API gratuita do Google AI Studio.
+// gemini-3.1-flash-lite possui 500 RPD (requisições por dia), enquanto gemini-2.5-flash possui apenas 20 RPD.
+const MODELS = [
+  'gemini-3.1-flash-lite', // 500 RPD, 15 RPM (Mais alta cota no plano gratuito)
+  'gemini-2.5-flash-lite', // 250 RPD, 10 RPM (Excelente fallback)
+  'gemini-3.5-flash',      // 20 RPD, 5 RPM (Limite muito baixo)
+  'gemini-2.5-flash'       // 20 RPD, 5 RPM (Limite muito baixo)
+];
 
 async function fetchGeminiWithFallback(payload: any, apiKey: string) {
   const tryModel = async (modelName: string) => {
@@ -26,15 +31,30 @@ async function fetchGeminiWithFallback(payload: any, apiKey: string) {
     return response.json();
   };
 
-  try {
-    return await tryModel(PRIMARY_MODEL);
-  } catch (error: any) {
-    if (error.status === 429 || (error.message && error.message.includes('429'))) {
-      console.warn(`[Gemini API] Limite atingido no ${PRIMARY_MODEL} (429). Iniciando fallback para ${FALLBACK_MODEL}...`);
-      return await tryModel(FALLBACK_MODEL);
+  let lastError: any = null;
+
+  for (const model of MODELS) {
+    try {
+      return await tryModel(model);
+    } catch (error: any) {
+      lastError = error;
+      
+      // Se for erro de cota/limite excedido (429), tenta o próximo modelo
+      if (error.status === 429 || (error.message && error.message.includes('429'))) {
+        console.warn(`[Gemini API] Limite de cota atingido no modelo ${model} (429). Iniciando fallback para o próximo modelo disponível...`);
+        continue;
+      }
+      
+      // Se for erro de autenticação (401/403), não adianta tentar outros modelos, lança o erro diretamente
+      if (error.status === 401 || error.status === 403) {
+        throw error;
+      }
+      
+      console.warn(`[Gemini API] Erro no modelo ${model} (${error.status || 'erro'}). Tentando o próximo modelo...`);
     }
-    throw error;
   }
+
+  throw lastError || new Error('Todos os modelos do Gemini falharam.');
 }
 
 export async function generateChatReply(
