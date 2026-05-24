@@ -589,6 +589,29 @@
       box-shadow: 0 0 8px rgba(191, 90, 242, 0.2);
     }
 
+    .plan-select {
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 4px 24px 4px 10px;
+      outline: none;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 10px;
+    }
+
+    .plan-select:focus {
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+    }
+
     .streak-cell {
       display: flex;
       align-items: center;
@@ -1119,15 +1142,19 @@
         // Initial letter
         const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
 
-        // Plan Badge styling
-        let planBadgeHtml = '';
-        if (user.plan === 'PREMIUM') {
-          planBadgeHtml = '<span class="badge badge-premium">💎 Premium</span>';
-        } else if (user.plan === 'BASIC') {
-          planBadgeHtml = '<span class="badge badge-basic">🌟 Basic</span>';
-        } else {
-          planBadgeHtml = '<span class="badge badge-free">Gratuito</span>';
-        }
+        // Plan Select Dropdown styling
+        const isSystemUser = user.id === 1;
+        const planClass = user.plan === 'PREMIUM' ? 'badge-premium' : user.plan === 'BASIC' ? 'badge-basic' : 'badge-free';
+        const planBadgeHtml = `
+          <select class="plan-select ${planClass}" 
+                  onchange="updateUserPlan(${user.id}, this.value, this)" 
+                  ${isSystemUser ? 'disabled' : ''}
+                  style="cursor: ${isSystemUser ? 'not-allowed' : 'pointer'};">
+            <option value="FREE" ${user.plan === 'FREE' ? 'selected' : ''} style="background: #121628; color: #FFF;">Gratuito</option>
+            <option value="BASIC" ${user.plan === 'BASIC' ? 'selected' : ''} style="background: #121628; color: #64D2FF;">🌟 Basic</option>
+            <option value="PREMIUM" ${user.plan === 'PREMIUM' ? 'selected' : ''} style="background: #121628; color: #E0B0FF;">💎 Premium</option>
+          </select>
+        `;
 
         // Formatted Date
         const joinedDate = new Date(user.createdAt).toLocaleDateString('pt-BR', {
@@ -1232,6 +1259,47 @@
       } finally {
         deleteBtn.disabled = false;
         deleteBtn.innerHTML = 'Excluir Usuário';
+      }
+    }
+
+    async function updateUserPlan(userId, newPlan, selectEl) {
+      const adminToken = sessionStorage.getItem('adminToken');
+      if (!adminToken) return;
+
+      // Update select classes dynamically for instant visual feedback
+      selectEl.className = 'plan-select';
+      if (newPlan === 'PREMIUM') {
+        selectEl.classList.add('badge-premium');
+      } else if (newPlan === 'BASIC') {
+        selectEl.classList.add('badge-basic');
+      } else {
+        selectEl.classList.add('badge-free');
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/admin/users/${userId}/plan`, {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-admin-token': adminToken 
+          },
+          body: JSON.stringify({ plan: newPlan })
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && resData.status === 'success') {
+          showToast(`Plano atualizado para ${newPlan}!`);
+          // Reload admin data to refresh stats dynamically!
+          loadAdminData();
+        } else {
+          showToast(resData.message || 'Erro ao atualizar plano.', 'error');
+          setTimeout(() => window.location.reload(), 1500);
+        }
+      } catch (error) {
+        console.error('Error updating user plan:', error);
+        showToast('Erro de conexão com o servidor.', 'error');
+        setTimeout(() => window.location.reload(), 1500);
       }
     }
   </script>

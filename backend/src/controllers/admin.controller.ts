@@ -162,3 +162,51 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     next(error);
   }
 };
+
+export const updateUserPlanByAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!verifyAdminToken(req)) {
+      res.status(403).json({ status: 'error', message: 'Acesso negado. Token administrativo inválido.' });
+      return;
+    }
+
+    const { id } = req.params;
+    const userId = parseInt(id as string, 10);
+    const { plan } = req.body;
+
+    if (isNaN(userId)) {
+      res.status(400).json({ status: 'error', message: 'ID de usuário inválido.' });
+      return;
+    }
+
+    if (!plan || !['FREE', 'BASIC', 'PREMIUM'].includes(plan.toUpperCase())) {
+      res.status(400).json({ status: 'error', message: 'Plano inválido. Escolha entre FREE, BASIC ou PREMIUM.' });
+      return;
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!existingUser) {
+      res.status(404).json({ status: 'error', message: 'Usuário não encontrado.' });
+      return;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { plan: plan.toUpperCase() }
+    });
+
+    res.json({
+      status: 'success',
+      message: 'Plano do usuário atualizado com sucesso.',
+      data: {
+        id: updatedUser.id,
+        plan: updatedUser.plan
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};

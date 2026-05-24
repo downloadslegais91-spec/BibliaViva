@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getUserStats, addXpToUser, updateUserProfile, registerUser, getRanking, getUserDetails, checkUserEmail } from '../controllers/user.controller';
 import { saveProgress } from '../controllers/progress.controller';
-import { adminLogin, getAdminStats, getAdminUsers, deleteUser } from '../controllers/admin.controller';
+import { adminLogin, getAdminStats, getAdminUsers, deleteUser, updateUserPlanByAdmin } from '../controllers/admin.controller';
 
 
 import { getQuests, completeQuest } from '../controllers/quest.controller';
@@ -19,6 +19,11 @@ router.post('/admin/login', adminLogin);
 router.get('/admin/stats', getAdminStats);
 router.get('/admin/users', getAdminUsers);
 router.delete('/admin/users/:id', deleteUser);
+router.put('/admin/users/:id/plan', validate(z.object({
+  body: z.object({
+    plan: z.enum(['FREE', 'BASIC', 'PREMIUM'])
+  })
+})), updateUserPlanByAdmin);
 
 router.get('/users/ranking', getRanking);
 
