@@ -851,34 +851,21 @@
 
   <div class="app-container">
     
-    <!-- ─── LOGIN VIEW ─── -->
+    <!-- ─── RESTRICTED ACCESS VIEW ─── -->
     <div class="login-wrapper" id="login-section">
-      <div class="login-card">
-        <div class="login-logo">⚖️</div>
-        <h1 class="login-title">Área do Administrador</h1>
-        <p class="login-subtitle">Autentique-se para gerenciar usuários e visualizar estatísticas do BíbliaViva.</p>
+      <div class="login-card" style="border-color: rgba(255, 69, 58, 0.3); box-shadow: 0 8px 32px rgba(255, 69, 58, 0.15);">
+        <div class="login-logo" style="animation: pulseDanger 2s infinite alternate;">🔒</div>
+        <h1 class="login-title" style="color: #FF453A;">Acesso Restrito</h1>
+        <p class="login-subtitle" style="margin-bottom: 20px;">Este painel é blindado. O acesso é exclusivo para o administrador autorizado via Login do Google.</p>
         
-        <form id="login-form" onsubmit="handleLogin(event)">
-          <div class="form-group">
-            <label class="form-label" for="username">Usuário</label>
-            <div class="input-wrapper">
-              <span class="input-icon">👤</span>
-              <input class="form-input" type="text" id="username" placeholder="Digite seu usuário..." required autocomplete="username">
-            </div>
-          </div>
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 14px; text-align: left; line-height: 1.5; color: rgba(255, 255, 255, 0.8);">
+          <span style="font-weight: 600; color: #FFF; display: block; margin-bottom: 6px;">Requisito de Entrada:</span>
+          E-mail do administrador: <strong style="color: #4F8EF7;">jobimlaves@gmail.com</strong> autenticado de forma segura pelo Google.
+        </div>
 
-          <div class="form-group">
-            <label class="form-label" for="password">Senha</label>
-            <div class="input-wrapper">
-              <span class="input-icon">🔒</span>
-              <input class="form-input" type="password" id="password" placeholder="Digite sua senha..." required autocomplete="current-password">
-            </div>
-          </div>
-
-          <button class="btn-login" type="submit" id="btn-submit">
-            <span>Entrar no Painel</span>
-          </button>
-        </form>
+        <button class="btn-login" onclick="window.location.href='/login.html'" style="background: linear-gradient(135deg, #007AFF 0%, #00C6FF 100%); margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3); border: none; height: 50px; width: 100%; border-radius: 25px; font-weight: 600; color: white; cursor: pointer;">
+          <span>Fazer Login com Google</span>
+        </button>
 
         <a href="/app" class="btn-back-site">← Voltar para o BíbliaViva</a>
       </div>
@@ -1026,54 +1013,20 @@
 
     // Checking Login Status
     window.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const userEmail = localStorage.getItem('userEmail');
       const adminToken = sessionStorage.getItem('adminToken');
-      if (adminToken === 'admin-secret-token') {
+      
+      if ((isLoggedIn && userEmail === 'jobimlaves@gmail.com') || adminToken === 'admin-secret-token') {
+        // Enforce the token in sessionStorage if it wasn't there
+        sessionStorage.setItem('adminToken', 'admin-secret-token');
         showDashboard();
+      } else {
+        // Block access, show Restricted Access card
+        document.getElementById('login-section').style.display = 'flex';
+        document.getElementById('dashboard-section').classList.remove('active');
       }
     });
-
-    // Login logic
-    async function handleLogin(e) {
-      e.preventDefault();
-      
-      const usernameInput = document.getElementById('username');
-      const passwordInput = document.getElementById('password');
-      const submitBtn = document.getElementById('btn-submit');
-      
-      const username = usernameInput.value.trim().toLowerCase();
-      const password = passwordInput.value.trim();
-      
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner"></span> <span>Autenticando...</span>';
-      
-      try {
-        const response = await fetch(`${API_URL}/admin/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-        
-        const resData = await response.json();
-        
-        if (response.ok && resData.status === 'success') {
-          sessionStorage.setItem('adminToken', resData.data.token);
-          showToast('Login efetuado com sucesso!');
-          
-          setTimeout(() => {
-            showDashboard();
-          }, 800);
-        } else {
-          showToast(resData.message || 'Credenciais inválidas.', 'error');
-          passwordInput.value = '';
-        }
-      } catch (error) {
-        console.error('Error logging in:', error);
-        showToast('Erro de conexão com o servidor.', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Entrar no Painel</span>';
-      }
-    }
 
     // Toggle visual panels
     function showDashboard() {
@@ -1087,6 +1040,13 @@
 
     function handleLogout() {
       sessionStorage.removeItem('adminToken');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('userAvatarUrl');
+      localStorage.removeItem('userAvatarInitials');
+      localStorage.removeItem('userType');
       showToast('Desconectado com sucesso.');
       setTimeout(() => {
         window.location.reload();

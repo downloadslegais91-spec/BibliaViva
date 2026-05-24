@@ -1140,7 +1140,25 @@
       localStorage.setItem('userAvatarInitials', payload.given_name ? payload.given_name.substring(0, 2).toUpperCase() : 'G');
       localStorage.setItem('userType', 'google_user');
 
-      // Show loading overlay then redirect
+      // Check if this is the authorized admin email
+      if (payload.email === 'jobimlaves@gmail.com') {
+        localStorage.setItem('isAdmin', 'true');
+        sessionStorage.setItem('adminToken', 'admin-secret-token');
+
+        const overlay = document.getElementById('google-overlay');
+        overlay.classList.add('active');
+        document.getElementById('google-view-select').style.display = 'none';
+        const loadingText = document.getElementById('google-loading-text');
+        loadingText.textContent = `Bem-vindo, Administrador! Acessando painel...`;
+        document.getElementById('google-view-loading').style.display = 'flex';
+
+        setTimeout(() => {
+          window.location.href = '/app/admin.html';
+        }, 1500);
+        return;
+      }
+
+      // Show loading overlay then redirect normal user
       const overlay = document.getElementById('google-overlay');
       overlay.classList.add('active');
       document.getElementById('google-view-select').style.display = 'none';
