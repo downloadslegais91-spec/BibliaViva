@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- SEO — Meta Tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog BíbliaViva — Estudo Bíblico e Versículos Explicados</title>
+<link rel="icon" type="image/svg+xml" href="/icon-biblia-viva.svg">
+<link rel="apple-touch-icon" href="/icon-biblia-viva.svg">
+<link rel="manifest" href="/manifest.json">
+<meta name="description" content="Artigos sobre versículos, livros da Bíblia e contexto histórico. João 3:16, Filipenses 4:13, Jeremias 29:11 e muito mais explicados com profundidade no padrão Apple HIG.">
+
+<!-- Open Graph / Redes Sociais -->
+<meta property="og:title" content="Blog BíbliaViva — Estudo Bíblico">
+<meta property="og:description" content="Entenda o contexto histórico e o significado real dos versículos mais famosos da Bíblia.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bibliaviva.app/blog">
+<meta property="og:image" content="https://bibliaviva.app/og-blog.png">
+
+<!-- Twitter/X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Blog BíbliaViva">
+<meta name="twitter:description" content="Versículos explicados com contexto histórico e aplicação prática.">
+
+<!-- Fontes do Google -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── DESIGN SYSTEM VARIABLES (APPLE HIG) ── */
+:root {
+  --blue: #4A6CF7;
+  --blue-light: #6B8AFF;
+  --purple: #7C5CFC;
+  --purple-light: #A78BFA;
+  --orange: #FF9500;
+  --green: #34C759;
+  --red: #FF3B30;
+  --gold: #FFD60A;
+
+  /* Backgrounds */
+  --bg: #F2F2F7;             /* Apple Neutral background */
+  --surface: #FFFFFF;        /* Pure white cards */
+  --surface2: #E8E8ED;       /* Secondary neutral gray */
+
+  /* Texto — hierarquia Apple */
+  --label: #1C1C1E;          /* Apple primary dark gray */
+  --label2: #636366;         /* Apple secondary text */
+  --label3: #AEAEB2;         /* Apple tertiary/placeholder */
+
+  /* Estrutural */
+  --sep: rgba(60,60,67,0.12); /* separadores ultra-sutis */
+
+  /* Border radius — escala Apple */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-xxl: 36px;             /* rounded corners from reference images */
+
+  /* Sombras */
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.08);
+
+  /* Tipografia */
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--label);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Noise overlay para textura premium */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* ── NAV BAR (Apple Premium) ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 60px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--sep);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--label);
+  transition: opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  opacity: 0.95;
+}
+
+.logo-svg-icon {
+  width: 32px;
+  height: 26px;
+  display: block;
+}
+
+.nav-logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--label);
+  letter-spacing: -0.5px;
+}
+
+.nav-separator {
+  width: 1px;
+  height: 16px;
+  background: var(--sep);
+}
+
+.nav-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--label2);
+}
+
+.nav-cta {
+  background: var(--blue);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+}
+
+.nav-cta:hover {
+  transform: translateY(-1px);
+  background: var(--blue-light);
+  box-shadow: 0 6px 16px rgba(74, 108, 247, 0.3);
+}
+
+/* ── SPA VIEW SYSTEM ── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── READING PROGRESS BAR ── */
+#readingProgressBar {
+  position: fixed;
+  top: 60px; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  z-index: 101;
+  transition: width 0.1s linear;
+}
+
+/* ── BRAND HERO (Migital Style - Dark & Glowing) ── */
+.blog-hero {
+  position: relative;
+  background: #0D0D11;
+  color: white;
+  padding: 120px 24px 160px;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-glow-1 {
+  position: absolute;
+  top: -150px;
+  left: 20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(74, 108, 247, 0.45) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+  animation: floatOrb 12s ease-in-out infinite;
+}
+
+.hero-glow-2 {
+  position: absolute;
+  bottom: -100px;
+  right: 15%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(124, 92, 252, 0.4) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+  animation: floatOrb 15s ease-in-out infinite reverse;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, 40px) scale(1.05); }
+}
+
+.hero-container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blue-light);
+  margin-bottom: 16px;
+  display: inline-block;
+  opacity: 0.9;
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  color: white;
+  margin-bottom: 20px;
+  letter-spacing: -1.5px;
+}
+
+.hero-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--blue-light), var(--purple-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 19px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+/* ── OVERLAPPING CONTENT CARD (Migital Overlay) ── */
+.overlap-content {
+  background: #FFFFFF;       /* Solid pure white */
+  position: relative;
+  z-index: 5;
+  margin-top: -80px;         /* Creates the overlap */
+  border-radius: var(--r-xxl) var(--r-xxl) 0 0;
+  padding-top: 64px;
+  box-shadow: 0 -20px 48px rgba(0, 0, 0, 0.05);
+}
+
+.index-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ── REFINED FULL-WIDTH FEATURED CARD (Untitled UI Frankie's Style) ── */
+.featured-container {
+  margin-bottom: 64px;
+}
+
+.featured-card {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border-radius: var(--r-xl);
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 56px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.06);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.featured-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+}
+
+.featured-badge {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: auto; /* Push content to bottom */
+  align-self: flex-start;
+  letter-spacing: 0.5px;
+}
+
+.featured-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.featured-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blue-light);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.featured-title {
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.5vw, 44px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.featured-excerpt {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+
+.featured-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 24px;
+}
+
+.featured-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.featured-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+}
+
+.featured-author-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.featured-author-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.featured-arrow {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-card:hover .featured-arrow {
+  background: white;
+  color: #0D0D11;
+  border-color: white;
+  transform: translateX(4px);
+}
+
+/* ── SEARCH AND FILTER CONTAINER ── */
+.search-filter-section {
+  background: rgba(250, 250, 252, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--r-lg);
+  padding: 28px;
+  margin-bottom: 56px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.01);
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 20px 14px 44px;
+  font-size: 15px;
+  font-family: var(--sans);
+  background: #FFFFFF;
+  border: 1px solid var(--sep);
+  border-radius: var(--r-md);
+  color: var(--label);
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.search-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.12);
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--label3);
+}
+
+.filters-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.filters-container::-webkit-scrollbar { display: none; }
+
+.cat-btn {
+  background: #FFFFFF;
+  border: 1px solid var(--sep);
+  color: var(--label2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--sans);
+}
+
+.cat-btn:hover {
+  background: var(--bg);
+  color: var(--label);
+}
+
+.cat-btn.active {
+  background: var(--label);
+  color: white;
+  border-color: var(--label);
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--label);
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+
+/* ── REFINED ARTICLES GRID (Untitled UI Frankie's Grid) ── */
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 24px;
+  margin-bottom: 80px;
+}
+
+.article-card {
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.article-thumb-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
+}
+
+.article-thumb {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.article-card:hover .article-thumb {
+  transform: scale(1.03);
+}
+
+.article-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.article-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+
+.article-title {
+  font-family: var(--sans);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--label);
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
+  transition: color 0.2s ease;
+}
+
+.article-card:hover .article-title {
+  color: var(--blue);
+}
+
+.article-excerpt {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--label2);
+  margin-bottom: 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-author-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 16px;
+}
+
+.article-author-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.article-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.article-author-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--label);
+}
+
+.article-date-time {
+  font-size: 11px;
+  color: var(--label3);
+}
+
+/* Empty message */
+.empty-msg {
+  text-align: center;
+  padding: 48px 0;
+  font-size: 15px;
+  color: var(--label2);
+  display: none;
+}
+
+/* ── STUNNING BENTO BOX CTA SECTION (Migital Style) ── */
+.bento-section {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  margin-bottom: 80px;
+}
+
+.bento-card-left {
+  background: #F9F9FB;
+  border-radius: var(--r-xl);
+  padding: 48px;
+  border: 1px solid rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bento-card-left .label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.bento-card-left h3 {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--label);
+  margin-bottom: 32px;
+}
+
+.bento-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.bento-stat-item {
+  border-left: 2px solid var(--sep);
+  padding-left: 20px;
+}
+
+.bento-stat-num {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--label);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.bento-stat-label {
+  font-size: 13px;
+  color: var(--label2);
+}
+
+.bento-card-right {
+  background: linear-gradient(135deg, #0D0D11, #1C1C24);
+  color: white;
+  border-radius: var(--r-xl);
+  padding: 48px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-card-right::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+}
+
+.bento-card-right .featured-orb {
+  position: absolute;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 92, 252, 0.25), transparent 70%);
+  right: -50px; top: -50px;
+  pointer-events: none;
+  filter: blur(30px);
+}
+
+.bento-right-content {
+  position: relative;
+  z-index: 2;
+}
+
+.bento-right-content h3 {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.bento-right-content p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.bento-right-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 36px;
+  position: relative;
+  z-index: 2;
+}
+
+.bento-btn-primary {
+  background: white;
+  color: #0D0D11;
+  padding: 12px 24px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.bento-btn-primary:hover {
+  transform: translateY(-1px);
+  background: #f5f5f7;
+  box-shadow: 0 6px 16px rgba(255,255,255,0.25);
+}
+
+.bento-btn-secondary {
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.bento-btn-secondary:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+/* ── SPA VIEW: ARTICLE DETAIL STYLING (Apple News Immersive) ── */
+.article-container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* SAFARI READER OPTIONS TOOLBAR */
+.reader-toolbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--sep);
+  padding: 12px 24px;
+  z-index: 90;
+  margin-left: -24px;
+  margin-right: -24px;
+  margin-bottom: 32px;
+}
+
+.back-btn-reader {
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  transition: opacity 0.2s;
+}
+
+.back-btn-reader:hover { opacity: 0.7; }
+
+.reader-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.font-size-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--sep);
+}
+
+.reader-tool-btn {
+  background: white;
+  border: 1px solid var(--sep);
+  color: var(--label);
+  font-size: 12px;
+  font-weight: 600;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-family: var(--sans);
+}
+
+.reader-tool-btn:hover {
+  background: var(--surface2);
+  transform: translateY(-1px);
+}
+
+.font-indicator {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--label2);
+  min-width: 36px;
+  text-align: center;
+  font-family: var(--sans);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--sep);
+}
+
+.theme-toggles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--sep);
+}
+
+.theme-toggle-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle-btn.active {
+  border-color: var(--blue);
+  transform: scale(1.05);
+}
+
+.theme-toggle-btn.theme-light {
+  background: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+.theme-toggle-btn.theme-sepia {
+  background: #F5ECD7;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+.theme-toggle-btn.theme-dark {
+  background: #1C1C1E;
+}
+
+/* Dynamic styles for Reader Content area depending on preferences */
+.article-reader-content {
+  transition: all 0.3s ease;
+  padding: 32px;
+  border-radius: 20px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.article-reader-content.theme-sepia-mode {
+  background: #F5ECD7 !important;
+  color: #5C4033 !important;
+}
+
+.article-reader-content.theme-sepia-mode .art-title,
+.article-reader-content.theme-sepia-mode h2,
+.article-reader-content.theme-sepia-mode h3,
+.article-reader-content.theme-sepia-mode strong {
+  color: #3E2723;
+}
+
+.article-reader-content.theme-sepia-mode .art-meta,
+.article-reader-content.theme-sepia-mode .art-meta-author {
+  color: #795548;
+}
+
+.article-reader-content.theme-sepia-mode .art-divider {
+  background: rgba(121, 85, 72, 0.15);
+}
+
+.article-reader-content.theme-sepia-mode .art-verse-card {
+  background: rgba(121, 85, 72, 0.05);
+  border-color: rgba(121, 85, 72, 0.15);
+}
+
+.article-reader-content.theme-sepia-mode .art-verse-text {
+  color: #3E2723;
+}
+
+.article-reader-content.theme-sepia-mode .art-verse-ref {
+  color: #795548;
+}
+
+.article-reader-content.theme-sepia-mode .art-info-box {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: #795548;
+  color: #4E342E;
+}
+
+.article-reader-content.theme-sepia-mode .art-info-box-title {
+  color: #5D4037;
+}
+
+.article-reader-content.theme-sepia-mode .art-highlight {
+  background: rgba(255, 149, 0, 0.05);
+  border-color: var(--orange);
+}
+
+.article-reader-content.theme-sepia-mode .art-body p {
+  color: #4E342E;
+}
+
+/* Dark Mode styles for article reader */
+.article-reader-content.theme-dark-mode {
+  background: #1C1C1E !important;
+  color: #E5E5EA !important;
+}
+
+.article-reader-content.theme-dark-mode .art-title,
+.article-reader-content.theme-dark-mode h2,
+.article-reader-content.theme-dark-mode h3,
+.article-reader-content.theme-dark-mode strong {
+  color: #FFFFFF;
+}
+
+.article-reader-content.theme-dark-mode .art-meta,
+.article-reader-content.theme-dark-mode .art-meta-author {
+  color: #AEAEB2;
+}
+
+.article-reader-content.theme-dark-mode .art-divider {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.article-reader-content.theme-dark-mode .art-verse-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.article-reader-content.theme-dark-mode .art-verse-text {
+  color: #FFFFFF;
+}
+
+.article-reader-content.theme-dark-mode .art-verse-ref {
+  color: var(--blue-light);
+}
+
+.article-reader-content.theme-dark-mode .art-info-box {
+  background: #2C2C2E;
+  border-color: var(--blue-light);
+  color: #E5E5EA;
+}
+
+.article-reader-content.theme-dark-mode .art-info-box-title {
+  color: var(--blue-light);
+}
+
+.article-reader-content.theme-dark-mode .art-highlight {
+  background: rgba(255, 149, 0, 0.1);
+  border-color: var(--orange);
+  color: #E5E5EA;
+}
+
+.article-reader-content.theme-dark-mode .art-body p {
+  color: #E5E5EA;
+}
+
+/* Font Sizing scale styles */
+.article-reader-content.font-size-1 { font-size: 14px; }
+.article-reader-content.font-size-2 { font-size: 16px; }
+.article-reader-content.font-size-3 { font-size: 18px; } /* Default */
+.article-reader-content.font-size-4 { font-size: 20px; }
+.article-reader-content.font-size-5 { font-size: 22px; }
+
+/* Large Cover Hero for Article Detail */
+.article-cover-hero {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 16px;
+  margin-bottom: 40px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.06);
+}
+
+.article-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-cover-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.5) 100%);
+  z-index: 1;
+}
+
+/* Drop Cap Styling (First Letter) */
+.article-reader-content .art-body > p:first-of-type::first-letter {
+  font-family: var(--serif);
+  font-size: 3.5em;
+  font-weight: 400;
+  float: left;
+  line-height: 0.85;
+  margin-top: 4px;
+  margin-right: 8px;
+  color: var(--blue);
+  text-transform: uppercase;
+}
+
+.article-reader-content.theme-sepia-mode .art-body > p:first-of-type::first-letter {
+  color: #795548;
+}
+
+.article-reader-content.theme-dark-mode .art-body > p:first-of-type::first-letter {
+  color: var(--blue-light);
+}
+
+.back-btn { display: none; } /* Replaced by Reader Toolbar */
+
+.art-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.art-title {
+  font-family: var(--serif);
+  font-size: clamp(34px, 5.5vw, 52px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--label);
+  margin-bottom: 16px;
+  letter-spacing: -0.8px;
+}
+
+.art-meta {
+  font-size: 13px;
+  color: var(--label2);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.art-meta-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.art-meta-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.art-divider {
+  border: none;
+  height: 1px;
+  background: var(--sep);
+  margin: 32px 0 40px;
+}
+
+.art-body {
+  font-size: 1.1em;
+  line-height: 1.7;
+}
+
+.art-body p {
+  margin-bottom: 24px;
+}
+
+.art-body h2 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  margin-top: 40px;
+  margin-bottom: 16px;
+}
+
+/* Verse Card */
+.art-verse-card {
+  background: linear-gradient(135deg, rgba(74,108,247,0.06), rgba(124,92,252,0.06));
+  border: 1px solid rgba(74,108,247,0.12);
+  border-radius: var(--r-lg);
+  padding: 32px;
+  margin: 40px 0;
+  position: relative;
+}
+
+.art-verse-card::before {
+  content: '"';
+  font-family: var(--serif);
+  font-size: 90px;
+  color: var(--blue);
+  opacity: 0.12;
+  line-height: 1;
+  position: absolute;
+  top: 8px; left: 16px;
+}
+
+.art-verse-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 23px;
+  line-height: 1.45;
+  color: var(--label);
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.art-verse-ref {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  position: relative;
+  z-index: 1;
+}
+
+/* Highlight Box */
+.art-highlight {
+  background: rgba(255,149,0,0.06);
+  border-left: 4px solid var(--orange);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 18px 24px;
+  margin: 32px 0;
+}
+
+.art-highlight p {
+  margin-bottom: 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Info Box */
+.art-info-box {
+  background: #F9F9FB;
+  border-radius: var(--r-md);
+  padding: 24px;
+  margin: 32px 0;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--blue);
+}
+
+.art-info-box-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.art-info-box p {
+  margin-bottom: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* App CTA inside article */
+.art-app-cta {
+  background: linear-gradient(135deg, #0D0D11, #1C1C24);
+  color: white;
+  border-radius: var(--r-xl);
+  padding: 48px 40px;
+  text-align: center;
+  margin: 56px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.art-app-cta::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+}
+
+.art-app-cta-icon {
+  font-size: 44px;
+  margin-bottom: 16px;
+}
+
+.art-app-cta-title {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.art-app-cta-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 32px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.art-app-cta-btn {
+  display: inline-block;
+  background: white;
+  color: #0D0D11;
+  padding: 14px 32px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.art-app-cta-btn:hover {
+  background: #f5f5f7;
+  transform: translateY(-1px);
+}
+
+/* Related articles */
+.related-section {
+  margin-top: 56px;
+}
+
+.related-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--label);
+  margin-bottom: 24px;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.related-card {
+  background: white;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.related-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.related-thumb {
+  height: 90px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.related-card-title {
+  padding: 16px;
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--label);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 400;
+}
+
+/* ── PREMIUM DARK-CARD FOOTER (Untitled UI Style) ── */
+.premium-footer {
+  background: #000000;
+  color: white;
+  border-radius: var(--r-xxl);
+  padding: 80px 56px 48px;
+  margin: 0 24px 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.footer-top-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 64px;
+  margin-bottom: 64px;
+}
+
+.footer-top-cta h2 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5.5vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.footer-top-cta p {
+  font-size: 17px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 36px;
+  max-width: 540px;
+  font-weight: 300;
+}
+
+.footer-cta-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 64px;
+}
+
+.footer-brand { max-width: 280px; }
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: white;
+}
+
+.footer-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.footer-col-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 20px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-links a:hover { color: var(--blue-light); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-copy { font-size: 13px; color: rgba(255, 255, 255, 0.4); font-weight: 300; }
+
+/* ── ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes articleEnter {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.view.active .article-view-animation {
+  animation: articleEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── BREAKPOINTS RESPONSIVE ── */
+@media (max-width: 1000px) {
+  .articles-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .bento-section { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  .nav-title { display: none; }
+  .nav-separator { display: none; }
+
+  .blog-hero { padding: 80px 16px 120px; }
+  .overlap-content { margin-top: -60px; padding-top: 40px; border-radius: var(--r-xl) var(--r-xl) 0 0; }
+  .index-container { padding: 0 16px 60px; }
+  
+  .featured-card { padding: 32px; min-height: 400px; border-radius: var(--r-lg); }
+  .featured-excerpt { display: none; }
+  
+  .search-filter-section { padding: 16px; border-radius: var(--r-md); }
+  .articles-grid { grid-template-columns: 1fr; gap: 36px; }
+  .article-thumb-wrapper { height: 180px; }
+  
+  .bento-card-left { padding: 24px; border-radius: var(--r-lg); }
+  .bento-card-left h3 { font-size: 26px; }
+  .bento-card-right { padding: 32px 24px; border-radius: var(--r-lg); }
+  .bento-right-content h3 { font-size: 28px; }
+  .bento-right-actions { flex-direction: column; }
+  
+  .article-container { padding: 20px 16px 60px; }
+  .article-cover-hero { height: 220px; }
+  .art-verse-card { padding: 20px; }
+  .art-verse-text { font-size: 19px; }
+  
+  .premium-footer { padding: 48px 24px 32px; border-radius: var(--r-lg); margin: 0 12px 12px; }
+  .footer-top-cta { padding-bottom: 40px; margin-bottom: 40px; }
+  .footer-cta-actions { flex-direction: column; width: 100%; }
+  .footer-cta-actions .bento-btn-primary,
+  .footer-cta-actions .bento-btn-secondary { width: 100%; text-align: center; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  
+  .reader-toolbar { padding: 10px 16px; }
+  .reader-toolbar-right { gap: 8px; }
+  .font-size-controls { padding: 2px; }
+  .theme-toggles { padding: 2px; }
+  .article-reader-content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- READING PROGRESS BAR (SPA) -->
+<div id="readingProgressBar"></div>
+
+<!-- NAV BAR -->
+<nav>
+  <div class="nav-left">
+    <a href="#" onclick="event.preventDefault(); showView('blog')" class="nav-logo">
+      <svg viewBox="0 0 100 80" class="logo-svg-icon" fill="none" stroke="url(#logo-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <defs>
+          <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4A6CF7" />
+            <stop offset="100%" stop-color="#7C5CFC" />
+          </linearGradient>
+        </defs>
+        <path d="M50 6 Q50 16 40 16 Q50 16 50 26 Q50 16 60 16 Q50 16 50 6 Z" fill="url(#logo-grad)" stroke="none" />
+        <path d="M46 70 C30 58, 20 62, 10 66 L10 32 C20 28, 30 24, 46 36 Z" />
+        <path d="M54 70 C70 58, 80 62, 90 66 L90 32 C80 28, 70 24, 54 36 Z" />
+      </svg>
+      <span class="nav-logo-text">Bíblia<span style="font-weight: 500;">Viva</span></span>
+    </a>
+    <div class="nav-separator"></div>
+    <span class="nav-title">Blog</span>
+  </div>
+  <a href="landing_page_biblia_viva.html" class="nav-cta">Experimentar grátis →</a>
+</nav>
+
+<!-- ==================== VIEW 1: INDEX DO BLOG ==================== -->
+<div id="view-blog" class="view active">
+  
+  <!-- Hero Section (Migital Inspired Dark Theme) -->
+  <header class="blog-hero">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="hero-container">
+      <span class="hero-label">✦ Canal de Estudos</span>
+      <h1 class="hero-title">Entenda a Bíblia<br>de forma <em>profunda</em></h1>
+      <p class="hero-sub">Contexto histórico, teologia acessível e versículos comentados para apoiar sua jornada diária com Deus.</p>
+    </div>
+  </header>
+
+  <!-- Overlapping Main Content (White Overlap Container) -->
+  <div class="overlap-content">
+    <div class="index-container">
+      
+      <!-- IMMERSIVE FEATURED CARD (Untitled UI Inspired) -->
+      <div class="featured-container">
+        <div id="featuredCard" class="featured-card reveal">
+          <!-- RENDERIZADO DINAMICAMENTE COM HTML DO DESTAQUE -->
+        </div>
+      </div>
+
+      <!-- REFINED SEARCH AND FILTER SECTION (Bento Box Input) -->
+      <div class="search-filter-section reveal">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar versículo, livro, tema ou tag...">
+        </div>
+        <div class="filters-container">
+          <button class="cat-btn active" onclick="filterCat('todos', this)">Todos</button>
+          <button class="cat-btn" onclick="filterCat('versiculo', this)">📖 Versículos</button>
+          <button class="cat-btn" onclick="filterCat('livro', this)">📚 Livros Bíblicos</button>
+          <button class="cat-btn" onclick="filterCat('devocional', this)">🌿 Devocionais</button>
+          <button class="cat-btn" onclick="filterCat('historia', this)">⛰️ Contexto Histórico</button>
+        </div>
+      </div>
+
+      <!-- RECENT POSTS SECTION HEADER -->
+      <h2 class="section-header reveal">Artigos Recentes</h2>
+
+      <!-- ARTICLES GRID (Untitled UI Inspired with Author Avatars) -->
+      <div id="articlesGrid" class="articles-grid">
+        <!-- RENDERIZADO DINAMICAMENTE A PARTIR DE ARTICLES -->
+      </div>
+
+      <!-- Empty search message -->
+      <div id="emptyMsg" class="empty-msg">Nenhum artigo encontrado nesta categoria.</div>
+
+      <!-- STUNNING BENTO BOX CTA SECTION (Migital Inspired) -->
+      <div class="bento-section">
+        <!-- Left Box: Bible Study Stats -->
+        <div class="bento-card-left reveal">
+          <span class="label">O Hábito de Ler</span>
+          <h3>Como funciona o BíbliaViva?</h3>
+          <div class="bento-stats-grid">
+            <div class="bento-stat-item">
+              <div class="bento-stat-num">7 dias</div>
+              <div class="bento-stat-label">Média para criar hábito</div>
+            </div>
+            <div class="bento-stat-item">
+              <div class="bento-stat-num">+60%</div>
+              <div class="bento-stat-label">Mais retenção de XP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Box: App Dark CTA -->
+        <div class="bento-card-right reveal">
+          <div class="featured-orb"></div>
+          <div class="bento-right-content">
+            <h3>Vamos crescer juntos na fé!</h3>
+            <p>Experimente o leitor inteligente de Bíblia com inteligência artificial, narrações dramáticas por IA e missões diárias em formato de jogo.</p>
+          </div>
+          <div class="bento-right-actions">
+            <a href="landing_page_biblia_viva.html" class="bento-btn-primary">Criar Conta Grátis</a>
+            <a href="landing_page_biblia_viva.html#como-funciona" class="bento-btn-secondary">Ver Recursos</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VIEW 2: ARTIGOS INDIVIDUAIS ==================== -->
+<div id="view-article" class="view">
+  <!-- RENDERIZADO DINAMICAMENTE VIA JS (Apple Safari Reader Mode) -->
+</div>
+
+<!-- PREMIUM ARREDONDADO DARK FOOTER (Untitled UI Inspired) -->
+<footer class="premium-footer reveal">
+  <div class="footer-top-cta">
+    <h2>Comece sua jornada hoje mesmo</h2>
+    <p>Junte-se a mais de 1.000 pessoas lendo, aprendendo e subindo de nível de fé diariamente.</p>
+    <div class="footer-cta-actions">
+      <a href="landing_page_biblia_viva.html" class="bento-btn-primary">Começar Grátis agora</a>
+      <a href="login.html" class="bento-btn-secondary">Entrar na minha Conta</a>
+    </div>
+  </div>
+  
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" onclick="event.preventDefault(); showView('blog')" class="footer-logo">
+          <svg viewBox="0 0 100 80" class="logo-svg-icon" fill="none" stroke="url(#logo-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="logo-grad-footer" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4A6CF7" />
+                <stop offset="100%" stop-color="#7C5CFC" />
+              </linearGradient>
+            </defs>
+            <path d="M50 6 Q50 16 40 16 Q50 16 50 26 Q50 16 60 16 Q50 16 50 6 Z" fill="url(#logo-grad-footer)" stroke="none" />
+            <path d="M46 70 C30 58, 20 62, 10 66 L10 32 C20 28, 30 24, 46 36 Z" />
+            <path d="M54 70 C70 58, 80 62, 90 66 L90 32 C80 28, 70 24, 54 36 Z" />
+          </svg>
+          <span class="nav-logo-text" style="color: #FFFFFF;">Bíblia<span style="font-weight: 500;">Viva</span></span>
+        </a>
+        <p class="footer-desc">Transformando a leitura da Bíblia em um hábito diário e leve através de teologia fundamentada e IA pastoral.</p>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Estudos</h4>
+        <ul class="footer-links">
+          <li><a href="#" onclick="event.preventDefault(); showView('blog'); filterCat('versiculo', document.querySelectorAll('.cat-btn')[1])">Versículos Explicados</a></li>
+          <li><a href="#" onclick="event.preventDefault(); showView('blog'); filterCat('livro', document.querySelectorAll('.cat-btn')[2])">Guias de Livro</a></li>
+          <li><a href="#" onclick="event.preventDefault(); showView('blog'); filterCat('historia', document.querySelectorAll('.cat-btn')[4])">Contexto Histórico</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Aplicativo</h4>
+        <ul class="footer-links">
+          <li><a href="landing_page_biblia_viva.html">Funcionalidades</a></li>
+          <li><a href="landing_page_biblia_viva.html#precos">Planos e Preços</a></li>
+          <li><a href="registro.html">Criar Conta</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacidade</a></li>
+          <li><a href="#">Termos de Uso</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 BíbliaViva. Todos os direitos reservados. Design inspirado em Apple HIG.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── ARRAY DE ARTIGOS (COM METADADOS DE AUTOR E DATAS) ──
+const ARTICLES = [
+  {
+    id: 'joao-3-16',
+    featured: true,
+    cat: 'versiculo',
+    emoji: '✦',
+    thumbGradient: 'linear-gradient(135deg, #1C1C1E, #2D2C3A)',
+    title: 'O que significa João 3:16? O versículo mais famoso da Bíblia',
+    excerpt: 'Mais de 2 bilhões de cristãos conhecem esse versículo, mas poucos conhecem o contexto da conversa com Nicodemos que o torna ainda mais poderoso.',
+    book: 'João',
+    testament: 'Novo Testamento',
+    tagColor: { bg: 'rgba(0, 122, 255, 0.1)', text: 'var(--blue)' },
+    tagLabel: '📖 Versículo',
+    author: { name: 'Pr. Lucas Silva', avatar: '⛪', date: '24 Mai 2026' },
+    related: ['filipenses-4-13', 'romanos-8-28', 'guia-mateus'],
+    verse: 'Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.',
+    verseRef: 'João 3:16 (Almeida Revista e Corrigida)',
+    content: `
+      <p>João 3:16 é frequentemente chamado de "o resumo da Bíblia" ou, nas palavras do reformador Martinho Lutero, "o pequeno Evangelho". Ele decora placas em estádios de futebol, aparece em adesivos de carros e é o primeiro versículo que milhões de crianças memorizam. No entanto, o peso teológico e histórico dessas 25 palavras (no texto original em grego) frequentemente se perde na sua familiaridade.</p>
+      
+      <h2>A conversa na calada da noite</h2>
+      <p>Para entender o impacto real de João 3:16, precisamos voltar para os primeiros versículos do capítulo 3. Jesus está em Jerusalém e recebe a visita de um homem chamado <strong>Nicodemos</strong>. Ele não é um ouvinte comum; é um fariseu proeminente, membro do Sinédrio (a suprema corte judaica) e descrito como "um mestre em Israel". Nicodemos vai até Jesus à noite, provavelmente para evitar o julgamento de seus pares ou para ter uma discussão teológica séria, sem interrupções.</p>
+      <p>Nessa conversa, Jesus apresenta a Nicodemos a necessidade revolucionária do novo nascimento. Ele afirma que para ver o reino de Deus, é preciso nascer de novo. Nicodemos, apegado ao pensamento literal e legalista de sua formação, fica confuso. É nesse momento de perplexidade espiritual que Jesus explica a lógica do plano de salvação de Deus, culminando no versículo 16.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">Contexto Histórico: ἄνωθεν (anothen)</div>
+        <p>No versículo 3, Jesus usa a palavra grega <strong>anothen</strong>, que carrega um duplo significado deliberado. Ela pode significar tanto "nascer de novo" (segunda vez) quanto "nascer do alto" (de Deus). Nicodemos interpretou apenas o primeiro sentido físico, enquanto Jesus ensinava sobre uma transformação espiritual radical que vem do céu.</p>
+      </div>
+
+      <h2>O significado profundo de "Unigênito"</h2>
+      <p>Um dos termos mais importantes de João 3:16 é a palavra traduzida como "unigênito". No pensamento popular, isso simplesmente significa "filho único". Mas a língua grega clássica e o uso teológico de João revelam algo muito mais rico. A palavra no original é <strong>monogenés</strong>.</p>
+      <p>O prefixo <em>mono</em> significa "único" ou "singular", e o sufixo <em>genes</em> vem de <em>genos</em>, que significa "tipo", "espécie" ou "classe". Portanto, <strong>monogenés</strong> significa literalmente "único de seu tipo", "singular em sua essência". Ao usar esse termo cinco vezes em seus escritos, João não está dizendo apenas que Jesus é o único filho biológico de Deus, mas que Jesus é um Filho em uma categoria inteiramente única, compartilhando a mesma natureza divina do Pai, algo que nenhum outro ser compartilha.</p>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> O amor de Deus não é uma resposta ao nosso merecimento. Deus amou o <em>kosmos</em> (o mundo rebelde e alienado) de tal maneira que a resposta a essa alienação foi a entrega voluntária do que Ele tinha de mais precioso: Seu Filho único e singular.</p>
+      </div>
+
+      <h2>O Amor em Ação e o "Kosmos"</h2>
+      <p>No Evangelho de João, a palavra grega para mundo é <strong>kosmos</strong>. Para João, o <em>kosmos</em> quase nunca é um termo neutro para designar o planeta Terra; refere-se à humanidade em estado de rebelião ativa contra o seu Criador. Isso torna a declaração de Jesus chocante: Deus amou o mundo rebelde, e não apenas o povo escolhido ou aqueles que já eram fiéis.</p>
+      <p>Este amor é expresso não por palavras vagas, mas por uma ação histórica concreta: a entrega do Filho na cruz. A fé em Jesus Cristo é apresentada como a única divisória que resgata o homem da perdição espiritual (o perecer) e o introduz na <em>zoe aionios</em> (a vida eterna), que começa no presente e dura para sempre.</p>
+      <p>Ao olharmos para Nicodemos, vemos que ele representa todos nós: pessoas religiosas, morais, mas vazias de Deus. João 3:16 nos lembra que o único caminho para a vida não é o nosso esforço moral, mas a aceitação confiante no presente oferecido do alto.</p>
+    `,
+    ctaText: 'Estude o Evangelho de João completo com o BíbliaViva'
+  },
+  {
+    id: 'filipenses-4-13',
+    featured: false,
+    cat: 'versiculo',
+    emoji: '💪',
+    thumbGradient: 'linear-gradient(135deg, #E8F4FD, #D1E9F8)',
+    title: '"Tudo posso naquele que me fortalece" — o que Paulo realmente quis dizer?',
+    excerpt: 'Filipenses 4:13 é citado em competições esportivas, mas o contexto original fala sobre algo completamente diferente.',
+    book: 'Filipenses',
+    testament: 'Novo Testamento',
+    tagColor: { bg: 'rgba(0, 122, 255, 0.1)', text: 'var(--blue)' },
+    tagLabel: '📖 Versículo',
+    author: { name: 'Ana Clara Melo', avatar: '👩', date: '22 Mai 2026' },
+    related: ['joao-3-16', 'romanos-8-28', 'salmos-23'],
+    verse: 'Tudo posso naquele que me fortalece.',
+    verseRef: 'Filipenses 4:13 (Almeida Revista e Corrigida)',
+    content: `
+      <p>Filipenses 4:13 é possivelmente um dos versículos mais impressos, tatuados e citados do mundo moderno. Ele aparece em camisas de atletas de elite, biografias de redes sociais e canecas de café como um mantra de autossuficiência e vitória. No entanto, quando extraído de seu contexto histórico e literário, ele corre o risco de ser transformado em uma promessa mágica de triunfo pessoal.</p>
+
+      <h2>O cenário da carta: A escuridão de uma prisão romana</h2>
+      <p>A primeira grande chave para entender Filipenses 4:13 é o local onde Paulo estava quando escreveu estas palavras. Ele não estava no topo de uma montanha celebrando o sucesso material ou ministerial. Paulo estava **preso em Roma**, aguardando julgamento que poderia terminar em sua execução (Atos 28:30). Ele estava acorrentado a soldados romanos, com mobilidade restrita, dependendo de doações de igrejas parceiras até para se alimentar.</p>
+      <p>É nessa situação de privação, incerteza e isolamento que o apóstolo escreve uma das cartas mais alegres do Novo Testamento. A carta aos Filipenses é um tratado sobre a alegria cristã que independe das circunstâncias externas.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">O Contexto: Prisões no Império Romano</div>
+        <p>As prisões romanas no primeiro século não eram instituições de reabilitação. O Estado fornecia apenas o confinamento básico. O prisioneiro dependia exclusivamente de amigos e parentes para receber comida, agasalho e cuidados médicos. Se ninguém o ajudasse, ele simplesmente morria de fome ou frio.</p>
+      </div>
+
+      <h2>O Segredo do Contentamento (v. 11-12)</h2>
+      <p>Se lermos o versículo 13 isoladamente, ele parece indicar que podemos alcançar qualquer objetivo humano. Porém, se lermos os versículos imediatamente anteriores, a perspectiva muda drasticamente. Nos versículos 11 e 12, Paulo escreve: <em>"Digo isto, não por causa de pobreza, porque já aprendi a contentar-me com o que tenho. Sei estar abatido, e sei também ter abundância; em toda a maneira, e em todas as coisas estou instruído, tanto a ter fartura, como a ter fome, tanto a ter abundância, como a padecer necessidade."</em></p>
+      <p>O termo "tudo" no versículo 13 se refere a **todas estas situações** descritas no versículo 12. "Tudo posso" significa que Paulo é capaz de passar por escassez extrema, fome severa e humilhações sem perder sua fé e sua alegria. Da mesma forma, ele é capaz de viver na abundância e na fartura sem colocar seu coração nas riquezas materiais.</p>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> Filipenses 4:13 não é um salvo-conduto para o sucesso, mas sim a promessa divina de resiliência e suficiência em Deus durante os vales de sofrimento e as pressões da vida.</p>
+      </div>
+
+      <h2>A palavra grega para Fortalecer: ἐνδυναμόω (endynamoo)</h2>
+      <p>Paulo escreve que consegue viver contente em qualquer situação "naquele que o fortalece". No grego original, a palavra usada é <strong>endynamoo</strong>. O termo é composto por <em>en</em> (em, dentro) e <em>dynamoo</em> (capacitar, dar poder). Significa literalmente **infundir poder por dentro**.</p>
+      <p>Não se trata de uma força externa que remove os problemas ou nos dá superpoderes físicos, mas sim de uma presença espiritual contínua que atua na mente e no coração do crente, dando estabilidade emocional e espiritual. A força não vem de Paulo, mas de Cristo habitando nele.</p>
+      <p>Portanto, aplicar Filipenses 4:13 no dia a dia significa ter a certeza de que, quer você esteja enfrentando o desemprego, uma doença grave ou uma fase de prosperidade, o Espírito de Deus fornecerá a estabilidade necessária para que sua fé permaneça inabalável.</p>
+    `,
+    ctaText: 'Aprofunde-se no livro de Filipenses com o BíbliaViva'
+  },
+  {
+    id: 'jeremias-29-11',
+    featured: false,
+    cat: 'versiculo',
+    emoji: '📜',
+    thumbGradient: 'linear-gradient(135deg, #FFF3E0, #FFE0B2)',
+    title: 'Jeremias 29:11 não foi escrito para você — e isso o torna mais poderoso',
+    excerpt: 'O versículo favorito de formandos foi escrito para um povo em cativeiro na Babilônia. Entenda por que isso importa.',
+    book: 'Jeremias',
+    testament: 'Antigo Testamento',
+    tagColor: { bg: 'rgba(255, 149, 0, 0.1)', text: 'var(--orange)' },
+    tagLabel: '📖 Versículo',
+    author: { name: 'Prof. Felipe Ramos', avatar: '👨', date: '20 Mai 2026' },
+    related: ['salmos-23', 'romanos-8-28', 'joao-3-16'],
+    verse: 'Porque eu sei os pensamentos que tenho a vosso respeito, diz o Senhor; pensamentos de paz e não de mal, para vos dar um futuro e uma esperança.',
+    verseRef: 'Jeremias 29:11 (Almeida Revista e Corrigida)',
+    content: `
+      <p>Jeremias 29:11 é um dos textos bíblicos mais populares em cartões de formatura, agendas e discursos motivacionais. Ele é lido como uma promessa de que Deus tem um plano individualizado de prosperidade e sucesso para a vida de cada pessoa. Contudo, ao investigarmos a história por trás desse texto, descobrimos que ele foi originalmente enviado a um povo desesperado no meio de uma catástrofe nacional.</p>
+
+      <h2>Uma carta para os sobreviventes do exílio</h2>
+      <p>No início do capítulo 29, o profeta Jeremias escreve uma carta de Jerusalém e a envia para os judeus que foram deportados para a Babilônia pelo rei Nabucodonosor. Esses exilados fazia parte da primeira onda de deportação em 597 a.C., que incluiu a elite intelectual, líderes políticos e artesãos de Judá. Eles foram arrancados de suas terras, viram o templo ser profanado e agora viviam como refugiados em uma terra pagã.</p>
+      <p>Para piorar a situação, falsos profetas na Babilônia espalhavam mentiras otimistas de que o exílio seria curto — apenas dois anos — e que Deus traria todos de volta rapidamente. O povo estava ansioso, paralisado e se recusando a aceitar a nova realidade.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">O Cativeiro Babilônico (597 a.C.)</div>
+        <p>A Babilônia usava a deportação em massa como estratégia militar para evitar revoltas nas províncias conquistadas. Nabucodonosor levou cerca de 10.000 líderes e artesãos judeus de Jerusalém para a capital do império, deixando apenas a população mais pobre e vulnerável na Judeia.</p>
+      </div>
+
+      <h2>O impacto do Versículo 10: A barreira dos 70 anos</h2>
+      <p>Para compreendermos o peso do versículo 11, precisamos ler a frase que vem logo antes. No versículo 10, o Senhor declara: <em>"Porque assim diz o Senhor: Certamente que passados setenta anos em Babilônia, vos visitarei, e cumprirei sobre vós a minha boa palavra, tornando a vos trazer a este lugar."</em></p>
+      <p><strong>Setenta anos.</strong> Isso significava que a imensa maioria dos adultos que leram a carta de Jeremias morreria na Babilônia. Eles nunca mais veriam as colinas de Jerusalém ou o Templo. A promessa de "futuro e esperança" não era para a satisfação imediata daqueles ouvintes individuais; era uma promessa coletiva e geracional para seus filhos, netos e para a preservação da própria linhagem do Messias.</p>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> Jeremias 29:11 nos ensina que os planos de paz de Deus operam em uma escala de tempo muito maior que a nossa pressa. Mesmo em meio ao cativeiro da vida, Deus está agindo para o nosso bem a longo prazo.</p>
+      </div>
+
+      <h2>O Poder de uma Esperança que sobrevive à dor</h2>
+      <p>Quando entendemos que a promessa foi feita a pessoas exiladas que morreriam longe de casa, o versículo se torna incrivelmente mais profundo e consolador. Ele prova que Deus tem pensamentos de paz a nosso respeito **mesmo quando estamos em cativeiro**. Ele desconstrói a teologia da prosperidade imediatista.</p>
+      <p>Nos versículos 12 e 13, Deus continua dizendo que eles o invocariam e o buscariam, e que seriam ouvidos se buscassem de todo o coração. O exílio não era o fim do relacionamento deles com Deus; era o ambiente doloroso onde o coração daquela nação estava sendo purificado.</p>
+      <p>Ao aplicarmos Jeremias 29:11 hoje, não devemos usá-lo como garantia de conquistas fáceis, mas sim como âncora de que, mesmo quando nossa vida parece um exílio doloroso, Deus tem o controle do nosso amanhã e nos conduzirá a um porto seguro.</p>
+    `,
+    ctaText: 'Entenda os mistérios do livro de Jeremias com o BíbliaViva'
+  },
+  {
+    id: 'salmos-23',
+    featured: false,
+    cat: 'devocional',
+    emoji: '🌿',
+    thumbGradient: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)',
+    title: 'Salmos 23 verso a verso: por que esse poema atravessa 3 mil anos',
+    excerpt: 'Davi escreveu sobre um pastor e suas ovelhas. Mas o que ele realmente queria dizer sobre Deus e sobre a morte?',
+    book: 'Salmos',
+    testament: 'Antigo Testamento',
+    tagColor: { bg: 'rgba(52, 199, 89, 0.1)', text: 'var(--green)' },
+    tagLabel: '🌿 Devocional',
+    author: { name: 'Dra. Sarah Mendes', avatar: '👩', date: '18 Mai 2026' },
+    related: ['contexto-sermao-monte', 'jeremias-29-11', 'filipenses-4-13'],
+    verse: 'O Senhor é o meu pastor; nada me faltará.',
+    verseRef: 'Salmos 23:1 (Almeida Revista e Corrigida)',
+    content: `
+      <p>O Salmo 23 é indiscutivelmente o texto mais lido, recitado e memorizado de todo o livro de Salmos. Escrito pelo rei Davi há cerca de 3.000 anos, este pequeno poema de apenas seis versículos cruzou séculos de história, servindo de consolo em leitos de hospitais, campos de batalha e cerimônias fúnebres. Mas por que essas metáforas pastorais continuam tão vivas?</p>
+
+      <h2>O Rei que escolheu ser ovelha</h2>
+      <p>Para captar a beleza do Salmo 23, devemos nos lembrar de quem o escreveu. Davi era o monarca mais poderoso de Israel, um guerreiro temido e um estrategista militar brilhante. No mundo antigo, era comum que os reis se autodenominassem "pastores" do seu povo, em uma atitude de superioridade.</p>
+      <p>No entanto, no Salmo 23, Davi faz uma inversão humilde e radical. Ele não se coloca como o pastor soberano, mas sim como a **ovelha**. Ao fazer isso, ele confessa sua total dependência e vulnerabilidade diante de Yahweh (o Senhor). Davi reconhece que, apesar de sua riqueza e exército, ele é tão necessitado de direção e proteção quanto o menor dos animais de Israel.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">O Título de Pastor na Antiguidade</div>
+        <p>No Oriente Médio antigo, "pastor" era um título político dado a reis e deuses para enfatizar seu papel de protetores e provedores. No famoso Código de Hamurabi (Babilônia), o rei é descrito como o "pastor designado por Enlil". Davi adota esse vocabulário real para declarar que o verdadeiro rei de Israel é Deus.</p>
+      </div>
+
+      <h2>Análise Verso a Verso</h2>
+      
+      <h3>1. Deitar-se em verdes pastagens (v. 2)</h3>
+      <p>Uma ovelha é um animal extremamente arisco. Biólogos explicam que uma ovelha só se deita se quatro condições forem atendidas: ela estiver livre de medo (predadores), livre de atrito com outras ovelhas, livre de parasitas e totalmente saciada. Quando Davi escreve que o Senhor o faz "deitar em verdes pastagens", ele está descrevendo um estado de paz absoluta e profunda satisfação que só o Pastor pode proporcionar.</p>
+
+      <h3>2. O Vale da Sombra da Morte (v. 4)</h3>
+      <p>No hebraico original, a expressão para "sombra da morte" é <em>tsalmavet</em>, que significa literalmente "sombra profunda" ou "escuridão extrema". Os pastores na Judeia frequentemente precisavam guiar seus rebanhos por desfiladeiros escuros para mover-se de uma pastagem a outra. Davi não está falando necessariamente sobre o momento físico da morte, mas sobre qualquer época de profunda crise emocional, depressão ou perigo extremo.</p>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> A segurança da ovelha no vale escuro não vem da ausência de perigo, mas da presença constante do Pastor ("porque tu estás comigo"). O foco muda de "o Senhor" para "tu".</p>
+      </div>
+
+      <h3>3. A mesa perante os inimigos (v. 5)</h3>
+      <p>No versículo 5, a metáfora muda de forma brilhante de uma cena de pastoreio para um **banquete oriental**. No antigo Oriente Médio, a lei da hospitalidade era sagrada. Se um anfitrião recebesse alguém em sua tenda e oferecesse uma refeição, ele se tornava o protetor pessoal daquele convidado. Ungir a cabeça com óleo e fazer o cálice transbordar eram sinais supremos de honra e abundância generosa.</p>
+      <p>Davi conclui com a certeza de que a bondade e a misericórdia de Deus o seguirão todos os dias de sua vida, garantindo-lhe um lar eterno na casa do Senhor.</p>
+    `,
+    ctaText: 'Explore os 150 Salmos de Davi e outros autores no BíbliaViva'
+  },
+  {
+    id: 'contexto-sermao-monte',
+    featured: false,
+    cat: 'historia',
+    emoji: '⛰️',
+    thumbGradient: 'linear-gradient(135deg, #FDE8E8, #F8D1D1)',
+    title: 'O Sermão do Monte: por que Jesus subiu ao monte para pregar?',
+    excerpt: 'Para um judeu do século I, o ato de subir ao monte para dar a lei era uma declaração explícita: eu sou o novo Moisés.',
+    book: 'Mateus',
+    testament: 'Novo Testamento',
+    tagColor: { bg: 'rgba(255, 59, 48, 0.1)', text: '#FF3B30' },
+    tagLabel: '⛰️ Contexto Histórico',
+    author: { name: 'Pr. Lucas Silva', avatar: '⛪', date: '15 Mai 2026' },
+    related: ['guia-mateus', 'joao-3-16', 'romanos-8-28'],
+    verse: 'Vendo Jesus as multidões, subiu ao monte; e, como se assentasse, aproximaram-se os seus discípulos.',
+    verseRef: 'Mateus 5:1 (Almeida Revista e Corrigida)',
+    content: `
+      <p>O Sermão do Monte (Mateus 5 a 7) é amplamente reconhecido como o coração do ensino ético de Jesus Cristo. Nele, encontramos as Bem-aventuranças, a Oração do Pai Nosso e a Regra de Ouro. Contudo, muito antes de Jesus abrir a boca para falar no versículo 2, a sua própria **ação física de subir ao monte** comunicava uma mensagem teológica profunda para os judeus do século I.</p>
+
+      <h2>O Simbolismo que todo Judeu entenderia</h2>
+      <p>Para a mentalidade judaica antiga, a geografia era teológica. Os montes eram os locais clássicos onde Deus se revelava à humanidade. O monte mais proeminente na história de Israel era o **Monte Sinai**, onde Moisés subiu para receber as Tábuas da Lei diretamente das mãos do Senhor.</p>
+      <p>Quando Mateus registra que Jesus "subiu ao monte" para ensinar a multidão, ele está fazendo uma alusão direta a Moisés. Jesus está se apresentando não apenas como um profeta comum, mas como o **Novo Moisés** — o Legislador definitivo que veio para dar a interpretação perfeita da lei de Deus. Enquanto Moisés subiu para receber a Lei, Jesus sobe para proclamar a Lei por Sua própria autoridade.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">Expressão Hebraica: "Abrindo a boca"</div>
+        <p>No versículo 2 de Mateus 5, a expressão grega traduzida como "abrindo a boca" é um semitismo comum. Ela não indica apenas o ato físico de falar, mas é uma fórmula solene que sinaliza que o orador está prestes a proferir uma revelação divina de extrema importância e peso eterno.</p>
+      </div>
+
+      <h2>As Bem-aventuranças como uma Subversão de Valores</h2>
+      <p>O sermão começa com as famosas Bem-aventuranças. Em uma época em que o Império Romano glorificava o poder militar, a força física e a riqueza material, as palavras de Jesus eram altamente revolucionárias. He declara felizes (bem-aventurados) os pobres em espírito, os que choram, os humildes e os pacificadores.</p>
+      <p>Jesus inverte totalmente a pirâmide social e espiritual de Seu tempo. Ele ensina que o Reino de Deus não pertence aos orgulhosos e auto-suficientes (como muitos fariseus achavam), mas àqueles que reconhecem sua total falência espiritual diante de Deus.</p>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> As Bem-aventuranças não são exigências para entrar no Reino de Deus, mas sim as características daqueles que já foram alcançados pela graça e vivem sob a nova realidade da aliança cristã.</p>
+      </div>
+
+      <h2>"Ouvistes o que foi dito... Eu, porém, vos digo"</h2>
+      <p>Ao longo do sermão, Jesus repete essa famosa fórmula antitética. Ele cita mandamentos tradicionais da Lei (como não matar e não cometer adultério) e os aprofunda de forma radical até o nível do **coração**. Jesus ensina que a ira abrigada no coração equivale ao homicídio, e que o olhar cobiçoso equivale ao adultério na mente.</p>
+      <p>Ele estabelece que a justiça dos Seus discípulos deve exceder em muito a justiça externa dos fariseus e escribas. O Sermão do Monte nos confronta com o padrão perfeito de Deus e nos aponta para a necessidade urgente de uma transformação interna que só o Espírito de Deus pode operar.</p>
+    `,
+    ctaText: 'Estude o Sermão do Monte capítulo a capítulo no BíbliaViva'
+  },
+  {
+    id: 'guia-mateus',
+    featured: false,
+    cat: 'livro',
+    emoji: '✝️',
+    thumbGradient: 'linear-gradient(135deg, #F0EDFE, #E4DFFE)',
+    title: 'Guia completo de Mateus: o que você precisa saber antes de ler',
+    excerpt: 'Quem escreveu, para quem escreveu e por que Mateus é o Evangelho mais citado pelos primeiros cristãos.',
+    book: 'Mateus',
+    testament: 'Novo Testamento',
+    tagColor: { bg: 'rgba(124, 92, 252, 0.1)', text: 'var(--purple)' },
+    tagLabel: '📚 Livro Bíblico',
+    author: { name: 'Prof. Felipe Ramos', avatar: '👨', date: '10 Mai 2026' },
+    related: ['contexto-sermao-monte', 'joao-3-16', 'romanos-8-28'],
+    verse: 'Livro da geração de Jesus Cristo, filho de Davi, filho de Abraão.',
+    verseRef: 'Mateus 1:1 (Almeida Revista e Corrigida)',
+    content: `
+      <p>O Evangelho segundo Mateus é, tradicionalmente, o primeiro livro do Novo Testamento e um dos escritos mais influentes da história da humanidade. Ele serve como uma ponte indispensável entre o Antigo e o Novo Testamento. No entanto, para captar sua mensagem teológica com clareza, é preciso conhecer o seu autor, seu público e sua estrutura literária única.</p>
+
+      <h2>O Autor improvável: Mateus, o Publicano</h2>
+      <p>A tradição cristã primitiva atribui este Evangelho de forma unânime a Mateus (também chamado de Levi), um dos doze apóstolos originais. Mateus trabalhava como **publicano** (cobrador de impostos) em Cafarnaum antes de seguir a Jesus.</p>
+      <p>No século I, os cobradores de impostos eram considerados traidores nacionais pela sociedade judaica. Eles eram contratados pelos conquistadores romanos e frequentemente extorquiam a população local para enriquecer. O fato de Jesus escolher um publicano para ser apóstolo e escrever o primeiro Evangelho é uma demonstração impressionante da graça de Deus e da capacidade de transformação do Evangelho.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">Datação e Contexto Histórico</div>
+        <p>A maioria dos historiadores data o Evangelho de Mateus entre 80 d.C. e 90 d.C., algumas décadas após a ressurreição de Jesus e a trágica destruição do Templo de Jerusalém pelos romanos no ano 70 d.C. O livro reflete os debates intensos da época entre a igreja nascente e o judaísmo rabínico pós-templo.</p>
+      </div>
+
+      <h2>O Público-Alvo: Cristãos de Origem Judaica</h2>
+      <p>Mateus foi escrito primariamente para uma comunidade de **cristãos judeus** (provavelmente na região da Síria ou Antioquia). Isso fica evidente pelo vocabulário usado no livro:</p>
+      <ul>
+        <li>O autor cita o Antigo Testamento mais de 60 vezes (muito mais que os outros evangelistas).</li>
+        <li>Ele usa repetidamente a fórmula teológica <em>"para que se cumprisse o que fora dito pelo profeta..."</em>.</li>
+        <li>Ele evita o termo grego "Reino de Deus" e prefere o eufemismo judaico "Reino dos Céus", para não pronunciar o nome sagrado de Deus desnecessariamente.</li>
+      </ul>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> Mateus estruturou seu Evangelho em cinco grandes blocos de discursos práticos, espelhando os cinco livros da Torá (Pentateuco) de Moisés. Jesus é apresentado como o Legislador Supremo e o Rei Messias prometido.</p>
+      </div>
+
+      <h2>A Estrutura dos 5 Discursos de Jesus</h2>
+      <p>Mateus organizou os ensinos de Jesus de forma sistemática em cinco discursos proeminentes, cada um terminando com a fórmula típica: <em>"E aconteceu que, concluindo Jesus estes discursos..."</em>. São eles:</p>
+      <ol style="margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+        <li><strong>O Sermão do Monte</strong> (capítulos 5 a 7) — A ética e a justiça do Reino.</li>
+        <li><strong>O Discurso Missionário</strong> (capítulo 10) — A instrução para a pregação dos discípulos.</li>
+        <li><strong>O Discurso das Parábolas</strong> (capítulo 13) — O mistério do crescimento do Reino.</li>
+        <li><strong>O Discurso Comunitário</strong> (capítulo 18) — A vida em comunidade e o perdão.</li>
+        <li><strong>O Discurso Escatológico</strong> (capítulos 24 e 25) — Os sinais dos tempos e a vinda do Filho do Homem.</li>
+      </ol>
+      <p>Para começar a ler Mateus de forma produtiva, não pule a genealogia no capítulo 1! Embora pareça uma lista enfadonha de nomes, para o público judeu ela era a prova legal irrefutável de que Jesus era o descendente legítimo do rei Davi e do patriarca Abraão, o cumprimento de todas as promessas da história de Israel.</p>
+    `,
+    ctaText: 'Leia o Evangelho de Mateus completo no BíbliaViva'
+  },
+  {
+    id: 'romanos-8-28',
+    featured: false,
+    cat: 'versiculo',
+    emoji: '⚡',
+    thumbGradient: 'linear-gradient(135deg, #EDE7F6, #D1C4E9)',
+    title: 'Romanos 8:28 — "todas as coisas" incluem o sofrimento?',
+    excerpt: 'Uma das promessas mais consoladoras da Bíblia é também uma das mais mal interpretadas.',
+    book: 'Romanos',
+    testament: 'Novo Testamento',
+    tagColor: { bg: 'rgba(0, 122, 255, 0.1)', text: 'var(--blue)' },
+    tagLabel: '📖 Versículo',
+    author: { name: 'Dra. Sarah Mendes', avatar: '👩', date: '05 Mai 2026' },
+    related: ['filipenses-4-13', 'joao-3-16', 'contexto-sermao-monte'],
+    verse: 'E sabemos que todas as coisas cooperam para o bem daqueles que amam a Deus, daqueles que são chamados segundo o seu propósito.',
+    verseRef: 'Romanos 8:28 (Almeida Revista e Corrigida)',
+    content: `
+      <p>Romanos 8:28 é uma das âncoras teológicas mais poderosas da Bíblia Sagrada. Ele é recitado em momentos de luto, desemprego e crises existenciais como uma palavra de consolo e esperança. No entanto, por trás da sua tradução em português, esconde-se um debate profundo sobre soberania divina, sofrimento humano e a verdadeira definição de "bem".</p>
+
+      <h2>O pico teológico do Novo Testamento</h2>
+      <p>O capítulo 8 da carta do apóstolo Paulo aos Romanos é considerado por muitos teólogos como o pico literário e espiritual de toda a Bíblia. Ele começa declarando que *nenhuma condenação há para os que estão em Cristo* (v. 1) e termina com o glorioso hino de que *nada poderá nos separar do amor de Deus* (v. 39).</p>
+      <p>No entanto, a seção do versículo 18 ao 30 trata especificamente sobre o sofrimento no tempo presente e a **expectativa ansiosa da criação** pela redenção final. É nesse contexto de gemido cósmico, fraqueza na oração e tribulações que Paulo insere o versículo 28.</p>
+
+      <div class="art-info-box">
+        <div class="art-info-box-title">O Debate Textual: Quem é o sujeito?</div>
+        <p>Em alguns manuscritos gregos antigos mais confiáveis, o texto diz de forma explícita que <strong>Deus</strong> é o sujeito ativo da frase: "sabemos que <em>Deus faz</em> todas as coisas cooperarem para o bem...". O versículo não ensina que as coisas ruins têm algum poder interno de gerar o bem por si mesmas, mas que o Criador soberano orquestra os eventos.</p>
+      </div>
+
+      <h2>O que "cooperam" significa no grego: synergéo (synergeo)</h2>
+      <p>No texto original, a palavra traduzida como "cooperar" é o verbo grego <strong>synergeo</strong> (de onde deriva a nossa palavra "sinergia"). Significa "trabalhar junto com", "colaborar" ou "unir forças".</p>
+      <p>Paulo não está dizendo que "todas as coisas são individualmente boas". O sofrimento, a doença e a morte continuam sendo males frutos da queda. O segredo está no fato de que Deus pega todas as peças desarticuladas e dolorosas da nossa existência e as faz trabalhar juntas em sinergia para atingir um propósito final grandioso.</p>
+
+      <div class="art-highlight">
+        <p><strong>A Ideia Central:</strong> Romanos 8:28 não promete que a sua dor será evitada ou curada imediatamente, mas sim que Deus usará de forma soberana a sua tribulação para forjar o seu caráter eterno.</p>
+      </div>
+
+      <h2>O que é o "Bem" e as condições da promessa</h2>
+      <p>Este versículo possui duas limitações importantes que frequentemente são ignoradas na sua aplicação popular:</p>
+      <ol style="margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+        <li><strong>A promessa não é universal:</strong> Ela se aplica especificamente "daqueles que amam a Deus, daqueles que são chamados segundo o seu propósito". É uma promessa de família para os filhos da aliança.</li>
+        <li><strong>A definição de "bem" está no versículo 29:</strong> O "bem" que Deus está orquestrando não é a nossa prosperidade financeira, conforto material ou sucesso terreno. O versículo 29 define o "bem" como: <em>"serem conformados à imagem de seu Filho..."</em>. O alvo final de Deus é nos tornar semelhantes a Jesus Cristo.</li>
+      </ol>
+      <p>Ao olharmos para a lista de sofrimentos descrita pelo próprio Paulo no versículo 35 (tribulação, angústia, perseguição, fome, nudez, perigo, espada), percebemos que "todas as coisas" incluem os vales mais profundos. O triunfo do cristão não é a ausência de sofrimento, mas a certeza inabalável de que Deus é soberano sobre a dor e a usará para a nossa glória eterna.</p>
+    `,
+    ctaText: 'Faça um estudo aprofundado do capítulo 8 de Romanos no BíbliaViva'
+  }
+];
+
+// ── MAP DE IMAGENS DE CAPA DO UNSPLASH (PADRÃO APPLE PREMIUM) ──
+const COVERS = {
+  'joao-3-16': 'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=1200&auto=format&fit=crop',
+  'filipenses-4-13': 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?q=80&w=1200&auto=format&fit=crop',
+  'jeremias-29-11': 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=1200&auto=format&fit=crop',
+  'salmos-23': 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?q=80&w=1200&auto=format&fit=crop',
+  'contexto-sermao-monte': 'https://images.unsplash.com/photo-1531804055935-76f44d7c3621?q=80&w=1200&auto=format&fit=crop',
+  'guia-mateus': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1200&auto=format&fit=crop',
+  'romanos-8-28': 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1200&auto=format&fit=crop'
+};
+
+// Injeta dinamicamente as imagens de capa no array de artigos
+ARTICLES.forEach(art => {
+  art.cover = COVERS[art.id] || 'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=1200&auto=format&fit=crop';
+});
+
+// ── SISTEMA DE NAVEGAÇÃO E VIEWS (SPA) ──
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  
+  if (id !== 'blog') {
+    renderArticleDetail(id);
+    document.getElementById('view-article').classList.add('active');
+    initReadingProgress();
+  } else {
+    document.getElementById('view-blog').classList.add('active');
+    document.getElementById('readingProgressBar').style.width = '0%';
+  }
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openArticle(id) {
+  showView(id);
+}
+
+// ── BARRA DE PROGRESSO DE LEITURA ──
+function initReadingProgress() {
+  const bar = document.getElementById('readingProgressBar');
+  if (!bar) return;
+
+  function updateProgress() {
+    const articleEl = document.querySelector('.view.active .article-container');
+    if (!articleEl) return;
+
+    const rect = articleEl.getBoundingClientRect();
+    const totalHeight = articleEl.offsetHeight - window.innerHeight;
+    const scrolled = Math.max(0, -rect.top);
+    const progress = Math.min(100, (scrolled / totalHeight) * 100);
+    bar.style.width = progress + '%';
+  }
+
+  window.removeEventListener('scroll', updateProgress);
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+}
+
+// ── RENDERIZADORES DINÂMICOS ──
+
+// 1. Card de Destaque (Untitled UI Frankie's Card)
+function renderFeaturedCard() {
+  const featured = ARTICLES.find(a => a.featured);
+  if (!featured) return;
+
+  const card = document.getElementById('featuredCard');
+  card.style.backgroundImage = `url('${featured.cover}')`;
+  
+  // Estimativa real do tempo de leitura do destaque
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = featured.content;
+  const words = tempDiv.innerText.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+
+  card.innerHTML = `
+    <span class="featured-badge">⭐ Artigo em Destaque</span>
+    <div class="featured-content">
+      <span class="featured-label">${featured.tagLabel}</span>
+      <h2 class="featured-title">${featured.title}</h2>
+      <p class="featured-excerpt">${featured.excerpt}</p>
+      <div class="featured-footer">
+        <div class="featured-author">
+          <div class="featured-avatar">${featured.author.avatar}</div>
+          <div class="featured-author-info">
+            <span class="featured-author-name">${featured.author.name}</span>
+            <span class="featured-author-date">${featured.author.date} · ${minutes} min de leitura</span>
+          </div>
+        </div>
+        <div class="featured-arrow">→</div>
+      </div>
+    </div>
+  `;
+  card.onclick = () => openArticle(featured.id);
+}
+
+// 2. Grade de Artigos (Untitled UI Cards)
+function renderArticleGrid() {
+  const grid = document.getElementById('articlesGrid');
+  const nonFeatured = ARTICLES.filter(a => !a.featured);
+
+  grid.innerHTML = nonFeatured.map(article => `
+    <div class="article-card reveal"
+         data-cat="${article.cat}"
+         data-id="${article.id}"
+         onclick="openArticle('${article.id}')">
+      <div class="article-thumb-wrapper">
+        <div class="article-thumb" style="background-image: url('${article.cover}')"></div>
+      </div>
+      <div class="article-body">
+        <span class="article-tag" style="color:${article.tagColor.text}">
+          ${article.tagLabel}
+        </span>
+        <h3 class="article-title">${article.title}</h3>
+        <p class="article-excerpt">${article.excerpt}</p>
+        
+        <div class="article-author-row">
+          <div class="article-author-avatar">${article.author.avatar}</div>
+          <div class="article-author-info">
+            <span class="article-author-name">${article.author.name}</span>
+            <span class="article-date-time">${article.author.date} · <span id="time-grid-${article.id}">...</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Calcula tempo de leitura e inicializa revelações
+  nonFeatured.forEach(a => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = a.content;
+    const words = tempDiv.innerText.trim().split(/\s+/).length;
+    const minutes = Math.max(1, Math.ceil(words / 200));
+    const timeEl = document.getElementById(`time-grid-${a.id}`);
+    if (timeEl) timeEl.textContent = `${minutes} min`;
+  });
+
+  initRevealObserver();
+}
+
+// 3. Renderizar Artigo Detalhado com customizador
+function renderArticleDetail(id) {
+  const article = ARTICLES.find(a => a.id === id);
+  if (!article) return;
+
+  const container = document.getElementById('view-article');
+  
+  // Determina se tem versículo destaque
+  const verseCardHtml = article.verse ? `
+    <div class="art-verse-card">
+      <div class="art-verse-text">${article.verse}</div>
+      <div class="art-verse-ref">${article.verseRef}</div>
+    </div>
+  ` : '';
+
+  // Renderizar relacionados
+  const relatedArticles = article.related.map(relId => ARTICLES.find(a => a.id === relId)).filter(Boolean);
+  const relatedHtml = relatedArticles.map(rel => `
+    <div class="related-card" onclick="openArticle('${rel.id}')">
+      <div class="related-thumb" style="background-image: url('${rel.cover}'); background-size: cover; background-position: center; height: 90px;"></div>
+      <h4 class="related-card-title">${rel.title}</h4>
+    </div>
+  `).join('');
+
+  // Recupera preferências de leitor salvas no localStorage
+  const currentTheme = localStorage.getItem('reader-theme') || 'light';
+  const fontSizeLevel = parseInt(localStorage.getItem('reader-font-size') || '3');
+
+  container.innerHTML = `
+    <div class="article-container article-view-animation">
+      
+      <!-- SAFARI STYLE OPTIONS TOOLBAR -->
+      <div class="reader-toolbar">
+        <div class="reader-toolbar-left">
+          <button class="back-btn-reader" onclick="showView('blog')">
+            <span class="back-arrow">←</span> Voltar ao blog
+          </button>
+        </div>
+        <div class="reader-toolbar-right">
+          <!-- Font Sizing Controls -->
+          <div class="font-size-controls">
+            <button class="reader-tool-btn" onclick="adjustFontSize(-1)" title="Diminuir Fonte">A-</button>
+            <span class="font-indicator" id="fontIndicator">${fontSizeLevel * 20 + 40}%</span>
+            <button class="reader-tool-btn" onclick="adjustFontSize(1)" title="Aumentar Fonte">A+</button>
+          </div>
+          <div class="toolbar-divider"></div>
+          <!-- Theme Toggles -->
+          <div class="theme-toggles">
+            <button class="theme-toggle-btn theme-light ${currentTheme === 'light' ? 'active' : ''}" onclick="setReaderTheme('light', this)" title="Tema Claro"></button>
+            <button class="theme-toggle-btn theme-sepia ${currentTheme === 'sepia' ? 'active' : ''}" onclick="setReaderTheme('sepia', this)" title="Tema Sépia"></button>
+            <button class="theme-toggle-btn theme-dark ${currentTheme === 'dark' ? 'active' : ''}" onclick="setReaderTheme('dark', this)" title="Tema Escuro"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WRAPPER DE CONTEÚDO DO LEITOR PARA TEMAS E FONTES -->
+      <div id="readerContent" class="article-reader-content theme-${currentTheme}-mode font-size-${fontSizeLevel}">
+        
+        <span class="art-tag" style="background:${article.tagColor.bg};color:${article.tagColor.text}">
+          ${article.tagLabel}
+        </span>
+        
+        <h1 class="art-title">${article.title}</h1>
+        
+        <div class="art-meta">
+          <div class="art-meta-author">
+            <div class="art-meta-avatar">${article.author.avatar}</div>
+            <strong>${article.author.name}</strong>
+          </div>
+          <span>·</span>
+          <span>${article.author.date}</span>
+          <span>·</span>
+          <span class="art-read-time-calc">Calculando...</span>
+          <span>·</span>
+          <span>${article.book} (${article.testament})</span>
+        </div>
+
+        <!-- COVER HERO IMAGE -->
+        <div class="article-cover-hero">
+          <img src="${article.cover}" alt="Capa: ${article.title}" class="article-cover-img">
+          <div class="article-cover-gradient"></div>
+        </div>
+        
+        <hr class="art-divider">
+
+        ${verseCardHtml}
+
+        <div class="art-body">
+          ${article.content}
+        </div>
+
+        <!-- App CTA inside article -->
+        <div class="art-app-cta">
+          <div class="art-app-cta-icon">📖</div>
+          <h3 class="art-app-cta-title">${article.ctaText}</h3>
+          <p class="art-app-cta-sub">Estude a Bíblia de forma gamificada com missões diárias, explicações pastorais por inteligência artificial e pregações curadas.</p>
+          <a href="landing_page_biblia_viva.html" class="art-app-cta-btn">Começar grátis agora</a>
+        </div>
+
+        <hr class="art-divider">
+
+        <!-- Related Section -->
+        <div class="related-section">
+          <h3 class="related-title">Artigos Recomendados</h3>
+          <div class="related-grid">
+            ${relatedHtml}
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  `;
+
+  // Calcula dinamicamente o tempo de leitura real
+  const bodyText = container.querySelector('.art-body').innerText;
+  const wordCount = bodyText.trim().split(/\s+/).length;
+  const readMinutes = Math.max(1, Math.ceil(wordCount / 200));
+  container.querySelector('.art-read-time-calc').textContent = `${readMinutes} min de leitura`;
+}
+
+// ── SISTEMA DE CONFIGURAÇÃO DE LEITURA (SAFARI CUSTOMIZER) ──
+function setReaderTheme(theme, btn) {
+  const content = document.getElementById('readerContent');
+  if (!content) return;
+  
+  // Remover temas antigos
+  content.classList.remove('theme-light-mode', 'theme-sepia-mode', 'theme-dark-mode');
+  
+  // Adicionar novo tema
+  content.classList.add(`theme-${theme}-mode`);
+  
+  // Atualizar classe active nos botões
+  if (btn) {
+    document.querySelectorAll('.theme-toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  
+  // Salvar no localStorage
+  localStorage.setItem('reader-theme', theme);
+}
+
+function adjustFontSize(diff) {
+  const content = document.getElementById('readerContent');
+  if (!content) return;
+  
+  // Pegar fonte atual
+  let currentLevel = parseInt(localStorage.getItem('reader-font-size') || '3');
+  
+  // Calcular nova fonte
+  let newLevel = currentLevel + diff;
+  if (newLevel < 1) newLevel = 1;
+  if (newLevel > 5) newLevel = 5;
+  
+  // Remover classe antiga
+  content.classList.remove(`font-size-${currentLevel}`);
+  
+  // Adicionar classe nova
+  content.classList.add(`font-size-${newLevel}`);
+  
+  // Atualizar indicador
+  const indicator = document.getElementById('fontIndicator');
+  if (indicator) {
+    indicator.textContent = `${newLevel * 20 + 40}%`;
+  }
+  
+  // Salvar no localStorage
+  localStorage.setItem('reader-font-size', newLevel);
+}
+
+// ── BUSCA EM TEMPO REAL E FILTROS COMBINADOS ──
+let currentCat = 'todos';
+
+document.getElementById('searchInput').addEventListener('input', function() {
+  applyFilters(this.value);
+});
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters(document.getElementById('searchInput').value);
+}
+
+function applyFilters(query = '') {
+  const q = query.toLowerCase().trim();
+  let visibleCount = 0;
+
+  // Filtrar o card em destaque se estiver visível
+  const featuredCard = document.getElementById('featuredCard');
+  const featured = ARTICLES.find(a => a.featured);
+  if (featured) {
+    const featuredText = featuredCard.innerText.toLowerCase();
+    const catMatch = currentCat === 'todos' || featured.cat === currentCat;
+    const searchMatch = !q || featuredText.includes(q);
+    const visible = catMatch && searchMatch;
+    featuredCard.parentElement.style.display = visible ? '' : 'none';
+    if (visible) visibleCount++;
+  }
+
+  // Filtrar os cards da grade
+  document.querySelectorAll('#articlesGrid .article-card').forEach(card => {
+    const cardId = card.dataset.id;
+    const article = ARTICLES.find(a => a.id === cardId);
+    if (!article) return;
+
+    const text = card.innerText.toLowerCase();
+    const catMatch = currentCat === 'todos' || article.cat === currentCat;
+    const searchMatch = !q || text.includes(q);
+    const visible = catMatch && searchMatch;
+    
+    card.style.display = visible ? '' : 'none';
+    if (visible) visibleCount++;
+  });
+
+  // Mensagem de busca vazia
+  const emptyMsg = document.getElementById('emptyMsg');
+  emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+  if (q) {
+    emptyMsg.textContent = `Nenhum artigo encontrado para "${query}"`;
+  } else {
+    emptyMsg.textContent = `Nenhum artigo encontrado nesta categoria.`;
+  }
+}
+
+// ── SCROLL REVEAL (STAGGERED ANIMS) ──
+function initRevealObserver() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // Stagger: delay progressivo
+        const delay = i * 60;
+        setTimeout(() => entry.target.classList.add('visible'), delay);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+}
+
+// ── INICIALIZAÇÃO GERAL ──
+document.addEventListener('DOMContentLoaded', function() {
+  renderFeaturedCard();
+  renderArticleGrid();
+  initRevealObserver();
+});
+</script>
+</body>
+</html>

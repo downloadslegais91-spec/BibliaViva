@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BíbliaViva — Aprenda a Bíblia todo dia</title>
+<link rel="icon" type="image/svg+xml" href="/icon-biblia-viva.svg">
+<link rel="apple-touch-icon" href="/icon-biblia-viva.svg">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #4A6CF7;
+  --blue-light: #6B8AFF;
+  --purple: #7C5CFC;
+  --purple-light: #A78BFA;
+  --orange: #FF9500;
+  --green: #34C759;
+  --red: #FF3B30;
+  --gold: #FFD60A;
+  --bg: #F2F2F7;
+  --surface: #FFFFFF;
+  --label: #1C1C1E;
+  --label2: #636366;
+  --label3: #AEAEB2;
+  --separator: rgba(60,60,67,0.12);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow: 0 2px 24px rgba(0,0,0,0.07);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--label);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(242,242,247,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--separator);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  opacity: 0.95;
+}
+
+.logo-svg-icon {
+  width: 32px;
+  height: 26px;
+  display: block;
+}
+
+.nav-logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--label);
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--label2);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+}
+
+.nav-link:hover { background: rgba(0,0,0,0.05); color: var(--label); }
+
+.nav-cta {
+  background: var(--blue);
+  color: white !important;
+  padding: 8px 18px;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s;
+  box-shadow: 0 4px 12px rgba(74,108,247,0.3);
+}
+
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(74,108,247,0.4);
+  background: var(--blue) !important;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 24px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(74,108,247,0.6), transparent);
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  animation: float 8s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(124,92,252,0.5), transparent);
+  bottom: 0; right: -100px;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,149,0,0.3), transparent);
+  top: 40%; left: -80px;
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(-50%); }
+  50% { transform: translateY(-30px) translateX(-50%); }
+}
+
+.orb-2, .orb-3 { animation: floatSimple 10s ease-in-out infinite; }
+
+@keyframes floatSimple {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(74,108,247,0.2);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--blue);
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease both;
+  box-shadow: 0 2px 12px rgba(74,108,247,0.15);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 7vw, 80px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  color: var(--label);
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s 0.1s ease both;
+  max-width: 800px;
+}
+
+.hero-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--label2);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 64px;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue);
+  color: white;
+  text-decoration: none;
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 8px 24px rgba(74,108,247,0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(74,108,247,0.45);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.9);
+  color: var(--label);
+  text-decoration: none;
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ── SOCIAL PROOF ── */
+.social-proof {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  animation: fadeUp 0.6s 0.4s ease both;
+  flex-wrap: wrap;
+}
+
+.avatars {
+  display: flex;
+}
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+}
+
+.avatars .avatar:first-child { margin-left: 0; }
+
+.social-text {
+  font-size: 14px;
+  color: var(--label2);
+}
+
+.social-text strong { color: var(--label); }
+
+/* ── PHONE MOCKUP ── */
+.phone-showcase {
+  padding: 80px 24px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  position: relative;
+}
+
+.phone-frame {
+  width: 240px;
+  background: #1C1C1E;
+  border-radius: 36px;
+  padding: 12px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.08);
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.phone-frame:hover { transform: translateY(-8px); }
+
+.phone-frame.featured {
+  transform: scale(1.06);
+  box-shadow: 0 40px 100px rgba(74,108,247,0.3), 0 0 0 1px rgba(74,108,247,0.2);
+}
+
+.phone-frame.featured:hover { transform: scale(1.06) translateY(-8px); }
+
+.phone-screen {
+  background: #F2F2F7;
+  border-radius: 26px;
+  overflow: hidden;
+  aspect-ratio: 9/19.5;
+  position: relative;
+}
+
+/* Phone screen: Home */
+.screen-home {
+  background: #F2F2F7;
+  padding: 16px 12px;
+  font-family: var(--font-body);
+}
+
+.screen-header {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1C1C1E;
+}
+
+.screen-hero-card {
+  background: white;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.screen-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,149,0,0.15);
+  border-radius: 99px;
+  padding: 2px 8px;
+  font-size: 8px;
+  font-weight: 600;
+  color: #FF9500;
+  margin-bottom: 8px;
+}
+
+.screen-title { font-size: 13px; font-weight: 700; color: #1C1C1E; margin-bottom: 2px; }
+.screen-sub { font-size: 8px; color: #636366; margin-bottom: 8px; }
+
+.screen-progress { background: #F2F2F7; height: 4px; border-radius: 99px; margin-bottom: 10px; }
+.screen-progress-fill { height: 4px; border-radius: 99px; background: linear-gradient(90deg, #4A6CF7, #7C5CFC); width: 35%; }
+
+.screen-btn {
+  background: #4A6CF7;
+  color: white;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 9px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.screen-xp {
+  background: white;
+  border-radius: 12px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.screen-xp-bar { flex: 1; background: #F2F2F7; height: 4px; border-radius: 99px; }
+.screen-xp-fill { height: 4px; width: 68%; border-radius: 99px; background: linear-gradient(90deg, #FFD60A, #FF9500); }
+
+.screen-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.screen-stat { background: white; border-radius: 10px; padding: 8px 4px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.screen-stat-icon { font-size: 14px; }
+.screen-stat-num { font-size: 12px; font-weight: 700; color: #1C1C1E; }
+.screen-stat-label { font-size: 7px; color: #636366; }
+
+/* Phone: Leitura */
+.screen-reading-header {
+  background: linear-gradient(135deg, #1C1C1E, #2C2C2E);
+  padding: 16px 12px 12px;
+  color: white;
+}
+
+.screen-reading-book { font-size: 7px; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+.screen-reading-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.screen-reading-meta { display: flex; gap: 8px; }
+.screen-reading-meta span { font-size: 7px; color: rgba(255,255,255,0.5); }
+
+.screen-audio {
+  background: white;
+  margin: 8px;
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.screen-audio-label { font-size: 7px; color: #636366; margin-bottom: 6px; }
+.screen-audio-row { display: flex; align-items: center; gap: 8px; }
+.screen-audio-play {
+  width: 28px; height: 28px;
+  background: #4A6CF7;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(74,108,247,0.35);
+}
+.screen-audio-bar { flex: 1; }
+.screen-audio-track { background: #F2F2F7; height: 3px; border-radius: 99px; }
+.screen-audio-fill { height: 3px; width: 30%; background: #4A6CF7; border-radius: 99px; }
+.screen-audio-times { display: flex; justify-content: space-between; font-size: 6px; color: #AEAEB2; margin-top: 2px; }
+
+.screen-ai-card {
+  margin: 0 8px 8px;
+  background: linear-gradient(135deg, rgba(74,108,247,0.08), rgba(124,92,252,0.08));
+  border: 1px solid rgba(74,108,247,0.15);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.screen-ai-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.screen-ai-dot {
+  width: 14px; height: 14px;
+  background: linear-gradient(135deg, #4A6CF7, #7C5CFC);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 7px; color: white;
+}
+.screen-ai-title { font-size: 8px; font-weight: 600; }
+.screen-ai-text { font-size: 7px; color: #636366; line-height: 1.4; }
+
+.screen-verses { padding: 8px 12px; }
+.screen-verse { font-size: 7.5px; line-height: 1.7; margin-bottom: 2px; color: #1C1C1E; }
+.screen-verse-num { font-size: 6px; font-weight: 700; color: #4A6CF7; margin-right: 2px; vertical-align: super; }
+.screen-verse.hl { background: rgba(255,214,10,0.2); border-radius: 3px; padding: 1px 2px; }
+
+/* Phone: Quiz */
+.screen-quiz { background: #F2F2F7; padding: 12px; }
+.screen-quiz-header { text-align: center; margin-bottom: 10px; }
+.screen-quiz-dots { display: flex; gap: 4px; justify-content: center; margin-bottom: 4px; }
+.screen-quiz-dot { width: 5px; height: 5px; border-radius: 50%; background: #AEAEB2; }
+.screen-quiz-dot.done { background: #4A6CF7; }
+.screen-quiz-dot.cur { background: #4A6CF7; transform: scale(1.3); }
+.screen-quiz-label { font-size: 8px; color: #4A6CF7; font-weight: 600; }
+
+.screen-question-card {
+  background: white;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.screen-q-tag {
+  display: inline-block;
+  background: rgba(74,108,247,0.1);
+  color: #4A6CF7;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 7px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.screen-q-text { font-size: 9px; font-weight: 600; line-height: 1.4; }
+
+.screen-options { display: flex; flex-direction: column; gap: 5px; }
+.screen-option {
+  background: white;
+  border: 1.5px solid rgba(60,60,67,0.12);
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.screen-option.correct { border-color: #34C759; background: rgba(52,199,89,0.06); color: #34C759; font-weight: 600; }
+.screen-option-letter {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #F2F2F7;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 7px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Phone bottom tab */
+.screen-tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.95);
+  border-top: 1px solid rgba(60,60,67,0.1);
+  display: flex;
+  padding: 6px 0 10px;
+}
+.screen-tab {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.screen-tab-icon { font-size: 14px; }
+.screen-tab-label { font-size: 6px; color: #AEAEB2; }
+.screen-tab.active .screen-tab-label { color: #4A6CF7; }
+
+/* ── SECTIONS ── */
+section {
+  padding: 80px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--blue);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  color: var(--label);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--label2);
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: 56px;
+}
+
+/* ── FEATURES GRID ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.feature-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-card.featured {
+  background: linear-gradient(135deg, #1C1C1E, #2a2a40);
+  color: white;
+}
+
+.feature-card.featured::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+}
+
+.feature-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.feature-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--label2);
+}
+
+.feature-card.featured .feature-desc { color: rgba(255,255,255,0.6); }
+
+/* ── HOW IT WORKS ── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  counter-reset: steps;
+}
+
+.step {
+  position: relative;
+  padding: 28px;
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  counter-increment: steps;
+}
+
+.step::before {
+  content: counter(steps, decimal-leading-zero);
+  position: absolute;
+  top: 20px; right: 20px;
+  font-size: 36px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--blue);
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.step-icon { font-size: 32px; margin-bottom: 16px; }
+.step-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--label2); line-height: 1.6; }
+
+/* ── STATS ── */
+.stats-section {
+  background: linear-gradient(135deg, #1C1C1E, #2a2a40);
+  border-radius: 32px;
+  padding: 64px 48px;
+  margin: 0 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-section::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 48px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 400;
+  color: white;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-unit {
+  font-size: 28px;
+  background: linear-gradient(135deg, var(--blue-light), var(--purple-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.testimonial-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+
+.testimonial-card:hover { transform: translateY(-3px); }
+
+.testimonial-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.star { color: var(--gold); font-size: 16px; }
+
+.testimonial-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--label);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.testimonial-name { font-size: 14px; font-weight: 600; }
+.testimonial-role { font-size: 12px; color: var(--label2); }
+
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.pricing-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.pricing-card.popular {
+  background: linear-gradient(135deg, #1C1C1E, #2a2a3e);
+  color: white;
+  transform: scale(1.03);
+}
+
+.pricing-card.popular:hover { transform: scale(1.03) translateY(-4px); }
+
+.popular-badge {
+  position: absolute;
+  top: -12px; left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 16px;
+  border-radius: 99px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(74,108,247,0.4);
+}
+
+.pricing-plan { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.pricing-plan.free { color: var(--label2); }
+.pricing-plan.basic { color: var(--blue); }
+.pricing-plan.premium { color: var(--purple-light); }
+
+.pricing-price {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.pricing-period {
+  font-size: 13px;
+  color: var(--label2);
+  margin-bottom: 24px;
+}
+
+.pricing-card.popular .pricing-period { color: rgba(255,255,255,0.5); }
+
+.pricing-features {
+  list-style: none;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pricing-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.pricing-card.popular .pricing-feature { color: rgba(255,255,255,0.85); }
+
+.check { color: var(--green); font-size: 16px; }
+.cross { color: var(--label3); font-size: 16px; }
+.pricing-card.popular .check { color: #6EE7A0; }
+
+.pricing-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+  text-align: center;
+  display: block;
+  text-decoration: none;
+}
+
+.pricing-btn.outline {
+  background: transparent;
+  border: 1.5px solid var(--separator);
+  color: var(--label);
+}
+
+.pricing-btn.outline:hover { border-color: var(--blue); color: var(--blue); }
+
+.pricing-btn.solid {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: white;
+  box-shadow: 0 6px 20px rgba(74,108,247,0.35);
+}
+
+.pricing-btn.solid:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(74,108,247,0.45);
+}
+
+.pricing-btn.white {
+  background: white;
+  color: var(--label);
+}
+
+.pricing-btn.white:hover { transform: translateY(-1px); }
+
+/* ── FAQ ── */
+.faq-list {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.faq-q {
+  width: 100%;
+  padding: 20px 24px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--label);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.faq-arrow {
+  color: var(--label3);
+  font-size: 18px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+.faq-a {
+  display: none;
+  padding: 0 24px 20px;
+  font-size: 14px;
+  color: var(--label2);
+  line-height: 1.7;
+}
+
+.faq-item.open .faq-a { display: block; }
+
+/* ── CTA FINAL ── */
+.cta-section {
+  margin: 0 24px 80px;
+  background: linear-gradient(135deg, #1C1C1E 0%, #2a2a3e 100%);
+  border-radius: 32px;
+  padding: 80px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+}
+
+.cta-orb {
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,108,247,0.25), transparent);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 52px);
+  color: white;
+  font-weight: 400;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.cta-sub {
+  font-size: 17px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: white;
+  border-top: 1px solid var(--separator);
+  padding: 48px 24px 32px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand { max-width: 280px; }
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  text-decoration: none;
+}
+
+.footer-desc {
+  font-size: 14px;
+  color: var(--label2);
+  line-height: 1.6;
+}
+
+.footer-col-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--label);
+  margin-bottom: 16px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: var(--label2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-links a:hover { color: var(--blue); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--separator);
+  padding-top: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-copy { font-size: 13px; color: var(--label2); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 0 16px; }
+  .nav-links .nav-link { display: none; }
+
+  .hero { padding: 90px 16px 60px; }
+
+  .phone-showcase { gap: 12px; }
+  .phone-frame { width: 180px; }
+  .phone-frame.featured { transform: scale(1.04); }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .footer-brand { grid-column: 1 / -1; }
+
+  .stats-section { padding: 48px 24px; margin: 0 16px; }
+  .cta-section { padding: 56px 24px; margin: 0 16px 60px; }
+}
+
+@media (max-width: 480px) {
+  .phone-showcase { gap: 8px; }
+  .phone-frame { width: 150px; }
+  .hero-title { font-size: 36px; }
+  .footer-top { grid-template-columns: 1fr; }
+}
+
+/* streak animation */
+@keyframes streakPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.streak-fire { animation: streakPulse 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 100 80" class="logo-svg-icon" fill="none" stroke="url(#logo-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <defs>
+        <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4A6CF7" />
+          <stop offset="100%" stop-color="#7C5CFC" />
+        </linearGradient>
+      </defs>
+      <path d="M50 6 Q50 16 40 16 Q50 16 50 26 Q50 16 60 16 Q50 16 50 6 Z" fill="url(#logo-grad)" stroke="none" />
+      <path d="M46 70 C30 58, 20 62, 10 66 L10 32 C20 28, 30 24, 46 36 Z" />
+      <path d="M54 70 C70 58, 80 62, 90 66 L90 32 C80 28, 70 24, 54 36 Z" />
+    </svg>
+    <span class="nav-logo-text">Bíblia<span style="font-weight: 500;">Viva</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#features" class="nav-link">Funcionalidades</a>
+    <a href="#como-funciona" class="nav-link">Como funciona</a>
+    <a href="#precos" class="nav-link">Preços</a>
+    <a href="blog.html" class="nav-link">Blog</a>
+    <a href="login.html" class="nav-link">Entrar</a>
+    <a href="registro.html" class="nav-cta">Começar grátis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+    <div class="hero-orb orb-3"></div>
+  </div>
+
+  <div class="hero-badge">
+    <span class="streak-fire">🔥</span>
+    Mais de 1.000 pessoas já lendo todo dia
+  </div>
+
+  <h1 class="hero-title">
+    Aprenda a Bíblia<br>
+    como um <em>jogo</em>
+  </h1>
+
+  <p class="hero-sub">
+    Missões diárias, IA que explica cada versículo e pregações curadas por livro. O hábito que você sempre quis, finalmente fácil de manter.
+  </p>
+
+  <div class="hero-actions">
+    <a href="registro.html" class="btn-primary">
+      ▶ Começar grátis agora
+    </a>
+    <a href="#como-funciona" class="btn-secondary">
+      Ver como funciona
+    </a>
+  </div>
+
+  <div class="social-proof">
+    <div class="avatars">
+      <div class="avatar">😊</div>
+      <div class="avatar">🙏</div>
+      <div class="avatar">✝️</div>
+      <div class="avatar">📖</div>
+      <div class="avatar">⭐</div>
+    </div>
+    <p class="social-text">
+      <strong>4.9★</strong> · Amado por cristãos de todas as denominações
+    </p>
+  </div>
+</div>
+
+<!-- PHONE MOCKUPS -->
+<div class="phone-showcase reveal">
+
+  <!-- Phone 1: Home -->
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="screen-home">
+        <div class="screen-header">Início</div>
+        <div class="screen-hero-card">
+          <div class="screen-badge">🔥 7 dias seguidos</div>
+          <div class="screen-title">Continue em Mateus 5</div>
+          <div class="screen-sub">Capítulo 5 • Bíblia Sagrada</div>
+          <div class="screen-progress"><div class="screen-progress-fill"></div></div>
+          <div class="screen-btn">▶ Continuar leitura</div>
+        </div>
+        <div class="screen-xp">
+          <span style="font-size:14px">⚡</span>
+          <div style="flex:1">
+            <div style="font-size:8px; color:#636366; margin-bottom:3px">Nível 8 · Discípulo Fiel</div>
+            <div class="screen-xp-bar"><div class="screen-xp-fill"></div></div>
+          </div>
+          <span style="font-size:9px; font-weight:700; color:#FF9500">680 XP</span>
+        </div>
+        <div style="font-size:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:#636366; margin-bottom:6px">Sua semana</div>
+        <div class="screen-stats">
+          <div class="screen-stat"><div class="screen-stat-icon">📖</div><div class="screen-stat-num">12</div><div class="screen-stat-label">Cap. lidos</div></div>
+          <div class="screen-stat"><div class="screen-stat-icon">🔥</div><div class="screen-stat-num">7</div><div class="screen-stat-label">Seguidos</div></div>
+          <div class="screen-stat"><div class="screen-stat-icon">🏆</div><div class="screen-stat-num">340</div><div class="screen-stat-label">XP</div></div>
+        </div>
+      </div>
+      <div class="screen-tab-bar">
+        <div class="screen-tab active"><div class="screen-tab-icon">🏠</div><div class="screen-tab-label">Início</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">🎯</div><div class="screen-tab-label">Missões</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">📖</div><div class="screen-tab-label">Leitura</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">✦</div><div class="screen-tab-label">IA</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">⚡</div><div class="screen-tab-label">Quiz</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone 2: Leitura (FEATURED) -->
+  <div class="phone-frame featured">
+    <div class="phone-screen">
+      <div class="screen-reading-header">
+        <div class="screen-reading-book">Evangelhos · Novo Testamento</div>
+        <div class="screen-reading-title">Mateus 5</div>
+        <div class="screen-reading-meta">
+          <span>📖 48 versículos</span>
+          <span>⏱ ~5 min</span>
+        </div>
+      </div>
+      <div class="screen-audio">
+        <div class="screen-audio-label">🎧 Narração por IA · Leitura dramática</div>
+        <div class="screen-audio-row">
+          <div class="screen-audio-play">▶</div>
+          <div class="screen-audio-bar">
+            <div class="screen-audio-track"><div class="screen-audio-fill"></div></div>
+            <div class="screen-audio-times"><span>1:24</span><span>4:52</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-ai-card">
+        <div class="screen-ai-header">
+          <div class="screen-ai-dot">✦</div>
+          <div class="screen-ai-title">Resumo da IA · Mateus 5</div>
+        </div>
+        <div class="screen-ai-text">O Sermão do Monte apresenta as Bem-aventuranças, onde Jesus mostra que o verdadeiro reino de Deus pertence aos humildes e misericordiosos.</div>
+      </div>
+      <div class="screen-verses">
+        <div class="screen-verse"><span class="screen-verse-num">1</span>Vendo Jesus as multidões, subiu ao monte e, depois de se sentar...</div>
+        <div class="screen-verse hl"><span class="screen-verse-num">3</span>"Bem-aventurados os pobres em espírito, porque deles é o reino dos céus.</div>
+        <div class="screen-verse"><span class="screen-verse-num">4</span>Bem-aventurados os que choram, porque serão consolados.</div>
+        <div class="screen-verse hl"><span class="screen-verse-num">5</span>Bem-aventurados os humildes, porque herdarão a terra.</div>
+      </div>
+      <div class="screen-tab-bar">
+        <div class="screen-tab"><div class="screen-tab-icon">🏠</div><div class="screen-tab-label">Início</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">🎯</div><div class="screen-tab-label">Missões</div></div>
+        <div class="screen-tab active"><div class="screen-tab-icon">📖</div><div class="screen-tab-label">Leitura</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">✦</div><div class="screen-tab-label">IA</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">⚡</div><div class="screen-tab-label">Quiz</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone 3: Quiz -->
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="screen-quiz">
+        <div style="font-size:11px; font-weight:600; text-align:center; margin-bottom:8px">Quiz do Dia</div>
+        <div class="screen-quiz-header">
+          <div style="font-size:7px; color:#636366; margin-bottom:6px">Mateus · 5 perguntas</div>
+          <div class="screen-quiz-dots">
+            <div class="screen-quiz-dot done"></div>
+            <div class="screen-quiz-dot done"></div>
+            <div class="screen-quiz-dot cur"></div>
+            <div class="screen-quiz-dot"></div>
+            <div class="screen-quiz-dot"></div>
+          </div>
+          <div class="screen-quiz-label">Pergunta 3 de 5</div>
+        </div>
+        <div class="screen-question-card">
+          <div class="screen-q-tag">📖 Mateus 5</div>
+          <div class="screen-q-text">Segundo Jesus, quem "herdarão a terra"?</div>
+        </div>
+        <div class="screen-options">
+          <div class="screen-option"><div class="screen-option-letter">A</div>Os pobres em espírito</div>
+          <div class="screen-option"><div class="screen-option-letter">B</div>Os misericordiosos</div>
+          <div class="screen-option correct"><div class="screen-option-letter" style="background:rgba(52,199,89,0.15)">✓</div>Os humildes (mansos)</div>
+          <div class="screen-option"><div class="screen-option-letter">D</div>Os pacificadores</div>
+        </div>
+        <div style="margin-top:8px; background:rgba(52,199,89,0.1); border-radius:8px; padding:8px; text-align:center;">
+          <div style="font-size:10px; font-weight:700; color:#34C759">🎉 Correto! +20 XP</div>
+          <div style="font-size:7px; color:#636366; margin-top:2px">Mateus 5:5</div>
+        </div>
+      </div>
+      <div class="screen-tab-bar">
+        <div class="screen-tab"><div class="screen-tab-icon">🏠</div><div class="screen-tab-label">Início</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">🎯</div><div class="screen-tab-label">Missões</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">📖</div><div class="screen-tab-label">Leitura</div></div>
+        <div class="screen-tab"><div class="screen-tab-icon">✦</div><div class="screen-tab-label">IA</div></div>
+        <div class="screen-tab active"><div class="screen-tab-icon">⚡</div><div class="screen-tab-label" style="color:#4A6CF7">Quiz</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="reveal">
+    <span class="section-label">Funcionalidades</span>
+    <h2 class="section-title">Tudo que você precisa<br>para crescer na fé</h2>
+    <p class="section-sub">Combinamos gamificação, inteligência artificial e curadoria de conteúdo para tornar o estudo bíblico irresistível.</p>
+  </div>
+
+  <div class="features-grid reveal">
+    <div class="feature-card featured">
+      <div class="feature-icon" style="background:rgba(74,108,247,0.15)">🤖</div>
+      <h3 class="feature-title" style="color:white">Assistente IA Pastoral</h3>
+      <p class="feature-desc">Pergunte qualquer coisa sobre o capítulo que está lendo. A IA explica contexto histórico, significado de palavras e aplicação prática — com tom pastoral e respeitoso a todas as denominações.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(255,149,0,0.1)">🔥</div>
+      <h3 class="feature-title">Missões e Streak</h3>
+      <p class="feature-desc">Metas diárias, semanais e desafios especiais mantêm você motivado. Não quebre sua sequência — é o mesmo mecanismo que faz o Duolingo funcionar, aplicado à Bíblia.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(52,199,89,0.1)">🎧</div>
+      <h3 class="feature-title">Narração por IA</h3>
+      <p class="feature-desc">Ouça a Bíblia narrada com voz dramática e natural enquanto dirige, cozinha ou caminha. Disponível para todos os 66 livros no plano Premium.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(124,92,252,0.1)">⚡</div>
+      <h3 class="feature-title">Quiz Gerado por IA</h3>
+      <p class="feature-desc">Após cada leitura, teste seu entendimento com perguntas criadas pela IA sobre exatamente o que você leu. Cada acerto vale XP e sobe seu nível.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(255,59,48,0.1)">🎬</div>
+      <h3 class="feature-title">Pregações por Livro</h3>
+      <p class="feature-desc">Leu Jó e ficou com dúvidas? Veja as melhores pregações sobre Jó curadas automaticamente. Vídeos filtrados por qualidade e relevância teológica.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(255,214,10,0.15)">🏆</div>
+      <h3 class="feature-title">XP e Conquistas</h3>
+      <p class="feature-desc">Suba de nível, desbloqueie conquistas e acompanhe seu progresso em cada um dos 66 livros. Visualize sua jornada e celebre cada marco alcançado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="como-funciona" style="background: white; border-radius: 32px; margin: 0 24px; padding: 64px 48px; max-width: none;">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <div class="reveal" style="text-align:center; margin-bottom:56px;">
+      <span class="section-label">Como funciona</span>
+      <h2 class="section-title">Do primeiro capítulo<br>ao hábito de vida</h2>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-icon">📱</div>
+        <h3 class="step-title">Cadastre-se grátis</h3>
+        <p class="step-desc">Crie sua conta em segundos. Sem cartão de crédito. Comece lendo o primeiro capítulo do livro que você escolher.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🎯</div>
+        <h3 class="step-title">Receba sua missão do dia</h3>
+        <p class="step-desc">Toda manhã uma missão te espera — um capítulo, uma meta de leitura ou um quiz. Simples, direto, sem pressão.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📖</div>
+        <h3 class="step-title">Leia com a IA ao lado</h3>
+        <p class="step-desc">Leia o texto, ouça a narração ou pergunte para a IA. O resumo do capítulo aparece antes da leitura para contextualizar.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">⚡</div>
+        <h3 class="step-title">Teste e ganhe XP</h3>
+        <p class="step-desc">Faça o quiz, ganhe pontos e suba de nível. O sistema de recompensas transforma o estudo bíblico em algo que você quer fazer todo dia.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section reveal" style="margin-top: 80px;">
+  <div class="stats-grid">
+    <div>
+      <div class="stat-num">66<span class="stat-unit">livros</span></div>
+      <div class="stat-label">Toda a Bíblia disponível</div>
+    </div>
+    <div>
+      <div class="stat-num">1189<span class="stat-unit">cap.</span></div>
+      <div class="stat-label">Capítulos para explorar</div>
+    </div>
+    <div>
+      <div class="stat-num">24<span class="stat-unit">h</span></div>
+      <div class="stat-label">Suporte da IA pastoral</div>
+    </div>
+    <div>
+      <div class="stat-num">4.9<span class="stat-unit">★</span></div>
+      <div class="stat-label">Avaliação dos usuários</div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="reveal" style="text-align:center; margin-bottom:48px;">
+    <span class="section-label">Depoimentos</span>
+    <h2 class="section-title">O que dizem<br>quem já usa</h2>
+  </div>
+
+  <div class="testimonials-grid reveal">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <p class="testimonial-text">"Finalmente consegui ler a Bíblia de forma consistente. O streak de dias me motiva mais do que eu esperava. Já são 47 dias seguidos!"</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">👩</div>
+        <div>
+          <div class="testimonial-name">Ana Clara M.</div>
+          <div class="testimonial-role">Membro da Igreja Batista · São Paulo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <p class="testimonial-text">"A IA que explica os versículos é incrível. Perguntei sobre o contexto histórico de Isaías e recebi uma resposta melhor do que qualquer comentário bíblico que já li."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">👨</div>
+        <div>
+          <div class="testimonial-name">Marcos Vinícius S.</div>
+          <div class="testimonial-role">Presbiteriano · Belo Horizonte</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <p class="testimonial-text">"Ouço a narração enquanto faço academia. Em 3 meses já passei pelos 4 Evangelhos. Nunca tinha conseguido isso em 10 anos de tentativas."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">👩</div>
+        <div>
+          <div class="testimonial-name">Fernanda R.</div>
+          <div class="testimonial-role">Assembléia de Deus · Recife</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="precos" style="background: #F2F2F7;">
+  <div class="reveal" style="text-align:center; margin-bottom:56px;">
+    <span class="section-label">Planos</span>
+    <h2 class="section-title">Simples e justo</h2>
+    <p class="section-sub" style="margin: 0 auto;">Comece grátis e evolua conforme sua jornada cresce. Cancele quando quiser.</p>
+  </div>
+
+  <div class="pricing-grid reveal">
+    <div class="pricing-card">
+      <div class="pricing-plan free">Grátis</div>
+      <div class="pricing-price">R$0</div>
+      <div class="pricing-period">para sempre</div>
+      <ul class="pricing-features">
+        <li class="pricing-feature"><span class="check">✓</span>1 capítulo por dia</li>
+        <li class="pricing-feature"><span class="check">✓</span>Resumo de IA (3/dia)</li>
+        <li class="pricing-feature"><span class="check">✓</span>Quiz diário</li>
+        <li class="pricing-feature"><span class="check">✓</span>Missões básicas</li>
+        <li class="pricing-feature"><span class="cross">✗</span><span style="color:var(--label3)">Narração por IA</span></li>
+        <li class="pricing-feature"><span class="cross">✗</span><span style="color:var(--label3)">Chat IA ilimitado</span></li>
+      </ul>
+      <a href="registro.html" class="pricing-btn outline">Começar grátis</a>
+    </div>
+
+    <div class="pricing-card popular">
+      <div class="popular-badge">✦ Mais popular</div>
+      <div class="pricing-plan premium">Premium</div>
+      <div class="pricing-price" style="color:white">R$24,90</div>
+      <div class="pricing-period">por mês · cancele quando quiser</div>
+      <ul class="pricing-features">
+        <li class="pricing-feature"><span class="check">✓</span>Leitura ilimitada</li>
+        <li class="pricing-feature"><span class="check">✓</span>Chat IA ilimitado</li>
+        <li class="pricing-feature"><span class="check">✓</span>Narração por IA 🎧</li>
+        <li class="pricing-feature"><span class="check">✓</span>Pregações por livro 🎬</li>
+        <li class="pricing-feature"><span class="check">✓</span>Quiz ilimitado</li>
+        <li class="pricing-feature"><span class="check">✓</span>Streak freeze semanal</li>
+      </ul>
+      <a href="https://buy.stripe.com/test_14A3cu9o329n4Tqd1ccwg01" target="_blank" class="pricing-btn solid">Assinar Premium</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-plan basic">Básico</div>
+      <div class="pricing-price">R$14,90</div>
+      <div class="pricing-period">por mês · cancele quando quiser</div>
+      <ul class="pricing-features">
+        <li class="pricing-feature"><span class="check">✓</span>Leitura ilimitada</li>
+        <li class="pricing-feature"><span class="check">✓</span>Resumo de IA ilimitado</li>
+        <li class="pricing-feature"><span class="check">✓</span>Chat IA (30/dia)</li>
+        <li class="pricing-feature"><span class="check">✓</span>Quiz ilimitado</li>
+        <li class="pricing-feature"><span class="cross">✗</span><span style="color:var(--label3)">Narração por IA</span></li>
+        <li class="pricing-feature"><span class="cross">✗</span><span style="color:var(--label3)">Pregações por livro</span></li>
+      </ul>
+      <a href="https://buy.stripe.com/test_00wbJ0cAf6pD4TqbX8cwg00" target="_blank" class="pricing-btn outline">Assinar Básico</a>
+    </div>
+  </div>
+
+  <p class="reveal" style="text-align:center; margin-top:32px; font-size:14px; color:var(--label2);">
+    💳 Plano anual Premium por <a href="https://buy.stripe.com/test_aFa6oGbwbeW93Pm8KWcwg02" target="_blank" style="color:var(--blue); font-weight:600; text-decoration:none;">R$179,90/ano</a> — economize 40% · Pagamento seguro via Stripe
+  </p>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="reveal" style="text-align:center; margin-bottom:48px;">
+    <span class="section-label">Dúvidas</span>
+    <h2 class="section-title">Perguntas frequentes</h2>
+  </div>
+
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Precisa baixar um aplicativo?
+        <span class="faq-arrow">⌄</span>
+      </button>
+      <div class="faq-a">Não. O BíbliaViva é um PWA — funciona direto no navegador do celular ou computador, sem precisar instalar nada. Você pode adicionar à tela inicial do seu celular para ter a experiência de um app nativo.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        A IA pode errar na explicação de versículos?
+        <span class="faq-arrow">⌄</span>
+      </button>
+      <div class="faq-a">Sim, e ela é treinada para reconhecer isso. Quando não tem certeza, a IA indica que a questão deve ser discutida com seu pastor ou líder espiritual. Ela é uma ferramenta de estudo e aprofundamento, não um substituto para a comunidade e o discipulado presencial.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Funciona para católicos também?
+        <span class="faq-arrow">⌄</span>
+      </button>
+      <div class="faq-a">Sim. O app usa a tradução ARC (Almeida Revista e Corrigida), amplamente respeitada entre diferentes denominações. A IA é treinada para respeitar diferentes tradições cristãs e apresentar múltiplas perspectivas quando há interpretações divergentes.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Posso cancelar a assinatura a qualquer momento?
+        <span class="faq-arrow">⌄</span>
+      </button>
+      <div class="faq-a">Sim, sem burocracia. Cancele com um clique pelo portal do assinante. Você continua com acesso até o fim do período pago.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Como funciona o streak freeze?
+        <span class="faq-arrow">⌄</span>
+      </button>
+      <div class="faq-a">Assinantes Premium têm 1 freeze por semana. Se passar um dia sem ler, o freeze é usado automaticamente e sua sequência é mantida. É para os dias corridos de viagem ou imprevistos — não para abandonar o hábito.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-section reveal" id="cadastro">
+  <div class="cta-orb"></div>
+  <h2 class="cta-title">Comece sua jornada<br>hoje mesmo</h2>
+  <p class="cta-sub">Grátis para começar. Sem cartão de crédito. Sem compromisso.</p>
+  <div class="cta-actions">
+    <a href="registro.html" class="btn-primary">▶ Começar grátis agora</a>
+    <a href="login.html" class="btn-secondary" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3)">Fazer Login</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">
+          <svg viewBox="0 0 100 80" class="logo-svg-icon" fill="none" stroke="url(#logo-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="logo-grad-footer" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4A6CF7" />
+                <stop offset="100%" stop-color="#7C5CFC" />
+              </linearGradient>
+            </defs>
+            <path d="M50 6 Q50 16 40 16 Q50 16 50 26 Q50 16 60 16 Q50 16 50 6 Z" fill="url(#logo-grad-footer)" stroke="none" />
+            <path d="M46 70 C30 58, 20 62, 10 66 L10 32 C20 28, 30 24, 46 36 Z" />
+            <path d="M54 70 C70 58, 80 62, 90 66 L90 32 C80 28, 70 24, 54 36 Z" />
+          </svg>
+          <span class="nav-logo-text">Bíblia<span style="font-weight: 500;">Viva</span></span>
+        </a>
+        <p class="footer-desc">Transformando a leitura diária da Bíblia em um hábito leve, gamificado e profundo através de inteligência artificial.</p>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Produto</h4>
+        <ul class="footer-links">
+          <li><a href="#features">Funcionalidades</a></li>
+          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#precos">Preços</a></li>
+          <li><a href="blog.html">Blog de Estudos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Acesso</h4>
+        <ul class="footer-links">
+          <li><a href="login.html">Entrar</a></li>
+          <li><a href="registro.html">Criar Conta</a></li>
+          <li><a href="#cadastro">Começar Grátis</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacidade</a></li>
+          <li><a href="#">Termos de Uso</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 BíbliaViva. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Toggle FAQ
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle('open');
+}
+
+// Reveal elements on scroll
+const reveals = document.querySelectorAll('.reveal');
+function revealOnScroll() {
+  const windowHeight = window.innerHeight;
+  for (let i = 0; i < reveals.length; i++) {
+    const elementTop = reveals[i].getBoundingClientRect().top;
+    const elementVisible = 150;
+    if (elementTop < windowHeight - elementVisible) {
+      reveals[i].classList.add('visible');
+    }
+  }
+}
+window.addEventListener('scroll', revealOnScroll);
+revealOnScroll(); // Executar uma vez no início
+</script>
+</body>
+</html>

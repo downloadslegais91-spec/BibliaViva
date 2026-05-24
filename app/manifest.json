@@ -1,0 +1,27 @@
+{
+  "name": "BíbliaViva — Aprenda a Bíblia",
+  "short_name": "BíbliaViva",
+  "description": "Estude a Bíblia de forma interativa com gamificação, quiz, assistente IA e leitura offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0C10",
+  "theme_color": "#7C6FE4",
+  "orientation": "portrait-primary",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon-biblia-viva.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books"],
+  "screenshots": []
+}

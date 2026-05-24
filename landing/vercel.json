@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/blog", "destination": "https://bibliaviva-blog.vercel.app" },
+    { "source": "/blog/:path*", "destination": "https://bibliaviva-blog.vercel.app/:path*" },
+    { "source": "/app", "destination": "https://bibliaviva-app.vercel.app" },
+    { "source": "/app/:path*", "destination": "https://bibliaviva-app.vercel.app/:path*" },
+    { "source": "/bibliaviva", "destination": "https://bibliaviva-app.vercel.app" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/registro", "destination": "/registro.html" }
+  ]
+}
