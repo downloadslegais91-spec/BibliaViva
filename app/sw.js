@@ -123,3 +123,27 @@ async function networkFirstThenCache(request) {
     );
   }
 }
+
+// ----- NOTIFICATION CLICK: Focus or open client tab -----
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  
+  const targetUrl = event.notification.data?.url || '/';
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      // Check if there is already a window open with this app
+      for (const client of clientList) {
+        const clientUrlObj = new URL(client.url);
+        const clientPath = clientUrlObj.pathname;
+        if (clientPath === targetUrl || clientPath.startsWith('/app') || clientUrlObj.hostname === location.hostname) {
+          return client.focus();
+        }
+      }
+      // If no window is open, open a new one
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
+});

@@ -3877,6 +3877,14 @@
             </label>
           </div>
 
+          <div class="ios-row" onclick="triggerTestNotification()" style="cursor: pointer;">
+            <div class="ios-row-left">
+              <span class="ios-row-icon">✨</span>
+              <span class="ios-row-name" style="color: var(--accent-gold); font-weight: 500;">Testar Alerta de Fé</span>
+            </div>
+            <span style="font-size: 13px; color: var(--text-muted); padding-right: 4px;">Testar Agora</span>
+          </div>
+
           <div class="ios-row" style="cursor: default;">
             <div class="ios-row-left">
               <span class="ios-row-icon">🌓</span>
@@ -6970,6 +6978,155 @@
           }
         }
       };
+    })();
+
+    // ─── DAILY VERSES & POSITIVE INSPIRATIONAL REMINDERS SYSTEM ───
+    const INSPIRATIONAL_MESSAGES = [
+      {
+        title: "Tudo posso naquele que me fortalece! 💪",
+        body: "Deus está com você hoje. Que tal tirar 2 minutos para meditar no BíbliaViva?"
+      },
+      {
+        title: "O Senhor é o meu pastor 🐑",
+        body: "De nada terei falta. Volte para alimentar seu espírito com a palavra!"
+      },
+      {
+        title: "🕊️ Não andeis ansiosos...",
+        body: "Entregue suas preocupações a Deus. Ele cuida de você. Que tal ler um Salmo agora?"
+      },
+      {
+        title: "A tua palavra é lâmpada para meus pés 💡",
+        body: "E luz para o meu caminho. Continue sua jornada espiritual de hoje no app!"
+      },
+      {
+        title: "🛡️ O Senhor guardará a tua entrada...",
+        body: "...e a tua saída, desde agora e para sempre. Tenha um dia muito abençoado!"
+      },
+      {
+        title: "🌱 Planos de prosperidade e paz",
+        body: "Jeremias 29:11: 'Porque sou eu que sei os planos que tenho para vocês', diz o Senhor..."
+      }
+    ];
+
+    function sendRandomInspirationalNotification() {
+      const enabled = localStorage.getItem('notificationsEnabled') !== 'false';
+      if (!enabled || Notification.permission !== 'granted') return;
+
+      const randomMsg = INSPIRATIONAL_MESSAGES[Math.floor(Math.random() * INSPIRATIONAL_MESSAGES.length)];
+
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(registration => {
+          registration.showNotification(randomMsg.title, {
+            body: randomMsg.body,
+            icon: '/icon-512.png',
+            badge: '/icon-biblia-viva.svg',
+            tag: 'bibliaviva-reminder',
+            renotify: true,
+            data: { url: '/app/' }
+          });
+        });
+      } else {
+        new Notification(randomMsg.title, {
+          body: randomMsg.body,
+          icon: '/icon-512.png'
+        });
+      }
+    }
+
+    async function triggerTestNotification() {
+      if (Notification.permission === 'default') {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          showFeedback('⚠️ Permissão de notificação recusada.');
+          const chk = document.getElementById('profile-notifications');
+          if (chk) chk.checked = false;
+          return;
+        }
+      }
+      
+      if (Notification.permission !== 'granted') {
+        showFeedback('⚠️ Ative as notificações nas configurações do seu navegador.');
+        return;
+      }
+
+      showFeedback('🔔 Enviando alerta positivo...');
+      setTimeout(() => {
+        sendRandomInspirationalNotification();
+      }, 1000);
+    }
+
+    // Initialize notification features
+    (function initNotificationsSystem() {
+      // Visibility Change Tab Reminder
+      let backgroundTimer = null;
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          const enabled = localStorage.getItem('notificationsEnabled') !== 'false';
+          if (enabled && Notification.permission === 'granted') {
+            // Remind the user to come back after 3 minutes
+            backgroundTimer = setTimeout(() => {
+              sendRandomInspirationalNotification();
+            }, 3 * 60 * 1000); 
+          }
+        } else {
+          if (backgroundTimer) {
+            clearTimeout(backgroundTimer);
+            backgroundTimer = null;
+          }
+        }
+      });
+
+      // Request permission when switch is toggled
+      window.addEventListener('DOMContentLoaded', () => {
+        const chk = document.getElementById('profile-notifications');
+        if (chk) {
+          // Sync UI with state
+          const enabled = localStorage.getItem('notificationsEnabled') !== 'false';
+          chk.checked = enabled && Notification.permission === 'granted';
+
+          chk.addEventListener('change', async () => {
+            if (chk.checked) {
+              if (Notification.permission === 'default') {
+                const res = await Notification.requestPermission();
+                if (res !== 'granted') {
+                  chk.checked = false;
+                  localStorage.setItem('notificationsEnabled', 'false');
+                  showFeedback('⚠️ Permissão para notificações recusada.');
+                } else {
+                  localStorage.setItem('notificationsEnabled', 'true');
+                  showFeedback('🔔 Notificações ativadas com sucesso!');
+                }
+              } else if (Notification.permission === 'denied') {
+                chk.checked = false;
+                localStorage.setItem('notificationsEnabled', 'false');
+                showFeedback('⚠️ Ative as notificações no cadeado do seu navegador.');
+              } else {
+                localStorage.setItem('notificationsEnabled', 'true');
+                showFeedback('🔔 Notificações ativadas com sucesso!');
+              }
+            } else {
+              localStorage.setItem('notificationsEnabled', 'false');
+              showFeedback('🔕 Notificações desativadas.');
+            }
+          });
+        }
+
+        // Welcome alert back after 18 hours absence
+        setTimeout(() => {
+          const enabled = localStorage.getItem('notificationsEnabled') !== 'false';
+          if (enabled && Notification.permission === 'granted') {
+            const lastAccessStr = localStorage.getItem('lastAccessTimestamp');
+            const now = Date.now();
+            if (lastAccessStr) {
+              const lastAccess = parseInt(lastAccessStr, 10);
+              if (now - lastAccess > 18 * 60 * 60 * 1000) {
+                sendRandomInspirationalNotification();
+              }
+            }
+            localStorage.setItem('lastAccessTimestamp', now.toString());
+          }
+        }, 5000);
+      });
     })();
   </script>
 
