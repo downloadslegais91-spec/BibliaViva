@@ -6,8 +6,6 @@
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     if (isLoggedIn) {
       window.location.replace('/app/');
-    } else {
-      window.location.replace('/login.html');
     }
   })();
 </script>
