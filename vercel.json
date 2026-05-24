@@ -1,6 +1,9 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api" },
+    { "source": "/sitemap.xml", "destination": "/landing/sitemap.xml" },
+    { "source": "/robots.txt", "destination": "/landing/robots.txt" },
+    { "source": "/google96d44f065870e053.html", "destination": "/landing/google96d44f065870e053.html" },
     { "source": "/", "destination": "/landing/index.html" },
     { "source": "/login", "destination": "/landing/login.html" },
     { "source": "/login.html", "destination": "/landing/login.html" },
