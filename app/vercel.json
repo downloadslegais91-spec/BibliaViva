@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://bibliaviva.app/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://bibliavivalandingpage.vercel.app/api/:path*" },
     { "source": "/", "destination": "/index.html" },
     { "source": "/intensiva", "destination": "/Intensiva.html" },
     { "source": "/admin", "destination": "/admin.html" }
