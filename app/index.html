@@ -4027,15 +4027,13 @@
     const API_URL = (function () {
       // If set globally (e.g. from a config script), use that
       if (window.BACKEND_URL) return window.BACKEND_URL + '/api';
-      // If deployed to Vercel (not localhost), use relative /api (requires backend on same domain)
-      // OR point to your dedicated backend URL here:
+      // If deployed to Vercel (not localhost), use dedicated backend URL
       if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-        // TODO: Replace with your backend URL after deploying (e.g. Railway, Render)
-        // Example: return 'https://bibliaviva-backend.railway.app/api';
-        return window.PRODUCTION_API || '/api';
+        return 'https://bibliavivalandingpage.vercel.app/api';
       }
       return 'http://localhost:3000/api';
     })();
+    window.API_URL = API_URL;
     const pages = ['home', 'quests', 'leitura', 'ia', 'quiz', 'ranking'];
     const titles = { home: 'Início', quests: 'Missões', leitura: 'Leitura Bíblica', ia: 'Assistente IA', quiz: 'Quiz do Dia', ranking: 'Classificação' };
     let currentUser = null;
