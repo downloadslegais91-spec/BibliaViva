@@ -9,6 +9,7 @@
     { "source": "/icon-biblia-viva.svg", "destination": "/landing/icon-biblia-viva.svg" },
     { "source": "/icon-512.png", "destination": "/landing/icon-512.png" },
     { "source": "/manifest.json", "destination": "/landing/manifest.json" },
+    { "source": "/favicon.ico", "destination": "/landing/icon-biblia-viva.svg" },
     { "source": "/blog", "destination": "https://bibliaviva-blog.vercel.app" },
     { "source": "/blog/:path*", "destination": "https://bibliaviva-blog.vercel.app/:path*" },
     { "source": "/app", "destination": "https://biblia-viva-six.vercel.app" },

@@ -2,10 +2,11 @@
 const CACHE_NAME = 'bibliaviva-v8';
 const STATIC_ASSETS = [
   '/',
-  '/login.html',
-  '/registro.html',
-  '/bibliaviva.html',
+  '/index.html',
+  '/Intensiva.html',
+  '/admin.html',
   '/sermon-player.js',
+  '/sermon-player.css',
   '/manifest.json',
   '/icon-512.png',
   '/icon-biblia-viva.svg',
