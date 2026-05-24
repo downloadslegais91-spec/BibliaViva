@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api" },
     { "source": "/", "destination": "/landing/index.html" },
     { "source": "/login", "destination": "/landing/login.html" },
     { "source": "/registro", "destination": "/landing/registro.html" },
