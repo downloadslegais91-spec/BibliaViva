@@ -3994,9 +3994,17 @@
   </div>
 
   <script>
+    // URL de Login dinâmica para suportar tanto localhost quanto a URL de produção da Vercel
+    const LOGIN_URL = (function() {
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        return '/login.html';
+      }
+      return 'https://bibliavivalandingpage.vercel.app/login.html';
+    })();
+
     // Guard de Autenticação - Redireciona para o login se não estiver autenticado
     if (localStorage.getItem('isLoggedIn') !== 'true') {
-      window.location.replace('/');
+      window.location.replace(LOGIN_URL);
     }
 
     // Carrega o tema imediatamente para evitar flash visual
@@ -6747,7 +6755,7 @@
     `;
 
         setTimeout(() => {
-          window.location.replace('/');
+          window.location.replace(LOGIN_URL);
         }, 1500);
 
       }, 400);
