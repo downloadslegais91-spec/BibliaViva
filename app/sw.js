@@ -1,15 +1,15 @@
 // BíbliaViva Service Worker – Offline-first PWA
 const CACHE_NAME = 'bibliaviva-v8';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/Intensiva.html',
-  '/admin.html',
-  '/sermon-player.js',
-  '/sermon-player.css',
-  '/manifest.json',
-  '/icon-512.png',
-  '/icon-biblia-viva.svg',
+  './',
+  'index.html',
+  'Intensiva.html',
+  'admin.html',
+  'sermon-player.js',
+  'sermon-player.css',
+  'manifest.json',
+  'icon-512.png',
+  'icon-biblia-viva.svg',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
 ];
 
