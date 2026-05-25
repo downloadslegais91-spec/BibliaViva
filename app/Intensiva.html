@@ -591,6 +591,15 @@ function hexToRgba(hex, alpha) {
 
 /* ━━━━━━━━━ INIT ━━━━━━━━━ */
 document.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const idParam = urlParams.get('id');
+  if (idParam) {
+    const found = intensivas.find(function(i) { return i.id === idParam; });
+    if (found) {
+      intensivaAtiva = found;
+      viewAtual = 'detalhe';
+    }
+  }
   renderizarTudo();
 });
 </script>

@@ -3382,7 +3382,7 @@
                 `<span class="int-pill" style="background: #F2F2F7; color: #3C3C43">${pct}%</span>`;
 
             html += `
-            <a href="Intensiva.html" class="intensiva-card">
+            <a href="Intensiva.html?id=${int.id}" class="intensiva-card">
               <div class="int-linha1">
                 <div class="int-tema"><span style="font-size:20px">${int.icone}</span> ${int.tema}</div>
                 ${pill}
@@ -4139,7 +4139,9 @@
       }
 
       if (redirectedFromQuery) {
-        switchPage('leitura');
+        setTimeout(() => {
+          switchPage('leitura');
+        }, 150);
       }
     }
 
