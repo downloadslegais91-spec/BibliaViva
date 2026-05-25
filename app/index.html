@@ -4102,23 +4102,54 @@
       }
     });
 
+    function switchPageInstant(name) {
+      if (window.chatAudio) {
+        window.chatAudio.pause();
+        window.chatAudio = null;
+        if (window.activeTtsButton) window.activeTtsButton.innerText = '🔊';
+        window.activeTtsButton = null;
+      }
+
+      const newPage = document.getElementById('page-' + name);
+      if (!newPage) return;
+
+      const currentActive = document.querySelector('.page.active');
+      if (currentActive) {
+        currentActive.classList.remove('active', 'exiting');
+      }
+      newPage.classList.add('active');
+
+      pages.forEach(p => {
+        const tab = document.getElementById('tab-' + p);
+        if (tab) tab.classList.remove('active');
+      });
+      const tab = document.getElementById('tab-' + name);
+      if (tab) tab.classList.add('active');
+
+      document.getElementById('nav-title').textContent = titles[name];
+      window.scrollTo(0, 0);
+
+      triggerPageLoadActions(name);
+    }
+
     async function initApp() {
       // Parse query parameters for deep linking (e.g. from intensive reading plan)
       const urlParams = new URLSearchParams(window.location.search);
       const livroParam = urlParams.get('livro');
       const capituloParam = urlParams.get('capitulo');
-      let redirectedFromQuery = false;
 
       if (livroParam) {
         currentBook = livroParam;
         if (capituloParam) {
           currentChapter = parseInt(capituloParam, 10) || 1;
         }
-        redirectedFromQuery = true;
         saveReadingState();
 
         // Clear query parameters from URL to avoid reloading on the same chapter
         window.history.replaceState({}, document.title, window.location.pathname);
+
+        // Instantly switch to the reading tab without transitions before any async fetches
+        switchPageInstant('leitura');
       }
 
       await loadUserStats();
@@ -4136,12 +4167,6 @@
       // Prefetch quiz for the default active book
       if (currentBook) {
         prefetchQuizForBook(currentBook);
-      }
-
-      if (redirectedFromQuery) {
-        setTimeout(() => {
-          switchPage('leitura');
-        }, 150);
       }
     }
 
