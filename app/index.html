@@ -4233,6 +4233,24 @@
       const urlParams = new URLSearchParams(window.location.search);
       const livroParam = urlParams.get('livro');
       const capituloParam = urlParams.get('capitulo');
+      
+      const intIdParam = urlParams.get('intId');
+      const intOrdParam = urlParams.get('intOrd');
+      const intNomeParam = urlParams.get('intNome');
+      
+      if (intIdParam) {
+        window.activeIntensiva = {
+          id: intIdParam,
+          ord: parseInt(intOrdParam, 10),
+          nome: intNomeParam || 'Trilha Intensiva'
+        };
+        sessionStorage.setItem('activeIntensiva', JSON.stringify(window.activeIntensiva));
+      } else {
+        const stored = sessionStorage.getItem('activeIntensiva');
+        if (stored) {
+          try { window.activeIntensiva = JSON.parse(stored); } catch(e){}
+        }
+      }
 
       if (livroParam) {
         currentBook = livroParam;
@@ -4389,7 +4407,12 @@
       if (!titleDisplay || !textDiv) return;
 
       // Update book title and category immediately to avoid showing old/default book details
-      titleDisplay.textContent = `${currentBook} ${currentChapter}`;
+      let skeletonTagHtml = '';
+      if (window.activeIntensiva) {
+        skeletonTagHtml = `<div style="font-size: 11px; font-weight: 700; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📍 Trilha: ${window.activeIntensiva.nome}</div>`;
+      }
+      titleDisplay.innerHTML = `${skeletonTagHtml}<div>${currentBook} ${currentChapter}</div>`;
+      
       const bookObj = bibleBooks.find(b => b.name === currentBook);
       if (bookObj && catDisplay) {
         catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
@@ -4430,7 +4453,12 @@
           const data = json.data;
 
           // Update book title and category
-          titleDisplay.textContent = `${data.book} ${data.chapter}`;
+          let intensivaTagHtml = '';
+          if (window.activeIntensiva) {
+            intensivaTagHtml = `<div style="font-size: 11px; font-weight: 700; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📍 Trilha: ${window.activeIntensiva.nome}</div>`;
+          }
+          titleDisplay.innerHTML = `${intensivaTagHtml}<div>${data.book} ${data.chapter}</div>`;
+          
           const bookObj = bibleBooks.find(b => b.name === data.book);
           if (bookObj && catDisplay) {
             catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
@@ -4492,6 +4520,10 @@
     }
 
     function onBookChange() {
+      // Manual navigation breaks out of the track
+      window.activeIntensiva = null;
+      sessionStorage.removeItem('activeIntensiva');
+
       if (window.chatAudio) {
         window.chatAudio.pause();
         window.chatAudio = null;
@@ -4520,6 +4552,10 @@
     }
 
     function onChapterChange() {
+      // Manual navigation breaks out of the track
+      window.activeIntensiva = null;
+      sessionStorage.removeItem('activeIntensiva');
+
       if (window.chatAudio) {
         window.chatAudio.pause();
         window.chatAudio = null;
@@ -4718,7 +4754,11 @@
 
           // Automatically advance to the next chapter after a brief delay
           setTimeout(() => {
-            goToNextChapter();
+            if (window.activeIntensiva) {
+               window.location.href = `Intensiva.html?id=${window.activeIntensiva.id}&completedOrd=${window.activeIntensiva.ord}&autoNext=true`;
+            } else {
+               goToNextChapter();
+            }
           }, 2000);
         } else {
           showFeedback('❌ Erro ao salvar progresso');
@@ -6397,6 +6437,13 @@
             } catch (err) {
               console.error('Erro ao registrar progresso automático:', err);
             }
+          }
+
+          if (window.activeIntensiva) {
+            setTimeout(() => {
+              window.location.href = `Intensiva.html?id=${window.activeIntensiva.id}&completedOrd=${window.activeIntensiva.ord}&autoNext=true`;
+            }, 2000);
+            return;
           }
 
           setTimeout(() => {
