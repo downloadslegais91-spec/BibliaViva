@@ -1008,9 +1008,13 @@ function voltarParaLista() {
 }
 
 /* ━━━━━━━━━ NAVEGAÇÃO PARA LEITURA ━━━━━━━━━ */
-function irParaLeitura(intensivaId, ordem, livro, capitulo, nome) {
+function irParaLeitura(intensivaId, ordem, livro, capitulo, nome, autoplay = false) {
   // Navigate to reading tab
-  window.location.href = 'index.html?livro=' + encodeURIComponent(livro) + '&capitulo=' + capitulo + '&intId=' + intensivaId + '&intOrd=' + ordem + '&intNome=' + encodeURIComponent(nome || '');
+  var url = 'index.html?livro=' + encodeURIComponent(livro) + '&capitulo=' + capitulo + '&intId=' + intensivaId + '&intOrd=' + ordem + '&intNome=' + encodeURIComponent(nome || '');
+  if (autoplay) {
+    url += '&autoplay=true';
+  }
+  window.location.href = url;
 }
 
 /* ━━━━━━━━━ COMPARTILHAR ━━━━━━━━━ */
@@ -1365,7 +1369,7 @@ document.addEventListener('DOMContentLoaded', function() {
           var nextStep = found.etapas.find(function(e) { return !prog.etapasConcluidas.includes(e.ordem); });
           if (nextStep) {
             setTimeout(function() {
-              irParaLeitura(found.id, nextStep.ordem, nextStep.livro, nextStep.capitulo, found.tema);
+              irParaLeitura(found.id, nextStep.ordem, nextStep.livro, nextStep.capitulo, found.tema, true);
             }, 2000); // Wait 2s to show XP toast
           }
         }

@@ -4238,6 +4238,11 @@
       const intOrdParam = urlParams.get('intOrd');
       const intNomeParam = urlParams.get('intNome');
       
+      const autoplayParam = urlParams.get('autoplay') === 'true';
+      if (autoplayParam) {
+        window.pendingAutoplay = true;
+      }
+      
       if (intIdParam) {
         window.activeIntensiva = {
           id: intIdParam,
@@ -4511,6 +4516,15 @@
           // Reset reading tab back to biblical text
           if (typeof switchReadingTab === 'function') {
             switchReadingTab('text');
+          }
+
+          if (window.pendingAutoplay) {
+            window.pendingAutoplay = false; // consume it
+            setTimeout(() => {
+              if (typeof playChapterAudio === 'function') {
+                playChapterAudio();
+              }
+            }, 500); // small delay for UI to settle
           }
         }
       } catch (error) {
