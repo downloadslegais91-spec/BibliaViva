@@ -3406,6 +3406,9 @@
     <script>
       // Render Intensivas inline without breaking global logic
       setTimeout(() => {
+        // Odyssey - premium hero entry
+        const odisseiaData = { id: "odisseia-01", tema: "Odisseia pela Bíblia", desc: "A jornada completa do Cordeiro — de Gênesis a Apocalipse.", icone: "🐑", cor: "#D4AF37", total: 30, fases: 6 };
+
         const intensivasData = [
           { id: "promessas-01", tema: "Promessas de Deus", desc: "Descubra as promessas inabaláveis de Deus para a sua vida.", icone: "✨", cor: "#F97316", total: 7, dificuldade: "Avançado", sazonal: true },
           { id: "fe-01", tema: "Fé", desc: "Entenda o que é fé e como ela age na sua vida.", icone: "🙏", cor: "#3B82F6", total: 7, dificuldade: "Intermediário" },
@@ -3421,6 +3424,36 @@
         const container = document.getElementById('quests-intensivas-container');
         if (container) {
           let html = '';
+
+          // Render Odisseia as premium card
+          const oRaw = localStorage.getItem('intensiva_' + odisseiaData.id);
+          const oProg = oRaw ? JSON.parse(oRaw) : { etapasConcluidas: [] };
+          const oPct = Math.round((oProg.etapasConcluidas.length / odisseiaData.total) * 100);
+          let oPill = oPct === 0 ? `<span class="int-pill" style="background: linear-gradient(135deg, #D4AF37, #F5DEB3); color: #1a1200; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; font-size:9px">Iniciar Jornada</span>` :
+            oPct >= 100 ? `<span class="int-pill" style="background: #34C759; color: #fff">✓ Completa</span>` :
+              `<span class="int-pill" style="background: linear-gradient(135deg, #D4AF37, #F5DEB3); color: #1a1200; font-weight:800; font-size:10px">${oPct}%</span>`;
+
+          html += `
+          <a href="Intensiva.html?id=${odisseiaData.id}" class="intensiva-card" style="background: linear-gradient(145deg, #1a1200, #2d1f00); border-color: rgba(212,175,55,0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.3)">
+            <div class="int-linha1">
+              <div class="int-tema" style="color: #F5DEB3"><span style="font-size:24px">${odisseiaData.icone}</span> ${odisseiaData.tema}</div>
+              ${oPill}
+            </div>
+            <div class="int-desc" style="color: rgba(245,222,179,0.6)">${odisseiaData.desc}</div>
+            <div class="int-badges">
+              <span class="int-badge" style="background: rgba(212,175,55,0.15); color: #D4AF37">📜 ${odisseiaData.fases} fases</span>
+              <span class="int-badge" style="background: rgba(212,175,55,0.15); color: #D4AF37">📖 ${odisseiaData.total} capítulos</span>
+              <span class="int-badge" style="background: rgba(212,175,55,0.15); color: #D4AF37">🔴 Avançado</span>
+            </div>
+            <div class="int-prog-track" style="background: rgba(212,175,55,0.12)"><div class="int-prog-fill" style="width:${oPct}%; background: linear-gradient(90deg, #D4AF37, #F5DEB3)"></div></div>
+            <div class="int-footer">
+              <div class="int-frac" style="color: rgba(245,222,179,0.5)">${oProg.etapasConcluidas.length}/${odisseiaData.total} capítulos</div>
+              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(212,175,55,0.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><polyline points="2 12 8 6 2 0"></polyline></svg>
+            </div>
+          </a>
+          `;
+
+          // Render rest of intensivas
           intensivasData.forEach(int => {
             const raw = localStorage.getItem('intensiva_' + int.id);
             const prog = raw ? JSON.parse(raw) : { etapasConcluidas: [] };

@@ -144,6 +144,117 @@ body {
   font-size: 10px;
 }
 
+/* ━━━━━━━━━ ODISSEIA PREMIUM CARD ━━━━━━━━━ */
+.odisseia-card {
+  background: linear-gradient(145deg, #1a1200, #2d1f00, #1a1200);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .2s ease, box-shadow .2s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(212,175,55,0.25);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,175,55,0.1);
+}
+.odisseia-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.odisseia-card:active { transform: scale(0.97); }
+.odisseia-card .card-tema { color: #F5DEB3; font-size: 18px; }
+.odisseia-card .card-tema-icone { font-size: 24px; }
+.odisseia-card .card-desc { color: rgba(245,222,179,0.65); font-size: 14px; line-height: 1.5; }
+.odisseia-card .card-badge { background: rgba(212,175,55,0.15); color: #D4AF37; }
+.odisseia-card .card-meta { color: rgba(245,222,179,0.5); }
+.odisseia-card .progress-track { background: rgba(212,175,55,0.12); height: 6px; }
+.odisseia-card .progress-fill { background: linear-gradient(90deg, #D4AF37, #F5DEB3) !important; }
+.pill-odisseia {
+  background: linear-gradient(135deg, #D4AF37, #F5DEB3);
+  color: #1a1200;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ━━━━━━━━━ ODISSEIA DETAIL ━━━━━━━━━ */
+.odisseia-hero {
+  background: linear-gradient(145deg, #1a1200, #2d1f00);
+  border-radius: 20px;
+  padding: 24px 16px;
+  margin: 8px 16px 16px;
+  border: 1px solid rgba(212,175,55,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.odisseia-hero::before {
+  content: '';
+  position: absolute;
+  top: -30%; right: -20%;
+  width: 60%; height: 160%;
+  background: radial-gradient(ellipse, rgba(212,175,55,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.odisseia-hero .hero-tema { color: #F5DEB3; }
+.odisseia-hero .hero-desc { color: rgba(245,222,179,0.6); }
+.odisseia-hero .hero-badge { background: rgba(212,175,55,0.15); color: #D4AF37; }
+.odisseia-hero .hero-progress-track { background: rgba(212,175,55,0.12); }
+.odisseia-hero .hero-progress-fill { background: linear-gradient(90deg, #D4AF37, #F5DEB3) !important; }
+.odisseia-hero .hero-meta { color: rgba(245,222,179,0.55); }
+
+/* Phase header */
+.fase-header {
+  padding: 16px 16px 6px;
+  margin: 8px 16px 0;
+}
+.fase-numero {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 2px;
+}
+.fase-nome {
+  font-size: 17px;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: -0.2px;
+}
+.fase-subtitulo {
+  font-size: 12px;
+  color: #8E8E93;
+  margin-top: 1px;
+}
+
+/* Palavra de Jesus indicator */
+.palavra-jesus {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #DC2626;
+  background: rgba(220,38,38,0.08);
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+.odisseia-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  padding: 20px 16px 4px;
+}
+
 /* Card meta row */
 .card-meta-row {
   display: flex;
@@ -709,6 +820,89 @@ var intensivas = [
       { ordem: 6, livro: "Hebreus",     capitulo: 10, titulo: "Fiel é o que prometeu", reflexao: "Por que podemos confiar que Deus cumpre o que promete?" },
       { ordem: 7, livro: "Apocalipse",  capitulo: 21, titulo: "Novas todas as coisas", reflexao: "A maior promessa de Deus é a eternidade. Isso muda tudo?" }
     ]
+  },
+  {
+    id: "odisseia-01",
+    tema: "Odisseia pela Bíblia",
+    descricao: "A jornada completa do Cordeiro de Deus — de Gênesis a Apocalipse. Descubra como Jesus é anunciado, profetizado e revelado em toda a Escritura.",
+    icone: "🐑",
+    cor: "#D4AF37",
+    dificuldade: "Avançado",
+    tipo: "odisseia",
+    totalEtapas: 30,
+    fases: [
+      {
+        nome: "A Semente da Promessa",
+        subtitulo: "Gênesis — Deuteronômio",
+        etapas: [
+          { ordem: 1,  livro: "Gênesis",      capitulo: 3,  titulo: "A semente da mulher",       reflexao: "Em Gn 3:15, Deus já anuncia que alguém esmagaria a serpente. Jesus é essa semente?" },
+          { ordem: 2,  livro: "Gênesis",      capitulo: 22, titulo: "O cordeiro que Deus proverá", reflexao: "Abraão profetiza sem saber: 'Deus proverá o cordeiro'. Quem é esse cordeiro?" },
+          { ordem: 3,  livro: "Êxodo",        capitulo: 12, titulo: "O Cordeiro Pascal",         reflexao: "O sangue do cordeiro livrou Israel da morte. Como Cristo é o nosso cordeiro pascal?" },
+          { ordem: 4,  livro: "Números",      capitulo: 24, titulo: "Uma estrela de Jacó",       reflexao: "Balaão profetiza sobre uma estrela que surgiria de Israel. Quem é essa estrela?" },
+          { ordem: 5,  livro: "Deuteronômio", capitulo: 18, titulo: "Um profeta como Moisés",    reflexao: "Deus promete levantar um profeta como Moisés. Como Jesus cumpre essa profecia?" }
+        ]
+      },
+      {
+        nome: "O Cordeiro Anunciado",
+        subtitulo: "Os Profetas",
+        etapas: [
+          { ordem: 6,  livro: "Isaías",    capitulo: 7,  titulo: "A virgem conceberá — Emanuel",    reflexao: "'Deus conosco' — o que significa Deus habitar entre nós?" },
+          { ordem: 7,  livro: "Isaías",    capitulo: 9,  titulo: "Um menino nos nasceu",             reflexao: "Príncipe da Paz, Conselheiro, Deus Forte — como esses títulos descrevem Jesus?" },
+          { ordem: 8,  livro: "Isaías",    capitulo: 53, titulo: "O servo sofredor",                reflexao: "Escrito 700 anos antes de Cristo — como Isaías descreve a cruz com tanta precisão?" },
+          { ordem: 9,  livro: "Miquéias",  capitulo: 5,  titulo: "De Belém sairá o governante",     reflexao: "Uma cidadezinha insignificante, escolhida para o nascimento do Rei. Por quê?" },
+          { ordem: 10, livro: "Daniel",    capitulo: 7,  titulo: "O Filho do Homem",                reflexao: "Daniel vê alguém 'como um filho do homem' recebendo domínio eterno. Quem é Ele?" },
+          { ordem: 11, livro: "Zacarias",  capitulo: 9,  titulo: "O rei manso num jumentinho",      reflexao: "Um rei que vem com humildade, não com exércitos. O que isso ensina sobre o Reino?" },
+          { ordem: 12, livro: "Malaquias", capitulo: 3,  titulo: "O mensageiro da aliança",         reflexao: "O último profeta antes de 400 anos de silêncio. Que mensageiro Deus prometeu?" }
+        ]
+      },
+      {
+        nome: "A Palavra se Fez Carne",
+        subtitulo: "Os Evangelhos — A Chegada",
+        etapas: [
+          { ordem: 13, livro: "Lucas",   capitulo: 2,  titulo: "Hoje vos nasceu o Salvador",     reflexao: "Anjos cantam para pastores, não para reis. O que isso revela sobre Deus?" },
+          { ordem: 14, livro: "João",    capitulo: 1,  titulo: "O Verbo se fez carne",            reflexao: "'Eis o Cordeiro de Deus que tira o pecado do mundo.' O AT inteiro culmina aqui." },
+          { ordem: 15, livro: "Mateus",  capitulo: 3,  titulo: "Este é o meu Filho amado",        reflexao: "O Pai apresenta o Filho. O Espírito desce. A Trindade reunida — o que isso significa?" }
+        ]
+      },
+      {
+        nome: "As Palavras do Mestre",
+        subtitulo: "O que Jesus disse",
+        etapas: [
+          { ordem: 16, livro: "Mateus", capitulo: 5,  titulo: "Bem-aventurados os pobres de espírito", reflexao: "Jesus redefine 'felicidade'. Qual bem-aventurança mais toca o seu coração?", palavraDeJesus: true },
+          { ordem: 17, livro: "João",   capitulo: 3,  titulo: "Deus amou o mundo de tal maneira",     reflexao: "O versículo mais conhecido da Bíblia. Você realmente crê nessa verdade?", palavraDeJesus: true },
+          { ordem: 18, livro: "João",   capitulo: 6,  titulo: "Eu sou o pão da vida",                 reflexao: "Jesus diz: 'quem vem a mim nunca terá fome'. Você tem se alimentado d'Ele?", palavraDeJesus: true },
+          { ordem: 19, livro: "João",   capitulo: 8,  titulo: "Eu sou a luz do mundo",                reflexao: "Em meio à escuridão do mundo, como a luz de Jesus ilumina a sua vida?", palavraDeJesus: true },
+          { ordem: 20, livro: "João",   capitulo: 10, titulo: "Eu sou o bom pastor",                  reflexao: "O pastor dá a vida pelas ovelhas. Você se sente cuidado pelo bom pastor?", palavraDeJesus: true },
+          { ordem: 21, livro: "João",   capitulo: 11, titulo: "Eu sou a ressurreição e a vida",       reflexao: "Diante da morte de Lázaro, Jesus declara: 'Eu sou a vida'. O que isso muda?", palavraDeJesus: true },
+          { ordem: 22, livro: "João",   capitulo: 14, titulo: "Eu sou o caminho, a verdade e a vida", reflexao: "Ninguém vem ao Pai senão por mim. Jesus é exclusivo ou inclusivo?", palavraDeJesus: true },
+          { ordem: 23, livro: "João",   capitulo: 15, titulo: "Eu sou a videira verdadeira",          reflexao: "Sem Jesus, nada podemos fazer. Você está conectado à videira?", palavraDeJesus: true }
+        ]
+      },
+      {
+        nome: "O Sacrifício Supremo",
+        subtitulo: "A Cruz e a Redenção",
+        etapas: [
+          { ordem: 24, livro: "Mateus", capitulo: 26, titulo: "Este é o meu sangue da aliança",     reflexao: "Na última ceia, Jesus institui a nova aliança. O que o pão e o vinho significam para você?", palavraDeJesus: true },
+          { ordem: 25, livro: "Lucas",  capitulo: 23, titulo: "Pai, perdoa-lhes",                   reflexao: "Pregado na cruz, Jesus pede perdão para os que o matam. Você conseguiria fazer isso?", palavraDeJesus: true },
+          { ordem: 26, livro: "João",   capitulo: 19, titulo: "Está consumado",                     reflexao: "As últimas palavras de Jesus na cruz. O que exatamente foi 'consumado'?", palavraDeJesus: true }
+        ]
+      },
+      {
+        nome: "A Glória Eterna",
+        subtitulo: "Da Ressurreição à Eternidade",
+        etapas: [
+          { ordem: 27, livro: "Mateus",     capitulo: 28, titulo: "Toda autoridade me foi dada",    reflexao: "Jesus ressuscitou e agora tem toda autoridade. Como isso muda a sua fé?", palavraDeJesus: true },
+          { ordem: 28, livro: "Atos",       capitulo: 1,  titulo: "Sereis minhas testemunhas",      reflexao: "As últimas palavras de Jesus antes de subir ao céu. Você é testemunha d'Ele?", palavraDeJesus: true },
+          { ordem: 29, livro: "Apocalipse", capitulo: 5,  titulo: "Digno é o Cordeiro",             reflexao: "No trono celestial, o Cordeiro é adorado. A jornada de Gênesis 3 se completa aqui." },
+          { ordem: 30, livro: "Apocalipse", capitulo: 22, titulo: "Eis que venho em breve",         reflexao: "A última promessa da Bíblia: Jesus voltará. Você está pronto?", palavraDeJesus: true }
+        ]
+      }
+    ],
+    get etapas() {
+      var all = [];
+      this.fases.forEach(function(f) { all = all.concat(f.etapas); });
+      return all;
+    }
   }
 ];
 
@@ -835,11 +1029,18 @@ function renderizarLista() {
   var container = document.getElementById('cards-container');
   var html = '';
 
-  // Separate seasonal and regular
-  var regulares = intensivas.filter(function(i) { return !i.sazonal; });
-  var sazonais = intensivas.filter(function(i) { return i.sazonal; });
+  // Separate odyssey, seasonal and regular
+  var odisseia = intensivas.filter(function(i) { return i.tipo === 'odisseia'; });
+  var sazonais = intensivas.filter(function(i) { return i.sazonal && i.tipo !== 'odisseia'; });
+  var regulares = intensivas.filter(function(i) { return !i.sazonal && i.tipo !== 'odisseia'; });
 
-  // Sazonais first
+  // Odisseia first — premium hero card
+  if (odisseia.length > 0) {
+    html += '<div class="odisseia-label">🐑 JORNADA ÉPICA</div>';
+    odisseia.forEach(function(int) { html += renderOdisseiaCard(int); });
+  }
+
+  // Sazonais
   if (sazonais.length > 0) {
     html += '<div class="section-label">✨ Especiais</div>';
     sazonais.forEach(function(int) { html += renderCard(int); });
@@ -849,6 +1050,54 @@ function renderizarLista() {
   regulares.forEach(function(int) { html += renderCard(int); });
 
   container.innerHTML = html;
+}
+
+function renderOdisseiaCard(int) {
+  var pct = percentual(int.id, int.totalEtapas);
+  var prog = getProgresso(int.id);
+  var concluidas = prog.etapasConcluidas.length;
+  var duracao = int.totalEtapas * 3;
+  var fasesCount = int.fases ? int.fases.length : 0;
+
+  var pillHtml = '';
+  if (pct === 0) {
+    pillHtml = '<span class="pill pill-odisseia">Iniciar Jornada</span>';
+  } else if (pct < 100) {
+    pillHtml = '<span class="pill pill-odisseia">' + pct + '% · Fase ' + getFaseAtual(int, prog) + '</span>';
+  } else {
+    pillHtml = '<span class="pill pill-concluida">✓ Jornada Completa</span>';
+  }
+
+  return ''
+    + '<div class="odisseia-card" onclick="irParaDetalhe(\'' + int.id + '\')" role="button" tabindex="0">'
+    +   '<div class="card-top">'
+    +     '<div class="card-tema">'
+    +       '<span class="card-tema-icone">' + int.icone + '</span>'
+    +       '<span>' + int.tema + '</span>'
+    +     '</div>'
+    +     pillHtml
+    +   '</div>'
+    +   '<div class="card-desc">' + int.descricao + '</div>'
+    +   '<div class="card-meta-row" style="margin-top:10px">'
+    +     '<span class="card-badge">📜 ' + fasesCount + ' fases</span>'
+    +     '<span class="card-badge">📖 ' + int.totalEtapas + ' capítulos</span>'
+    +     '<span class="card-badge">🕐 ~' + duracao + ' min</span>'
+    +   '</div>'
+    +   '<div class="progress-track">'
+    +     '<div class="progress-fill" style="width:' + pct + '%"></div>'
+    +   '</div>'
+    +   '<div class="card-meta">' + concluidas + '/' + int.totalEtapas + ' concluídos</div>'
+    + '</div>';
+}
+
+function getFaseAtual(int, prog) {
+  if (!int.fases) return 1;
+  for (var i = 0; i < int.fases.length; i++) {
+    var fase = int.fases[i];
+    var allDone = fase.etapas.every(function(e) { return prog.etapasConcluidas.includes(e.ordem); });
+    if (!allDone) return i + 1;
+  }
+  return int.fases.length;
 }
 
 function renderCard(int) {
@@ -898,110 +1147,170 @@ function renderizarDetalhe() {
   var prog = getProgresso(int.id);
   var concluidas = prog.etapasConcluidas.length;
   var duracao = int.totalEtapas * 3;
+  var isOdisseia = int.tipo === 'odisseia';
 
   document.getElementById('detalhe-header-title').textContent = int.tema;
 
   var html = '';
 
   // Hero banner
+  var heroClass = isOdisseia ? 'odisseia-hero' : 'hero-banner';
+  var heroStyle = isOdisseia ? '' : 'background:' + hexToRgba(int.cor, 0.10);
+
   html += ''
-    + '<div class="hero-banner" style="background:' + hexToRgba(int.cor, 0.10) + '">'
+    + '<div class="' + heroClass + '" style="' + heroStyle + '">'
     +   '<div class="hero-row">'
     +     '<div class="hero-icone">' + int.icone + '</div>'
-    +     '<div class="hero-tema" style="color:' + int.cor + '">' + int.tema + '</div>'
+    +     '<div class="hero-tema" style="' + (isOdisseia ? '' : 'color:' + int.cor) + '">' + int.tema + '</div>'
     +   '</div>'
     +   '<div class="hero-desc">' + int.descricao + '</div>'
     +   '<div class="hero-badges">'
     +     '<span class="hero-badge">' + getDificuldadeIcon(int.dificuldade) + ' ' + int.dificuldade + '</span>'
     +     '<span class="hero-badge">🕐 ~' + duracao + ' min</span>'
-    +     (int.sazonal ? '<span class="hero-badge" style="background:' + hexToRgba(int.cor, 0.15) + '; color:' + int.cor + '">✨ Especial</span>' : '')
+    +     (isOdisseia && int.fases ? '<span class="hero-badge">📜 ' + int.fases.length + ' fases</span>' : '')
+    +     (int.sazonal && !isOdisseia ? '<span class="hero-badge" style="background:' + hexToRgba(int.cor, 0.15) + '; color:' + int.cor + '">✨ Especial</span>' : '')
     +   '</div>'
     +   '<div class="hero-progress-track">'
-    +     '<div class="hero-progress-fill" style="width:' + pct + '%; background:' + int.cor + '"></div>'
+    +     '<div class="hero-progress-fill" style="width:' + pct + '%; ' + (isOdisseia ? '' : 'background:' + int.cor) + '"></div>'
     +   '</div>'
     +   '<div class="hero-meta">' + pct + '% concluído · ' + concluidas + ' de ' + int.totalEtapas + ' capítulos</div>'
     + '</div>';
 
-  // Etapas
-  html += '<div class="etapas-container">';
-  int.etapas.forEach(function(etapa, idx) {
-    var isMarcado = prog.etapasConcluidas.includes(etapa.ordem);
-
-    // Sequential logic: check if previous steps are done
-    var prevDone = true;
-    for (var k = 0; k < idx; k++) {
-      if (!prog.etapasConcluidas.includes(int.etapas[k].ordem)) {
-        prevDone = false;
-        break;
-      }
-    }
-    var isBloqueada = !isMarcado && !prevDone;
-    var isProxima = !isMarcado && prevDone;
-
-    var rowClass = 'etapa-row';
-    if (isBloqueada) rowClass += ' bloqueada';
-    if (isProxima) rowClass += ' proxima';
-
-    var checkClass = 'etapa-check';
-    var checkStyle = '';
-    if (isMarcado) {
-      checkClass += ' marcado';
-      checkStyle = 'background:' + int.cor + '; border-color:' + int.cor + ';';
-    } else if (isBloqueada) {
-      checkClass += ' bloqueado';
-    } else if (isProxima) {
-      checkClass += ' proximo';
-      checkStyle = 'border-color:' + int.cor + ';';
-    }
-
-    var checkAction = '';
-    if (isMarcado) {
-      checkAction = 'desmarcarEtapa(\'' + int.id + '\', ' + etapa.ordem + ')';
-    } else if (!isBloqueada) {
-      checkAction = 'marcarEtapa(\'' + int.id + '\', ' + etapa.ordem + ')';
-    }
-
-    html += ''
-      + '<div class="' + rowClass + '">'
-      +   '<div class="etapa-path" style="background:' + hexToRgba(int.cor, isMarcado ? 0.3 : 0.08) + '"></div>'
-      +   '<div class="' + checkClass + '" style="' + checkStyle + '" '
-      +     (checkAction ? 'onclick="event.stopPropagation(); ' + checkAction + '" ' : '')
-      +     'role="checkbox" aria-checked="' + isMarcado + '" tabindex="0">'
-      +   '</div>'
-      +   '<div class="etapa-num" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '">' + etapa.ordem + '</div>'
-      +   '<div class="etapa-corpo">'
-      +     '<div class="etapa-titulo">' + etapa.titulo + '</div>'
-      +     '<div class="etapa-ref">' + etapa.livro + ' ' + etapa.capitulo + '</div>'
-      +     (etapa.reflexao ? '<div class="etapa-reflexao" style="border-color:' + int.cor + '; background:' + hexToRgba(int.cor, 0.04) + '">💭 ' + etapa.reflexao + '</div>' : '')
-      +   '</div>';
-
-    if (!isBloqueada) {
-      html += '<button class="etapa-ler" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '" '
-        + 'onclick="event.stopPropagation(); irParaLeitura(\'' + int.id + '\', ' + etapa.ordem + ', \'' + etapa.livro + '\', ' + etapa.capitulo + ')">'
-        + 'Ler'
-        + '</button>';
-    }
-
-    html += '</div>';
-  });
-  html += '</div>';
+  // Render with or without fases
+  if (isOdisseia && int.fases) {
+    html += renderizarFases(int, prog);
+  } else {
+    html += renderizarEtapasFlat(int, prog);
+  }
 
   // Congratulations card
   if (pct === 100) {
+    var congratsBg = isOdisseia ? 'background: linear-gradient(145deg, #1a1200, #2d1f00); border-color: rgba(212,175,55,0.3)' : 'background:' + hexToRgba(int.cor, 0.08) + '; border-color:' + hexToRgba(int.cor, 0.20);
+    var congratsTitle = isOdisseia ? 'Odisseia Completa!' : 'Intensiva concluída!';
+    var congratsTextColor = isOdisseia ? 'color: #F5DEB3' : '';
+    var congratsSubColor = isOdisseia ? 'color: rgba(245,222,179,0.6)' : '';
+    var congratsIcon = isOdisseia ? '👑' : '🎉';
+    var btnBg = isOdisseia ? 'background: linear-gradient(135deg, #D4AF37, #F5DEB3); color: #1a1200' : 'background:' + int.cor;
+
     html += ''
-      + '<div class="congrats-card" style="background:' + hexToRgba(int.cor, 0.08) + '; border-color:' + hexToRgba(int.cor, 0.20) + '">'
-      +   '<div class="congrats-icone">🎉</div>'
-      +   '<div class="congrats-titulo">Intensiva concluída!</div>'
-      +   '<div class="congrats-texto">Você completou todos os ' + int.totalEtapas + ' capítulos sobre ' + int.tema + '.</div>'
+      + '<div class="congrats-card" style="' + congratsBg + '">'
+      +   '<div class="congrats-icone">' + congratsIcon + '</div>'
+      +   '<div class="congrats-titulo" style="' + congratsTextColor + '">' + congratsTitle + '</div>'
+      +   '<div class="congrats-texto" style="' + congratsSubColor + '">Você completou todos os ' + int.totalEtapas + ' capítulos' + (isOdisseia ? ' — de Gênesis a Apocalipse!' : ' sobre ' + int.tema + '.') + '</div>'
       +   '<div class="congrats-xp" style="color:' + int.cor + '">+' + (int.totalEtapas * 25 + 100) + ' XP ganhos</div>'
       +   '<div class="congrats-btns">'
-      +     '<button class="congrats-btn" style="background:' + int.cor + '" onclick="compartilharTrilha(\'' + int.tema + '\', \'' + int.icone + '\')">📤 Compartilhar conquista</button>'
+      +     '<button class="congrats-btn" style="' + btnBg + '" onclick="compartilharTrilha(\'' + int.tema + '\', \'' + int.icone + '\')">📤 Compartilhar conquista</button>'
       +     '<button class="congrats-btn-secondary" onclick="voltarParaLista()">Explorar outras trilhas</button>'
       +   '</div>'
       + '</div>';
   }
 
   document.getElementById('detalhe-content').innerHTML = html;
+}
+
+function renderizarFases(int, prog) {
+  var html = '';
+  var globalIdx = 0;
+  var allEtapas = int.etapas;
+
+  int.fases.forEach(function(fase, faseIdx) {
+    // Phase header
+    var faseComplete = fase.etapas.every(function(e) { return prog.etapasConcluidas.includes(e.ordem); });
+    html += '<div class="fase-header">'
+      + '<div class="fase-numero">Fase ' + toRoman(faseIdx + 1) + (faseComplete ? ' ✓' : '') + '</div>'
+      + '<div class="fase-nome">' + fase.nome + '</div>'
+      + '<div class="fase-subtitulo">' + fase.subtitulo + '</div>'
+      + '</div>';
+
+    // Etapas in this phase
+    html += '<div class="etapas-container">';
+    fase.etapas.forEach(function(etapa) {
+      html += renderEtapaRow(int, etapa, allEtapas, globalIdx, prog);
+      globalIdx++;
+    });
+    html += '</div>';
+  });
+
+  return html;
+}
+
+function renderizarEtapasFlat(int, prog) {
+  var html = '<div class="etapas-container">';
+  int.etapas.forEach(function(etapa, idx) {
+    html += renderEtapaRow(int, etapa, int.etapas, idx, prog);
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderEtapaRow(int, etapa, allEtapas, idx, prog) {
+  var isMarcado = prog.etapasConcluidas.includes(etapa.ordem);
+
+  // Sequential: check if previous steps done
+  var prevDone = true;
+  for (var k = 0; k < idx; k++) {
+    if (!prog.etapasConcluidas.includes(allEtapas[k].ordem)) {
+      prevDone = false;
+      break;
+    }
+  }
+  var isBloqueada = !isMarcado && !prevDone;
+  var isProxima = !isMarcado && prevDone;
+
+  var rowClass = 'etapa-row';
+  if (isBloqueada) rowClass += ' bloqueada';
+  if (isProxima) rowClass += ' proxima';
+
+  var checkClass = 'etapa-check';
+  var checkStyle = '';
+  if (isMarcado) {
+    checkClass += ' marcado';
+    checkStyle = 'background:' + int.cor + '; border-color:' + int.cor + ';';
+  } else if (isBloqueada) {
+    checkClass += ' bloqueado';
+  } else if (isProxima) {
+    checkClass += ' proximo';
+    checkStyle = 'border-color:' + int.cor + ';';
+  }
+
+  var checkAction = '';
+  if (isMarcado) {
+    checkAction = 'desmarcarEtapa(\'' + int.id + '\', ' + etapa.ordem + ')';
+  } else if (!isBloqueada) {
+    checkAction = 'marcarEtapa(\'' + int.id + '\', ' + etapa.ordem + ')';
+  }
+
+  var livroEscaped = etapa.livro.replace(/'/g, "\\'");
+
+  var html = ''
+    + '<div class="' + rowClass + '">'
+    +   '<div class="etapa-path" style="background:' + hexToRgba(int.cor, isMarcado ? 0.3 : 0.08) + '"></div>'
+    +   '<div class="' + checkClass + '" style="' + checkStyle + '" '
+    +     (checkAction ? 'onclick="event.stopPropagation(); ' + checkAction + '" ' : '')
+    +     'role="checkbox" aria-checked="' + isMarcado + '" tabindex="0">'
+    +   '</div>'
+    +   '<div class="etapa-num" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '">' + etapa.ordem + '</div>'
+    +   '<div class="etapa-corpo">'
+    +     '<div class="etapa-titulo">' + etapa.titulo + '</div>'
+    +     '<div class="etapa-ref">' + etapa.livro + ' ' + etapa.capitulo + '</div>'
+    +     (etapa.palavraDeJesus ? '<div class="palavra-jesus">✝ Palavras de Jesus</div>' : '')
+    +     (etapa.reflexao ? '<div class="etapa-reflexao" style="border-color:' + int.cor + '; background:' + hexToRgba(int.cor, 0.04) + '">💭 ' + etapa.reflexao + '</div>' : '')
+    +   '</div>';
+
+  if (!isBloqueada) {
+    html += '<button class="etapa-ler" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '" '
+      + 'onclick="event.stopPropagation(); irParaLeitura(\'' + int.id + '\', ' + etapa.ordem + ', \'' + livroEscaped + '\', ' + etapa.capitulo + ')">'
+      + 'Ler'
+      + '</button>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function toRoman(num) {
+  var lookup = ['','I','II','III','IV','V','VI','VII','VIII','IX','X'];
+  return lookup[num] || num;
 }
 
 /* ━━━━━━━━━ HELPERS ━━━━━━━━━ */
