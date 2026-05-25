@@ -1193,6 +1193,9 @@ function renderizarDetalhe() {
     +     '<div class="hero-progress-fill" style="width:' + pct + '%; ' + (isOdisseia ? '' : 'background:' + int.cor) + '"></div>'
     +   '</div>'
     +   '<div class="hero-meta">' + pct + '% concluído · ' + concluidas + ' de ' + int.totalEtapas + ' capítulos</div>'
+    +   '<div style="margin-top: 18px; text-align: center;">'
+    +     '<button class="congrats-btn" style="' + (isOdisseia ? 'background: linear-gradient(135deg, #D4AF37, #F5DEB3); color: #1a1200;' : 'background:' + int.cor + ';') + ' display: inline-flex; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="window.parent.startQuizFlow(\'intensiva-' + int.id + '\', \'Quiz: ' + int.tema + '\'); window.parent.switchPage(\'quiz\');">🎯 Fazer Quiz da Trilha</button>'
+    +   '</div>'
     + '</div>';
 
   // Render with or without fases

@@ -475,6 +475,68 @@ const FALLBACK_QUIZZES: Record<string, QuizQuestion[]> = {
       answer: 2,
       explanation: "No dito 13, Tomé se destaca ao dizer a Jesus: 'Minha boca é totalmente incapaz de expressar com quem tu te pareces', mostrando sua percepção interior superior no texto."
     }
+  ],
+  'intensiva-odisseia': [
+    {
+      question: "Qual é o foco principal da Trilha Intensiva 'Odisseia pela Bíblia'?",
+      options: ["A história cronológica dos reis de Israel", "Ver Jesus, o Cordeiro de Deus, desde o Velho até o Novo Testamento", "As viagens missionárias do Apóstolo Paulo", "Os detalhes da reconstrução do templo de Jerusalém"],
+      answer: 1,
+      explanation: "A trilha Odisseia pela Bíblia foca em mostrar como a vinda, o ministério e o sacrifício de Jesus foram anunciados desde o princípio."
+    },
+    {
+      question: "No início da Odisseia, vemos a queda do homem em Gênesis. O que Deus promete logo em Gênesis 3:15, conhecido como Protoevangelho?",
+      options: ["Que o dilúvio destruiria a terra", "Que o descendente da mulher esmagaria a cabeça da serpente", "Que o homem não comeria mais do fruto", "Que a humanidade construiria uma torre até o céu"],
+      answer: 1,
+      explanation: "Gênesis 3:15 é a primeira promessa de um Redentor, anunciando que Jesus (descendente da mulher) esmagaria o mal."
+    },
+    {
+      question: "Como o evento da Páscoa judaica no Êxodo se conecta profeticamente a Jesus na Odisseia?",
+      options: ["Mostrando como Moisés dividiu o mar", "Pelo sangue do cordeiro sem defeito nos umbrais que salvou da morte, prefigurando o sangue de Cristo", "Apenas por ser uma festa anual de colheita", "Através da construção do bezerro de ouro"],
+      answer: 1,
+      explanation: "Em 1 Coríntios 5:7, a Bíblia afirma: 'Pois também Cristo, nosso Cordeiro pascal, foi imolado', mostrando o cumprimento do sacrifício no Egito."
+    },
+    {
+      question: "O profeta Isaías (capítulo 53) narra vividamente o sacrifício de um servo sofredor. A quem esta profecia se aplica de acordo com a Odisseia?",
+      options: ["Ao Rei Davi", "Ao próprio Isaías", "A Jesus Cristo", "Ao Rei Ciro da Pérsia"],
+      answer: 2,
+      explanation: "Isaías 53 profetiza o sacrifício substitutivo de Jesus: 'Ele foi ferido por causa das nossas transgressões'."
+    },
+    {
+      question: "Qual frase, comum no Evangelho de João, Jesus usa para revelar Sua divindade ecoando o 'EU SOU' de Êxodo 3:14?",
+      options: ["Eu fui enviado", "Eu sou a videira verdadeira, o caminho, a luz do mundo", "Eu quero ser", "Eu posso tentar"],
+      answer: 1,
+      explanation: "Jesus usou o título 'EU SOU' (Ego Eimi) múltiplas vezes para revelar Sua natureza divina e Suas promessas de salvação."
+    },
+    {
+      question: "Como os Salmos (como o Salmo 22) e o profeta Zacarias figuram na etapa 'A Precisão da Cruz'?",
+      options: ["Como canções de alegria sem relação futura", "Eles descrevem com exatidão matemática a ressurreição no terceiro dia", "Eles descrevem vividamente a crucificação, as vestes divididas e o corpo transpassado muito antes do evento", "Eles apenas ordenam sacrifícios de animais no templo"],
+      answer: 2,
+      explanation: "Salmo 22 narra detalhes como 'repartiram entre si as minhas vestes' e Zacarias fala de 'olharão para aquele a quem transpassaram'."
+    },
+    {
+      question: "Jesus frequentemente referia-se a Si mesmo como 'O Filho do Homem'. Em qual profeta do Antigo Testamento essa figura celestial recebe domínio eterno?",
+      options: ["Daniel", "Malaquias", "Ezequiel", "Jonas"],
+      answer: 0,
+      explanation: "Em Daniel 7:13-14, o profeta vê 'um como Filho do Homem' recebendo do Ancião de Dias um domínio eterno que nunca passará."
+    },
+    {
+      question: "No livro de Apocalipse, como Jesus é descrito quando João O vê no céu abrindo os selos?",
+      options: ["Como uma pomba branca", "Como um Leão que também é um Cordeiro que parece ter sido morto", "Apenas como um rei terreno com espada de ferro", "Como um pilar de nuvem"],
+      answer: 1,
+      explanation: "Apocalipse 5:6 descreve Jesus como um Cordeiro de pé, como se tivesse sido morto, e no versículo 5 como o Leão da Tribo de Judá."
+    },
+    {
+      question: "Por que a Odisseia foca nas 'falas de Jesus referenciadas nos livros'?",
+      options: ["Para mostrar que Ele lia muito", "Para demonstrar que Ele é a Palavra encarnada e o cumprimento de toda a Lei e os Profetas", "Porque não havia mais nada para citar", "Para invalidar o Antigo Testamento"],
+      answer: 1,
+      explanation: "Jesus disse: 'Tudo o que está escrito a meu respeito na Lei de Moisés, nos Profetas e nos Salmos devia se cumprir' (Lucas 24:44)."
+    },
+    {
+      question: "O que significa dizer que Jesus é o 'Cordeiro anunciado desde o Velho até o Novo Testamento'?",
+      options: ["Que Ele era um profeta que pastoreava ovelhas na Galileia", "Que Ele era pacífico, mas não divino", "Que todo o plano de salvação de Deus através do sacrifício perfeito convergia n'Ele desde o início", "Que a Bíblia é um livro exclusivo sobre pecuária antiga"],
+      answer: 2,
+      explanation: "Desde o sacrifício em Gênesis para cobrir Adão, até João Batista dizendo 'Eis o Cordeiro de Deus', a Bíblia aponta para o sacrifício redentor de Cristo."
+    }
   ]
 };
 
@@ -596,6 +658,122 @@ function generateGenericQuiz(bookName: string): QuizQuestion[] {
   return genericQuestions;
 }
 
+function generateIntensivaGenericQuiz(intensivaName: string): QuizQuestion[] {
+  const nomeGeral = intensivaName.replace('intensiva-', '').toUpperCase();
+  return [
+    {
+      question: `Qual é o principal objetivo da Trilha Intensiva focada no tema '${nomeGeral}'?`,
+      options: [
+        "Decorar versículos aleatórios sem contexto",
+        "Aprofundar a compreensão espiritual e conectar os textos bíblicos de forma estruturada e temática",
+        "Substituir completamente a leitura diária da Bíblia",
+        "Apenas acumular pontos no aplicativo"
+      ],
+      answer: 1,
+      explanation: `As Trilhas Intensivas, como a de ${nomeGeral}, existem para criar conexões profundas entre diversos livros e temas da Bíblia.`
+    },
+    {
+      question: `Ao completar as fases desta Trilha Intensiva, o que se espera do estudante da Bíblia?`,
+      options: [
+        "Que ele tenha uma visão mais madura, conectada e aplicável da Palavra de Deus em sua vida",
+        "Que ele sinta que não precisa mais ir à igreja",
+        "Que ele memorize a Bíblia inteira de trás para frente",
+        "Que ele possa julgar os outros irmãos que não estudam"
+      ],
+      answer: 0,
+      explanation: "O estudo temático intensivo serve para o crescimento espiritual maduro e aplicação prática, não para orgulho intelectual."
+    },
+    {
+      question: `Durante a Trilha '${nomeGeral}', lemos passagens de vários livros diferentes. O que isso demonstra sobre as Escrituras?`,
+      options: [
+        "Que os livros não têm relação entre si",
+        "Que a Bíblia tem uma unidade e um fio condutor divino, onde o Antigo e o Novo Testamento se complementam perfeitamente",
+        "Que os autores bíblicos apenas copiaram uns aos outros",
+        "Que a leitura temática é a única forma permitida de ler a Bíblia"
+      ],
+      answer: 1,
+      explanation: "A harmonia temática e teológica entre diferentes livros, escritos em épocas distintas, demonstra a inspiração singular do Espírito Santo."
+    },
+    {
+      question: `Como devemos aplicar o conhecimento adquirido nas diversas etapas desta Trilha Intensiva?`,
+      options: [
+        "Apenas debatendo teologia nas redes sociais",
+        "Sendo ouvintes esquecidos da Palavra",
+        "Sendo praticantes da Palavra, permitindo que o ensinamento transforme nosso caráter e atitudes diárias",
+        "Guardando o conhecimento apenas para nós mesmos"
+      ],
+      answer: 2,
+      explanation: "Tiago 1:22 exorta: 'Sede praticantes da palavra e não somente ouvintes'."
+    },
+    {
+      question: `Ao meditar nos textos desta Trilha, quem é o guia essencial para revelação verdadeira do texto sagrado?`,
+      options: [
+        "A inteligência humana por si só",
+        "O Espírito Santo, que ilumina o nosso entendimento",
+        "O líder religioso que obriga a leitura",
+        "O algoritmo do aplicativo"
+      ],
+      answer: 1,
+      explanation: "Jesus prometeu que o Espírito da Verdade nos guiaria a toda a verdade (João 16:13)."
+    },
+    {
+      question: `Muitas passagens nesta Trilha apontam direta ou indiretamente para a redenção. Qual é o foco central de todas as Escrituras?`,
+      options: [
+        "A construção de templos físicos suntuosos",
+        "Regras alimentares do Oriente Médio",
+        "A revelação de Jesus Cristo, o Messias, e Seu plano de salvação para a humanidade",
+        "Histórias de guerras antigas isoladas"
+      ],
+      answer: 2,
+      explanation: "Em Lucas 24 e João 5, Jesus afirma que as Escrituras testificam a Seu respeito."
+    },
+    {
+      question: `O que significa dedicar-se de forma 'Intensiva' ao estudo de um tema bíblico como '${nomeGeral}'?`,
+      options: [
+        "Ler o mais rápido possível para terminar logo",
+        "Mergulhar de forma focada, refletindo sobre o contexto, a doutrina e a aplicação daquele assunto específico",
+        "Fazer jejum total de água durante todo o estudo",
+        "Ler apenas os versículos que falam de prosperidade"
+      ],
+      answer: 1,
+      explanation: "O estudo intensivo requer meditação atenta e aprofundamento sincero nas verdades de Deus."
+    },
+    {
+      question: `Ao encontrar textos difíceis durante as fases desta Trilha, qual a postura correta?`,
+      options: [
+        "Ignorá-los e pular a fase",
+        "Orar pedindo sabedoria a Deus, pesquisar o contexto e manter um coração humilde para aprender",
+        "Criar uma interpretação própria que justifique nossos erros",
+        "Desanimar e parar a Trilha"
+      ],
+      answer: 1,
+      explanation: "A oração e o estudo diligente são essenciais, sabendo que Deus dá sabedoria a quem pede com fé (Tiago 1:5)."
+    },
+    {
+      question: `Qual é o maior proveito que um cristão pode tirar ao completar essa jornada intensiva?`,
+      options: [
+        "Ganhar mais experiência (XP) no perfil",
+        "Ter um relacionamento mais íntimo com Deus e estar mais equipado para viver e compartilhar a Sua Palavra",
+        "Poder se gabar para os amigos na igreja",
+        "Não precisar ler mais a Bíblia neste ano"
+      ],
+      answer: 1,
+      explanation: "O objetivo final do conhecimento bíblico é amar mais a Deus e refletir isso no amor e no serviço ao próximo."
+    },
+    {
+      question: `Por fim, a constância em ler as Escrituras, praticada nesta Trilha, se assemelha a que elemento da vida física?`,
+      options: [
+        "A um remédio amargo",
+        "Ao alimento diário (pão) que sustenta a vida, fortalecendo a saúde espiritual da alma",
+        "Ao sono que nos faz esquecer os problemas",
+        "A um exercício exaustivo que enfraquece o corpo"
+      ],
+      answer: 1,
+      explanation: "Jesus disse: 'Nem só de pão viverá o homem, mas de toda a palavra que sai da boca de Deus' (Mateus 4:4)."
+    }
+  ];
+}
+
 const QUIZ_CACHE = new Map<string, QuizQuestion[]>();
 
 export const getQuizForBook = async (req: Request, res: Response, next: NextFunction) => {
@@ -653,7 +831,11 @@ export const getQuizForBook = async (req: Request, res: Response, next: NextFunc
     // Fallback block if Gemini failed or is not configured
     let fallbackQuestions: QuizQuestion[] | undefined = FALLBACK_QUIZZES[bookKey];
     if (!fallbackQuestions) {
-      fallbackQuestions = generateGenericQuiz(rawBook);
+      if (bookKey.startsWith('intensiva-')) {
+        fallbackQuestions = generateIntensivaGenericQuiz(rawBook);
+      } else {
+        fallbackQuestions = generateGenericQuiz(rawBook);
+      }
       // Cache the generic questions to avoid regenerating them
       QUIZ_CACHE.set(bookKey, fallbackQuestions);
     }

@@ -6070,7 +6070,13 @@
       return promise;
     }
 
-    async function startQuizFlow() {
+    let quizCurrentBook = "";
+    let quizCurrentTitle = "";
+
+    async function startQuizFlow(customBookId = null, customTitle = null) {
+      quizCurrentBook = customBookId || currentBook;
+      quizCurrentTitle = customTitle || quizCurrentBook;
+      
       const loadingState = document.getElementById('quiz-loading-state');
       const errorState = document.getElementById('quiz-error-state');
       const wizardState = document.getElementById('quiz-wizard-state');
@@ -6082,25 +6088,25 @@
       if (wizardState) wizardState.style.display = 'none';
       if (summaryState) summaryState.style.display = 'none';
 
-      const bookKey = currentBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const bookKey = quizCurrentBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
       try {
         let quizData = null;
 
         // Check if we have preloaded data
         if (preloadedQuizzes[bookKey] && Array.isArray(preloadedQuizzes[bookKey])) {
-          console.log(`[Quiz UI] Usando quiz pré-carregado instantaneamente para: ${currentBook}`);
+          console.log(`[Quiz UI] Usando quiz pré-carregado instantaneamente para: ${quizCurrentBook}`);
           quizData = preloadedQuizzes[bookKey];
         } else if (preloadedPromises[bookKey]) {
           // If it is currently loading, wait for the existing background promise to resolve!
-          console.log(`[Quiz UI] Aguardando término do pré-carregamento em andamento para: ${currentBook}...`);
+          console.log(`[Quiz UI] Aguardando término do pré-carregamento em andamento para: ${quizCurrentBook}...`);
           quizData = await preloadedPromises[bookKey];
         }
 
         // If it wasn't preloaded, or the prefetch promise resolved to null/failed, let's fetch it now
         if (!quizData || quizData.length !== 10) {
-          console.log(`[Quiz UI] Quiz não estava em cache. Buscando agora para: ${currentBook}`);
-          const promise = prefetchQuizForBook(currentBook);
+          console.log(`[Quiz UI] Quiz não estava em cache. Buscando agora para: ${quizCurrentBook}`);
+          const promise = prefetchQuizForBook(quizCurrentBook);
           quizData = await promise;
         }
 
@@ -6135,13 +6141,13 @@
 
       // Update header descriptions
       const titleInfo = document.getElementById('quiz-title-info');
-      if (titleInfo) titleInfo.textContent = `${currentBook} · 10 perguntas`;
+      if (titleInfo) titleInfo.textContent = `${quizCurrentTitle} · 10 perguntas`;
 
       const counterInfo = document.getElementById('quiz-counter-info');
       if (counterInfo) counterInfo.textContent = `Pergunta ${currentQuestionIndex + 1} de 10`;
 
       const questionTag = document.getElementById('quiz-question-tag');
-      if (questionTag) questionTag.textContent = `📖 ${currentBook}`;
+      if (questionTag) questionTag.textContent = `📖 ${quizCurrentTitle}`;
 
       const questionText = document.getElementById('quiz-question-text');
       if (questionText) questionText.textContent = currentQuestion.question;

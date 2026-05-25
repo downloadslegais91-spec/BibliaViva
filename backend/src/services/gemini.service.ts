@@ -158,7 +158,24 @@ export async function generateQuizForBook(book: string): Promise<Array<any>> {
     throw new Error('GEMINI_API_KEY não configurada no ambiente.');
   }
 
-  const systemInstruction =
+  const isIntensiva = book.startsWith('intensiva-');
+  const subjectName = isIntensiva ? book.replace('intensiva-', '').toUpperCase() : book;
+  
+  const systemInstruction = isIntensiva ?
+    `Você é um teólogo e educador bíblico especialista em gamificação. ` +
+    `Sua tarefa é gerar um quiz interativo fascinante de múltipla escolha sobre a Trilha Intensiva de estudo bíblico com o tema: ${subjectName}. ` +
+    `O quiz deve conter exatamente 10 perguntas em português de alta qualidade técnica e espiritual focadas nos temas, livros e conexões dessa Trilha. ` +
+    `Você DEVE retornar a resposta EXCLUSIVAMENTE em formato JSON. Não inclua nenhuma explicação antes ou depois do JSON. Não envolva o JSON em crases/markdown. ` +
+    `O JSON deve ser um array contendo exatamente 10 objetos com a seguinte estrutura: ` +
+    `[` +
+    `  {` +
+    `    "question": "Pergunta clara em português...",` +
+    `    "options": ["Opção A", "Opção B", "Opção C", "Opção D"],` +
+    `    "answer": 0, // índice numérico de 0 a 3 referente à alternativa correta` +
+    `    "explanation": "Breve justificativa bíblica ou teológica (com versículo se aplicável)"` +
+    `  }` +
+    `]`
+    :
     `Você é um teólogo e educador bíblico especialista em gamificação. ` +
     `Sua tarefa é gerar um quiz interativo fascinante de múltipla escolha sobre o livro bíblico fornecido. ` +
     `O quiz deve conter exatamente 10 perguntas em português de alta qualidade técnica e espiritual. ` +
@@ -173,7 +190,10 @@ export async function generateQuizForBook(book: string): Promise<Array<any>> {
     `  }` +
     `]`;
 
-  const prompt = `Gere exatamente 10 perguntas dinâmicas e teologicamente precisas para o quiz do livro bíblico: ${book}.`;
+  const prompt = isIntensiva ?
+    `Gere exatamente 10 perguntas dinâmicas e teologicamente precisas para o quiz da Trilha Intensiva de Estudos Bíblicos com foco em: ${subjectName}.`
+    :
+    `Gere exatamente 10 perguntas dinâmicas e teologicamente precisas para o quiz do livro bíblico: ${subjectName}.`;
 
   try {
     const payload = {
