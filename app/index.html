@@ -3340,6 +3340,25 @@
       font-size: 11px;
       color: #8E8E93;
     }
+
+    #page-quests .int-badges {
+      display: flex;
+      gap: 6px;
+      margin: 4px 0 8px;
+      flex-wrap: wrap;
+    }
+
+    #page-quests .int-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #8E8E93;
+      background: #F2F2F7;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
   </style>
 
   <div class="page" id="page-quests">
@@ -3388,9 +3407,16 @@
       // Render Intensivas inline without breaking global logic
       setTimeout(() => {
         const intensivasData = [
-          { id: "fe-01", tema: "Fé", desc: "Entenda o que é fé e como ela age na sua vida.", icone: "🙏", cor: "#3B82F6", total: 7 },
-          { id: "perdao-01", tema: "Perdão", desc: "Uma jornada sobre perdoar e ser perdoado.", icone: "🕊️", cor: "#8B5CF6", total: 6 },
-          { id: "ansiedade-01", tema: "Ansiedade", desc: "Encontre paz nos textos que falam sobre confiar em Deus.", icone: "🌿", cor: "#10B981", total: 5 }
+          { id: "promessas-01", tema: "Promessas de Deus", desc: "Descubra as promessas inabaláveis de Deus para a sua vida.", icone: "✨", cor: "#F97316", total: 7, dificuldade: "Avançado", sazonal: true },
+          { id: "fe-01", tema: "Fé", desc: "Entenda o que é fé e como ela age na sua vida.", icone: "🙏", cor: "#3B82F6", total: 7, dificuldade: "Intermediário" },
+          { id: "perdao-01", tema: "Perdão", desc: "Uma jornada sobre perdoar e ser perdoado.", icone: "🕊️", cor: "#8B5CF6", total: 6, dificuldade: "Iniciante" },
+          { id: "ansiedade-01", tema: "Ansiedade", desc: "Encontre paz nos textos que falam sobre confiar em Deus.", icone: "🌿", cor: "#10B981", total: 5, dificuldade: "Iniciante" },
+          { id: "amor-01", tema: "Amor", desc: "Descubra as dimensões do amor de Deus e como praticá-lo.", icone: "❤️", cor: "#EC4899", total: 6, dificuldade: "Iniciante" },
+          { id: "esperanca-01", tema: "Esperança", desc: "Renove sua esperança mesmo nos dias mais difíceis.", icone: "🌅", cor: "#F59E0B", total: 5, dificuldade: "Iniciante" },
+          { id: "sabedoria-01", tema: "Sabedoria", desc: "Busque a sabedoria que vem do alto para decisões sábias.", icone: "📖", cor: "#6366F1", total: 6, dificuldade: "Intermediário" },
+          { id: "coragem-01", tema: "Coragem", desc: "Fortaleça-se para enfrentar os desafios com ousadia.", icone: "🦁", cor: "#EF4444", total: 5, dificuldade: "Intermediário" },
+          { id: "gratidao-01", tema: "Gratidão", desc: "Cultive um coração grato e transforme a sua perspectiva.", icone: "🙌", cor: "#14B8A6", total: 5, dificuldade: "Iniciante" },
+          { id: "oracao-01", tema: "Oração", desc: "Aprofunde sua vida de oração e intimidade com Deus.", icone: "🕯️", cor: "#A855F7", total: 6, dificuldade: "Avançado" }
         ];
         const container = document.getElementById('quests-intensivas-container');
         if (container) {
@@ -3399,10 +3425,20 @@
             const raw = localStorage.getItem('intensiva_' + int.id);
             const prog = raw ? JSON.parse(raw) : { etapasConcluidas: [] };
             const pct = Math.round((prog.etapasConcluidas.length / int.total) * 100);
+            const duracao = int.total * 3;
 
-            let pill = pct === 0 ? `<span class="int-pill" style="background: rgba(${hexToRgb(int.cor)}, 0.12); color: ${int.cor}">Nova</span>` :
-              pct >= 100 ? `<span class="int-pill" style="background: #F0FDF4; color: #16A34A">Concluída</span>` :
-                `<span class="int-pill" style="background: #F2F2F7; color: #3C3C43">${pct}%</span>`;
+            let pill = '';
+            if (int.sazonal) {
+              pill = `<span class="int-pill" style="background: linear-gradient(135deg, #F59E0B, #F97316); color: #fff">✨ Especial</span>`;
+            } else if (pct === 0) {
+              pill = `<span class="int-pill" style="background: rgba(${hexToRgb(int.cor)}, 0.12); color: ${int.cor}">Nova</span>`;
+            } else if (pct >= 100) {
+              pill = `<span class="int-pill" style="background: #34C759; color: #fff">✓ Concluída</span>`;
+            } else {
+              pill = `<span class="int-pill" style="background: #F2F2F7; color: #3C3C43">${pct}%</span>`;
+            }
+
+            const difIcon = int.dificuldade === 'Avançado' ? '🔴' : int.dificuldade === 'Intermediário' ? '🟡' : '🟢';
 
             html += `
             <a href="Intensiva.html?id=${int.id}" class="intensiva-card">
@@ -3411,6 +3447,10 @@
                 ${pill}
               </div>
               <div class="int-desc">${int.desc}</div>
+              <div class="int-badges">
+                <span class="int-badge">${difIcon} ${int.dificuldade}</span>
+                <span class="int-badge">🕐 ~${duracao} min</span>
+              </div>
               <div class="int-prog-track"><div class="int-prog-fill" style="width:${pct}%; background:${int.cor}"></div></div>
               <div class="int-footer">
                 <div class="int-frac">${prog.etapasConcluidas.length}/${int.total} capítulos</div>

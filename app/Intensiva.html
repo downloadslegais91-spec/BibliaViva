@@ -64,6 +64,16 @@ body {
   letter-spacing: -0.3px;
 }
 .header-spacer { width: 44px; }
+.header-xp {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #F59E0B;
+  min-width: 44px;
+  justify-content: flex-end;
+}
 
 /* ━━━━━━━━━ SUBTITLE ━━━━━━━━━ */
 .page-subtitle {
@@ -72,9 +82,18 @@ body {
   padding: 12px 16px 4px;
 }
 
+/* ━━━━━━━━━ SECTION LABEL ━━━━━━━━━ */
+.section-label {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  padding: 20px 16px 8px;
+  color: #000;
+}
+
 /* ━━━━━━━━━ INTENSIVA CARD (LIST) ━━━━━━━━━ */
 .cards-container {
-  padding: 8px 16px 32px;
+  padding: 0 16px 32px;
 }
 .intensiva-card {
   background: #ffffff;
@@ -85,6 +104,8 @@ body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform .15s ease, box-shadow .15s ease;
+  position: relative;
+  overflow: hidden;
 }
 .intensiva-card:active { transform: scale(0.98); }
 .card-top {
@@ -103,6 +124,8 @@ body {
   line-height: 1.2;
 }
 .card-tema-icone { font-size: 18px; }
+
+/* Pills */
 .pill {
   flex-shrink: 0;
   font-size: 11px;
@@ -115,6 +138,31 @@ body {
 .pill-nova { color: #fff; }
 .pill-progresso { background: #E5E5EA; color: #636366; }
 .pill-concluida { background: #34C759; color: #fff; }
+.pill-sazonal {
+  background: linear-gradient(135deg, #F59E0B, #F97316);
+  color: #fff;
+  font-size: 10px;
+}
+
+/* Card meta row */
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8E8E93;
+  background: #F2F2F7;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
 .card-desc {
   font-size: 13px;
   color: #8E8E93;
@@ -162,6 +210,23 @@ body {
   margin-top: 6px;
   line-height: 1.4;
 }
+.hero-badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.05);
+  color: #636366;
+}
 .hero-progress-track {
   height: 8px;
   border-radius: 4px;
@@ -188,19 +253,37 @@ body {
   border: 0.5px solid rgba(0,0,0,0.08);
   margin: 0 16px 16px;
   overflow: hidden;
+  position: relative;
 }
 .etapa-row {
   display: flex;
-  align-items: center;
-  padding: 12px 16px;
+  align-items: flex-start;
+  padding: 14px 16px;
   gap: 12px;
   border-bottom: 0.5px solid rgba(0,0,0,0.06);
-  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background .15s ease;
+  transition: background .15s ease, opacity .2s ease;
+  position: relative;
 }
-.etapa-row:active { background: rgba(0,0,0,0.03); }
 .etapa-row:last-child { border-bottom: none; }
+.etapa-row.bloqueada {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.etapa-row.proxima {
+  background: rgba(0,0,0,0.02);
+}
+
+/* Path connector line */
+.etapa-path {
+  position: absolute;
+  left: 27px;
+  top: 38px;
+  bottom: -2px;
+  width: 2px;
+  border-radius: 1px;
+}
+.etapa-row:last-child .etapa-path { display: none; }
 
 /* Checkbox */
 .etapa-check {
@@ -212,13 +295,15 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all .2s ease;
+  transition: all .25s cubic-bezier(0.34, 1.56, 0.64, 1);
   -webkit-tap-highlight-color: transparent;
   border: 1.5px solid #D1D5DB;
   background: #fff;
+  margin-top: 2px;
 }
 .etapa-check.marcado {
   border-color: transparent;
+  transform: scale(1);
 }
 .etapa-check.marcado::after {
   content: '✓';
@@ -226,6 +311,24 @@ body {
   font-size: 13px;
   font-weight: 700;
   line-height: 1;
+}
+.etapa-check.bloqueado {
+  border-color: #E5E5EA;
+  background: #F9FAFB;
+  cursor: default;
+}
+.etapa-check.bloqueado::after {
+  content: '🔒';
+  font-size: 10px;
+}
+
+/* Pulse animation for next step */
+.etapa-check.proximo {
+  animation: pulseRing 2s ease-in-out infinite;
+}
+@keyframes pulseRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,122,255,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(0,122,255,0); }
 }
 
 /* Number badge */
@@ -239,12 +342,13 @@ body {
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
+  margin-top: 2px;
 }
 
-/* Corpo */
+/* Body */
 .etapa-corpo { flex: 1; min-width: 0; }
 .etapa-titulo {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #000;
   line-height: 1.3;
@@ -253,6 +357,18 @@ body {
   font-size: 12px;
   color: #8E8E93;
   margin-top: 1px;
+}
+
+/* Reflexão */
+.etapa-reflexao {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+  color: #636366;
+  border-left: 3px solid;
 }
 
 /* Botão Ler */
@@ -265,46 +381,98 @@ body {
   border: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity .15s ease;
+  transition: opacity .15s ease, transform .15s ease;
   min-height: 32px;
+  margin-top: 2px;
 }
-.etapa-ler:active { opacity: 0.7; }
+.etapa-ler:active { opacity: 0.7; transform: scale(0.95); }
 
 /* ━━━━━━━━━ CONGRATULATIONS CARD ━━━━━━━━━ */
 .congrats-card {
-  border-radius: 14px;
-  padding: 20px 16px;
+  border-radius: 16px;
+  padding: 24px 16px;
   text-align: center;
   margin: 0 16px 32px;
   border-width: 1px;
   border-style: solid;
 }
-.congrats-icone { font-size: 40px; margin-bottom: 8px; }
+.congrats-icone { font-size: 48px; margin-bottom: 10px; }
 .congrats-titulo {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #000;
   margin-bottom: 4px;
+  letter-spacing: -0.3px;
 }
 .congrats-texto {
-  font-size: 13px;
+  font-size: 14px;
   color: #636366;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   line-height: 1.4;
+}
+.congrats-xp {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.congrats-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .congrats-btn {
   display: inline-block;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
+  border-radius: 12px;
+  padding: 12px 20px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: opacity .15s ease;
+  min-height: 44px;
 }
 .congrats-btn:active { opacity: 0.8; }
+.congrats-btn-secondary {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s ease;
+  min-height: 44px;
+  background: rgba(0,0,0,0.05);
+  color: #636366;
+}
+.congrats-btn-secondary:active { opacity: 0.7; }
+
+/* ━━━━━━━━━ XP TOAST ━━━━━━━━━ */
+.xp-toast {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: #000;
+  color: #F5A623;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 100px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  transition: all .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+.xp-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
 /* ━━━━━━━━━ VIEW TOGGLE ━━━━━━━━━ */
 .view { display: none; }
@@ -321,15 +489,29 @@ body {
 }
 .intensiva-card:nth-child(2) { animation-delay: .05s; }
 .intensiva-card:nth-child(3) { animation-delay: .1s; }
+.intensiva-card:nth-child(4) { animation-delay: .15s; }
+.intensiva-card:nth-child(5) { animation-delay: .2s; }
 .etapa-row:nth-child(2) { animation-delay: .03s; }
 .etapa-row:nth-child(3) { animation-delay: .06s; }
 .etapa-row:nth-child(4) { animation-delay: .09s; }
 .etapa-row:nth-child(5) { animation-delay: .12s; }
 .etapa-row:nth-child(6) { animation-delay: .15s; }
 .etapa-row:nth-child(7) { animation-delay: .18s; }
+
+@keyframes checkPop {
+  0% { transform: scale(0.6); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.etapa-check.just-marked {
+  animation: checkPop .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 </style>
 </head>
 <body>
+
+<!-- XP TOAST -->
+<div class="xp-toast" id="xp-toast"></div>
 
 <!-- ========== VIEW 1: LISTA ========== -->
 <div class="view ativa" id="view-lista">
@@ -338,10 +520,10 @@ body {
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </a>
     <div class="header-title">Intensivas</div>
-    <div class="header-spacer"></div>
+    <div class="header-xp" id="header-xp-display">⚡ <span id="header-xp-value">0</span></div>
   </div>
   <div class="page-subtitle">Escolha uma trilha temática e aprofunde seu estudo.</div>
-  <div class="cards-container" id="cards-container"></div>
+  <div id="cards-container"></div>
 </div>
 
 <!-- ========== VIEW 2: DETALHE ========== -->
@@ -351,29 +533,30 @@ body {
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
     <div class="header-title" id="detalhe-header-title"></div>
-    <div class="header-spacer"></div>
+    <div class="header-xp">⚡ <span id="detalhe-xp-value">0</span></div>
   </div>
   <div id="detalhe-content"></div>
 </div>
 
 <script>
 /* ━━━━━━━━━ DADOS ━━━━━━━━━ */
-const intensivas = [
+var intensivas = [
   {
     id: "fe-01",
     tema: "Fé",
     descricao: "Entenda o que é fé e como ela age na sua vida.",
     icone: "🙏",
     cor: "#3B82F6",
+    dificuldade: "Intermediário",
     totalEtapas: 7,
     etapas: [
-      { ordem: 1, livro: "Hebreus",  capitulo: 11, titulo: "A definição de fé"           },
-      { ordem: 2, livro: "Mateus",   capitulo: 17, titulo: "Fé do tamanho de um grão"    },
-      { ordem: 3, livro: "Romanos",  capitulo: 10, titulo: "A fé vem pelo ouvir"         },
-      { ordem: 4, livro: "Tiago",    capitulo: 2,  titulo: "Fé sem obras é morta"        },
-      { ordem: 5, livro: "Marcos",   capitulo: 11, titulo: "Fé que move montanhas"       },
-      { ordem: 6, livro: "João",     capitulo: 20, titulo: "Bem-aventurados os que crêm" },
-      { ordem: 7, livro: "Efésios",  capitulo: 6,  titulo: "O escudo da fé"              }
+      { ordem: 1, livro: "Hebreus",  capitulo: 11, titulo: "A definição de fé", reflexao: "O que significa crer sem ver? Como isso se aplica à sua vida hoje?" },
+      { ordem: 2, livro: "Mateus",   capitulo: 17, titulo: "Fé do tamanho de um grão", reflexao: "Você já subestimou o poder de uma fé pequena, mas sincera?" },
+      { ordem: 3, livro: "Romanos",  capitulo: 10, titulo: "A fé vem pelo ouvir", reflexao: "De que formas você alimenta a sua fé diariamente?" },
+      { ordem: 4, livro: "Tiago",    capitulo: 2,  titulo: "Fé sem obras é morta", reflexao: "Quais atitudes concretas demonstram a sua fé?" },
+      { ordem: 5, livro: "Marcos",   capitulo: 11, titulo: "Fé que move montanhas", reflexao: "Existe alguma 'montanha' na sua vida que precisa da sua fé?" },
+      { ordem: 6, livro: "João",     capitulo: 20, titulo: "Bem-aventurados os que crêm", reflexao: "Você acredita sem precisar de provas visíveis?" },
+      { ordem: 7, livro: "Efésios",  capitulo: 6,  titulo: "O escudo da fé", reflexao: "Como a fé te protege nas batalhas espirituais do dia a dia?" }
     ]
   },
   {
@@ -382,14 +565,15 @@ const intensivas = [
     descricao: "Uma jornada sobre perdoar e ser perdoado.",
     icone: "🕊️",
     cor: "#8B5CF6",
+    dificuldade: "Iniciante",
     totalEtapas: 6,
     etapas: [
-      { ordem: 1, livro: "Mateus",     capitulo: 18, titulo: "Perdoar setenta vezes sete"  },
-      { ordem: 2, livro: "Lucas",      capitulo: 15, titulo: "O filho pródigo"              },
-      { ordem: 3, livro: "Efésios",    capitulo: 4,  titulo: "Perdoai uns aos outros"       },
-      { ordem: 4, livro: "Salmos",     capitulo: 51, titulo: "Cria em mim um coração puro"  },
-      { ordem: 5, livro: "Romanos",    capitulo: 8,  titulo: "Nenhuma condenação"           },
-      { ordem: 6, livro: "Colossenses",capitulo: 3,  titulo: "Revesti-vos de misericórdia"  }
+      { ordem: 1, livro: "Mateus",      capitulo: 18, titulo: "Perdoar setenta vezes sete", reflexao: "Existe alguém que você precisa perdoar mais uma vez?" },
+      { ordem: 2, livro: "Lucas",        capitulo: 15, titulo: "O filho pródigo", reflexao: "Você já se sentiu como o filho que voltou para casa?" },
+      { ordem: 3, livro: "Efésios",      capitulo: 4,  titulo: "Perdoai uns aos outros", reflexao: "Como o perdão de Deus inspira você a perdoar os outros?" },
+      { ordem: 4, livro: "Salmos",       capitulo: 51, titulo: "Cria em mim um coração puro", reflexao: "O que significa ter um coração renovado por Deus?" },
+      { ordem: 5, livro: "Romanos",      capitulo: 8,  titulo: "Nenhuma condenação", reflexao: "Você ainda carrega culpa que Deus já perdoou?" },
+      { ordem: 6, livro: "Colossenses",  capitulo: 3,  titulo: "Revesti-vos de misericórdia", reflexao: "Como vestir-se de compaixão nas suas relações?" }
     ]
   },
   {
@@ -398,47 +582,201 @@ const intensivas = [
     descricao: "Encontre paz nos textos que falam sobre confiar em Deus.",
     icone: "🌿",
     cor: "#10B981",
+    dificuldade: "Iniciante",
     totalEtapas: 5,
     etapas: [
-      { ordem: 1, livro: "Filipenses", capitulo: 4,  titulo: "A paz que excede o entendimento"  },
-      { ordem: 2, livro: "Mateus",     capitulo: 6,  titulo: "Não andeis ansiosos"               },
-      { ordem: 3, livro: "Salmos",     capitulo: 23, titulo: "O Senhor é meu pastor"             },
-      { ordem: 4, livro: "1 Pedro",    capitulo: 5,  titulo: "Lançai sobre Ele a vossa ansiedade"},
-      { ordem: 5, livro: "Isaías",     capitulo: 41, titulo: "Não temas, porque eu sou contigo"  }
+      { ordem: 1, livro: "Filipenses", capitulo: 4,  titulo: "A paz que excede o entendimento", reflexao: "Quando foi a última vez que você sentiu a paz de Deus, mesmo em meio ao caos?" },
+      { ordem: 2, livro: "Mateus",     capitulo: 6,  titulo: "Não andeis ansiosos", reflexao: "Quais preocupações você precisa entregar a Deus hoje?" },
+      { ordem: 3, livro: "Salmos",     capitulo: 23, titulo: "O Senhor é meu pastor", reflexao: "Você confia que Deus cuida de cada detalhe da sua vida?" },
+      { ordem: 4, livro: "1 Pedro",    capitulo: 5,  titulo: "Lançai sobre Ele a vossa ansiedade", reflexao: "O que acontece quando você tenta resolver tudo sozinho?" },
+      { ordem: 5, livro: "Isaías",     capitulo: 41, titulo: "Não temas, porque eu sou contigo", reflexao: "Como essa promessa muda a sua perspectiva sobre o futuro?" }
+    ]
+  },
+  {
+    id: "amor-01",
+    tema: "Amor",
+    descricao: "Descubra as dimensões do amor de Deus e como praticá-lo.",
+    icone: "❤️",
+    cor: "#EC4899",
+    dificuldade: "Iniciante",
+    totalEtapas: 6,
+    etapas: [
+      { ordem: 1, livro: "1 Coríntios", capitulo: 13, titulo: "O amor é paciente e bondoso", reflexao: "Qual atributo do amor descrito aqui é mais difícil para você praticar?" },
+      { ordem: 2, livro: "João",         capitulo: 3,  titulo: "Porque Deus amou o mundo", reflexao: "O que o sacrifício de Deus revela sobre o amor verdadeiro?" },
+      { ordem: 3, livro: "Romanos",      capitulo: 8,  titulo: "Nada nos separará do amor de Deus", reflexao: "Você já duvidou do amor de Deus por você? O que este texto diz?" },
+      { ordem: 4, livro: "1 João",       capitulo: 4,  titulo: "Deus é amor", reflexao: "Como você pode refletir o amor de Deus no seu dia a dia?" },
+      { ordem: 5, livro: "Cânticos",     capitulo: 8,  titulo: "O amor é forte como a morte", reflexao: "O que torna o amor divino diferente do amor humano?" },
+      { ordem: 6, livro: "João",         capitulo: 15, titulo: "Amai-vos uns aos outros", reflexao: "Quem na sua vida precisa sentir o amor de Deus através de você?" }
+    ]
+  },
+  {
+    id: "esperanca-01",
+    tema: "Esperança",
+    descricao: "Renove sua esperança mesmo nos dias mais difíceis.",
+    icone: "🌅",
+    cor: "#F59E0B",
+    dificuldade: "Iniciante",
+    totalEtapas: 5,
+    etapas: [
+      { ordem: 1, livro: "Romanos",     capitulo: 15, titulo: "O Deus da esperança", reflexao: "De onde vem a sua esperança nos momentos de crise?" },
+      { ordem: 2, livro: "Jeremias",    capitulo: 29, titulo: "Planos de paz e esperança", reflexao: "Você acredita que Deus tem um plano bom para a sua vida?" },
+      { ordem: 3, livro: "Lamentações", capitulo: 3,  titulo: "As misericórdias se renovam", reflexao: "Como recomeçar cada manhã com esperança renovada?" },
+      { ordem: 4, livro: "Salmos",      capitulo: 42, titulo: "Espera em Deus", reflexao: "O que você faz quando a alma está abatida?" },
+      { ordem: 5, livro: "Apocalipse",  capitulo: 21, titulo: "Eis que faço novas todas as coisas", reflexao: "Como a promessa da eternidade transforma o seu presente?" }
+    ]
+  },
+  {
+    id: "sabedoria-01",
+    tema: "Sabedoria",
+    descricao: "Busque a sabedoria que vem do alto para decisões sábias.",
+    icone: "📖",
+    cor: "#6366F1",
+    dificuldade: "Intermediário",
+    totalEtapas: 6,
+    etapas: [
+      { ordem: 1, livro: "Provérbios", capitulo: 1,  titulo: "O princípio da sabedoria", reflexao: "O que significa 'temer ao Senhor' na prática?" },
+      { ordem: 2, livro: "Provérbios", capitulo: 3,  titulo: "Confia no Senhor de todo coração", reflexao: "Em quais áreas da vida você ainda tenta controlar tudo?" },
+      { ordem: 3, livro: "Tiago",      capitulo: 1,  titulo: "Peça sabedoria a Deus", reflexao: "Você tem pedido sabedoria para as decisões que enfrenta?" },
+      { ordem: 4, livro: "Eclesiastes",capitulo: 3,  titulo: "Tudo tem o seu tempo", reflexao: "Qual estação da vida você está vivendo agora?" },
+      { ordem: 5, livro: "Provérbios", capitulo: 31, titulo: "A mulher virtuosa", reflexao: "Quais qualidades de caráter você deseja desenvolver?" },
+      { ordem: 6, livro: "1 Reis",     capitulo: 3,  titulo: "A sabedoria de Salomão", reflexao: "Se Deus te oferecesse um pedido, o que você pediria?" }
+    ]
+  },
+  {
+    id: "coragem-01",
+    tema: "Coragem",
+    descricao: "Fortaleça-se para enfrentar os desafios com ousadia.",
+    icone: "🦁",
+    cor: "#EF4444",
+    dificuldade: "Intermediário",
+    totalEtapas: 5,
+    etapas: [
+      { ordem: 1, livro: "Josué",       capitulo: 1,  titulo: "Sê forte e corajoso", reflexao: "Qual desafio exige coragem de você hoje?" },
+      { ordem: 2, livro: "Deuteronômio", capitulo: 31, titulo: "Não temas nem te espantes", reflexao: "O medo tem te impedido de seguir em frente?" },
+      { ordem: 3, livro: "Daniel",       capitulo: 3,  titulo: "A fornalha ardente", reflexao: "Você manteria sua fé mesmo enfrentando consequências?" },
+      { ordem: 4, livro: "1 Samuel",     capitulo: 17, titulo: "Davi e Golias", reflexao: "Qual 'gigante' você precisa enfrentar com a força de Deus?" },
+      { ordem: 5, livro: "Atos",         capitulo: 4,  titulo: "A ousadia dos apóstolos", reflexao: "O que te impede de falar sobre sua fé com mais ousadia?" }
+    ]
+  },
+  {
+    id: "gratidao-01",
+    tema: "Gratidão",
+    descricao: "Cultive um coração grato e transforme a sua perspectiva.",
+    icone: "🙌",
+    cor: "#14B8A6",
+    dificuldade: "Iniciante",
+    totalEtapas: 5,
+    etapas: [
+      { ordem: 1, livro: "1 Tessalonicenses", capitulo: 5, titulo: "Em tudo dai graças", reflexao: "Pelo que você pode ser grato, mesmo nas dificuldades?" },
+      { ordem: 2, livro: "Salmos",             capitulo: 100, titulo: "Entrai com ações de graças", reflexao: "Como a gratidão muda a forma como você adora?" },
+      { ordem: 3, livro: "Salmos",             capitulo: 103, titulo: "Bendize, ó minha alma", reflexao: "Quais bênçãos você esquece de reconhecer?" },
+      { ordem: 4, livro: "Colossenses",        capitulo: 3,   titulo: "Sede agradecidos", reflexao: "A gratidão é um hábito ou um sentimento para você?" },
+      { ordem: 5, livro: "Lucas",              capitulo: 17,  titulo: "Os dez leprosos", reflexao: "Quantas vezes você volta para agradecer?" }
+    ]
+  },
+  {
+    id: "oracao-01",
+    tema: "Oração",
+    descricao: "Aprofunde sua vida de oração e intimidade com Deus.",
+    icone: "🕯️",
+    cor: "#A855F7",
+    dificuldade: "Avançado",
+    totalEtapas: 6,
+    etapas: [
+      { ordem: 1, livro: "Mateus",        capitulo: 6,  titulo: "O Pai Nosso", reflexao: "Cada parte do Pai Nosso: qual você mais precisa hoje?" },
+      { ordem: 2, livro: "Lucas",         capitulo: 18, titulo: "A viúva persistente", reflexao: "Você desiste rápido ou persiste em oração?" },
+      { ordem: 3, livro: "Filipenses",    capitulo: 4,  titulo: "Orai sem cessar", reflexao: "O que significa manter uma atitude de oração constante?" },
+      { ordem: 4, livro: "Marcos",        capitulo: 1,  titulo: "Jesus orava de madrugada", reflexao: "Você tem reservado tempo de qualidade para orar?" },
+      { ordem: 5, livro: "2 Crônicas",    capitulo: 7,  titulo: "Se o meu povo orar", reflexao: "Como sua oração pode impactar a sua comunidade?" },
+      { ordem: 6, livro: "Romanos",       capitulo: 8,  titulo: "O Espírito intercede por nós", reflexao: "Você já sentiu que não sabia o que orar? O Espírito te ajuda." }
+    ]
+  },
+  {
+    id: "promessas-01",
+    tema: "Promessas de Deus",
+    descricao: "Descubra as promessas inabaláveis de Deus para a sua vida.",
+    icone: "✨",
+    cor: "#F97316",
+    dificuldade: "Avançado",
+    sazonal: true,
+    totalEtapas: 7,
+    etapas: [
+      { ordem: 1, livro: "Gênesis",     capitulo: 12, titulo: "A promessa a Abraão", reflexao: "Você acredita que Deus pode cumprir promessas impossíveis?" },
+      { ordem: 2, livro: "Isaías",      capitulo: 43, titulo: "Eu te chamei pelo nome", reflexao: "O que significa ser conhecido pessoalmente pelo Criador?" },
+      { ordem: 3, livro: "Jeremias",    capitulo: 29, titulo: "Planos de prosperidade", reflexao: "Como diferenciar os planos de Deus dos seus próprios?" },
+      { ordem: 4, livro: "Romanos",     capitulo: 8,  titulo: "Todas as coisas cooperam para o bem", reflexao: "Você consegue ver a mão de Deus mesmo nas situações difíceis?" },
+      { ordem: 5, livro: "2 Coríntios", capitulo: 1,  titulo: "Todas as promessas são sim em Cristo", reflexao: "Quais promessas de Deus você precisa reivindicar?" },
+      { ordem: 6, livro: "Hebreus",     capitulo: 10, titulo: "Fiel é o que prometeu", reflexao: "Por que podemos confiar que Deus cumpre o que promete?" },
+      { ordem: 7, livro: "Apocalipse",  capitulo: 21, titulo: "Novas todas as coisas", reflexao: "A maior promessa de Deus é a eternidade. Isso muda tudo?" }
     ]
   }
 ];
 
 /* ━━━━━━━━━ PROGRESSO (localStorage) ━━━━━━━━━ */
 function getProgresso(intensivaId) {
-  const raw = localStorage.getItem('intensiva_' + intensivaId);
+  var raw = localStorage.getItem('intensiva_' + intensivaId);
   return raw ? JSON.parse(raw) : { etapasConcluidas: [] };
 }
 
+function getXpTotal() {
+  return parseInt(localStorage.getItem('intensiva_xp_total') || '0', 10);
+}
+
+function addXp(amount) {
+  var total = getXpTotal() + amount;
+  localStorage.setItem('intensiva_xp_total', total.toString());
+  atualizarXpDisplay();
+  return total;
+}
+
+function atualizarXpDisplay() {
+  var xp = getXpTotal();
+  var els = document.querySelectorAll('#header-xp-value, #detalhe-xp-value');
+  els.forEach(function(el) { el.textContent = xp; });
+}
+
+function showXpToast(msg) {
+  var toast = document.getElementById('xp-toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 1800);
+}
+
 function marcarEtapa(intensivaId, ordem) {
-  const p = getProgresso(intensivaId);
+  var p = getProgresso(intensivaId);
   if (!p.etapasConcluidas.includes(ordem)) {
     p.etapasConcluidas.push(ordem);
     localStorage.setItem('intensiva_' + intensivaId, JSON.stringify(p));
+    addXp(25);
+    showXpToast('⚡ +25 XP');
+
+    // Check if trail is now complete
+    var int = intensivas.find(function(i) { return i.id === intensivaId; });
+    if (int && p.etapasConcluidas.length === int.totalEtapas) {
+      setTimeout(function() {
+        addXp(100);
+        showXpToast('🎉 +100 XP Bônus — Trilha Completa!');
+      }, 600);
+    }
   }
   renderizarTudo();
 }
 
 function desmarcarEtapa(intensivaId, ordem) {
-  const p = getProgresso(intensivaId);
+  var p = getProgresso(intensivaId);
   p.etapasConcluidas = p.etapasConcluidas.filter(function(e) { return e !== ordem; });
   localStorage.setItem('intensiva_' + intensivaId, JSON.stringify(p));
   renderizarTudo();
 }
 
 function percentual(intensivaId, total) {
-  const p = getProgresso(intensivaId);
+  var p = getProgresso(intensivaId);
   return Math.round((p.etapasConcluidas.length / total) * 100);
 }
 
 /* ━━━━━━━━━ VIEW STATE ━━━━━━━━━ */
-let viewAtual = 'lista';
-let intensivaAtiva = null;
+var viewAtual = 'lista';
+var intensivaAtiva = null;
 
 function irParaDetalhe(id) {
   intensivaAtiva = intensivas.find(function(i) { return i.id === id; });
@@ -455,14 +793,28 @@ function voltarParaLista() {
 }
 
 /* ━━━━━━━━━ NAVEGAÇÃO PARA LEITURA ━━━━━━━━━ */
-function irParaLeitura(livro, capitulo) {
-  // Navega para a aba Leitura do app principal passando livro e capítulo
+function irParaLeitura(intensivaId, ordem, livro, capitulo) {
+  // Auto-mark the step as completed before navigating
+  marcarEtapa(intensivaId, ordem);
+  // Navigate to reading tab
   window.location.href = 'index.html?livro=' + encodeURIComponent(livro) + '&capitulo=' + capitulo;
+}
+
+/* ━━━━━━━━━ COMPARTILHAR ━━━━━━━━━ */
+function compartilharTrilha(tema, icone) {
+  var texto = icone + ' Completei a trilha "' + tema + '" no BíbliaViva! Aprofundei meu estudo bíblico com essa jornada incrível. #BíbliaViva #FéEmAção';
+  if (navigator.share) {
+    navigator.share({ title: 'BíbliaViva — Intensiva Concluída!', text: texto }).catch(function() {});
+  } else {
+    navigator.clipboard.writeText(texto).then(function() {
+      showXpToast('📋 Texto copiado!');
+    });
+  }
 }
 
 /* ━━━━━━━━━ RENDER ━━━━━━━━━ */
 function renderizarTudo() {
-  // Toggle views
+  atualizarXpDisplay();
   document.getElementById('view-lista').classList.toggle('ativa', viewAtual === 'lista');
   document.getElementById('view-detalhe').classList.toggle('ativa', viewAtual === 'detalhe');
 
@@ -473,57 +825,83 @@ function renderizarTudo() {
   }
 }
 
+function getDificuldadeIcon(d) {
+  if (d === 'Avançado') return '🔴';
+  if (d === 'Intermediário') return '🟡';
+  return '🟢';
+}
+
 function renderizarLista() {
-  const container = document.getElementById('cards-container');
-  let html = '';
+  var container = document.getElementById('cards-container');
+  var html = '';
 
-  intensivas.forEach(function(int) {
-    const pct = percentual(int.id, int.totalEtapas);
-    const prog = getProgresso(int.id);
-    const concluidas = prog.etapasConcluidas.length;
+  // Separate seasonal and regular
+  var regulares = intensivas.filter(function(i) { return !i.sazonal; });
+  var sazonais = intensivas.filter(function(i) { return i.sazonal; });
 
-    // Pill
-    let pillHtml = '';
-    if (pct === 0) {
-      pillHtml = '<span class="pill pill-nova" style="background:' + int.cor + '">Nova</span>';
-    } else if (pct < 100) {
-      pillHtml = '<span class="pill pill-progresso">' + pct + '%</span>';
-    } else {
-      pillHtml = '<span class="pill pill-concluida">✓ Concluída</span>';
-    }
+  // Sazonais first
+  if (sazonais.length > 0) {
+    html += '<div class="section-label">✨ Especiais</div>';
+    sazonais.forEach(function(int) { html += renderCard(int); });
+  }
 
-    html += ''
-      + '<div class="intensiva-card" onclick="irParaDetalhe(\'' + int.id + '\')">'
-      +   '<div class="card-top">'
-      +     '<div class="card-tema">'
-      +       '<span class="card-tema-icone">' + int.icone + '</span>'
-      +       '<span>' + int.tema + '</span>'
-      +     '</div>'
-      +     pillHtml
-      +   '</div>'
-      +   '<div class="card-desc">' + int.descricao + '</div>'
-      +   '<div class="progress-track">'
-      +     '<div class="progress-fill" style="width:' + pct + '%; background:' + int.cor + '"></div>'
-      +   '</div>'
-      +   '<div class="card-meta">' + concluidas + '/' + int.totalEtapas + ' capítulos</div>'
-      + '</div>';
-  });
+  html += '<div class="section-label">Trilhas</div>';
+  regulares.forEach(function(int) { html += renderCard(int); });
 
   container.innerHTML = html;
+}
+
+function renderCard(int) {
+  var pct = percentual(int.id, int.totalEtapas);
+  var prog = getProgresso(int.id);
+  var concluidas = prog.etapasConcluidas.length;
+  var duracao = int.totalEtapas * 3;
+
+  var pillHtml = '';
+  if (int.sazonal) {
+    pillHtml = '<span class="pill pill-sazonal">✨ Especial</span>';
+  } else if (pct === 0) {
+    pillHtml = '<span class="pill pill-nova" style="background:' + int.cor + '">Nova</span>';
+  } else if (pct < 100) {
+    pillHtml = '<span class="pill pill-progresso">' + pct + '%</span>';
+  } else {
+    pillHtml = '<span class="pill pill-concluida">✓ Concluída</span>';
+  }
+
+  return ''
+    + '<div class="intensiva-card" onclick="irParaDetalhe(\'' + int.id + '\')">'
+    +   '<div class="card-top">'
+    +     '<div class="card-tema">'
+    +       '<span class="card-tema-icone">' + int.icone + '</span>'
+    +       '<span>' + int.tema + '</span>'
+    +     '</div>'
+    +     pillHtml
+    +   '</div>'
+    +   '<div class="card-desc">' + int.descricao + '</div>'
+    +   '<div class="card-meta-row">'
+    +     '<span class="card-badge">' + getDificuldadeIcon(int.dificuldade) + ' ' + int.dificuldade + '</span>'
+    +     '<span class="card-badge">🕐 ~' + duracao + ' min</span>'
+    +     '<span class="card-badge">📖 ' + int.totalEtapas + ' capítulos</span>'
+    +   '</div>'
+    +   '<div class="progress-track">'
+    +     '<div class="progress-fill" style="width:' + pct + '%; background:' + int.cor + '"></div>'
+    +   '</div>'
+    +   '<div class="card-meta">' + concluidas + '/' + int.totalEtapas + ' concluídos</div>'
+    + '</div>';
 }
 
 function renderizarDetalhe() {
   if (!intensivaAtiva) return;
 
-  const int = intensivaAtiva;
-  const pct = percentual(int.id, int.totalEtapas);
-  const prog = getProgresso(int.id);
-  const concluidas = prog.etapasConcluidas.length;
+  var int = intensivaAtiva;
+  var pct = percentual(int.id, int.totalEtapas);
+  var prog = getProgresso(int.id);
+  var concluidas = prog.etapasConcluidas.length;
+  var duracao = int.totalEtapas * 3;
 
-  // Header title
   document.getElementById('detalhe-header-title').textContent = int.tema;
 
-  let html = '';
+  var html = '';
 
   // Hero banner
   html += ''
@@ -533,6 +911,11 @@ function renderizarDetalhe() {
     +     '<div class="hero-tema" style="color:' + int.cor + '">' + int.tema + '</div>'
     +   '</div>'
     +   '<div class="hero-desc">' + int.descricao + '</div>'
+    +   '<div class="hero-badges">'
+    +     '<span class="hero-badge">' + getDificuldadeIcon(int.dificuldade) + ' ' + int.dificuldade + '</span>'
+    +     '<span class="hero-badge">🕐 ~' + duracao + ' min</span>'
+    +     (int.sazonal ? '<span class="hero-badge" style="background:' + hexToRgba(int.cor, 0.15) + '; color:' + int.cor + '">✨ Especial</span>' : '')
+    +   '</div>'
     +   '<div class="hero-progress-track">'
     +     '<div class="hero-progress-fill" style="width:' + pct + '%; background:' + int.cor + '"></div>'
     +   '</div>'
@@ -541,29 +924,65 @@ function renderizarDetalhe() {
 
   // Etapas
   html += '<div class="etapas-container">';
-  int.etapas.forEach(function(etapa) {
-    const isMarcado = prog.etapasConcluidas.includes(etapa.ordem);
-    const checkClass = isMarcado ? 'etapa-check marcado' : 'etapa-check';
-    const checkStyle = isMarcado
-      ? 'background:' + int.cor + '; border-color:' + int.cor + ';'
-      : '';
+  int.etapas.forEach(function(etapa, idx) {
+    var isMarcado = prog.etapasConcluidas.includes(etapa.ordem);
+
+    // Sequential logic: check if previous steps are done
+    var prevDone = true;
+    for (var k = 0; k < idx; k++) {
+      if (!prog.etapasConcluidas.includes(int.etapas[k].ordem)) {
+        prevDone = false;
+        break;
+      }
+    }
+    var isBloqueada = !isMarcado && !prevDone;
+    var isProxima = !isMarcado && prevDone;
+
+    var rowClass = 'etapa-row';
+    if (isBloqueada) rowClass += ' bloqueada';
+    if (isProxima) rowClass += ' proxima';
+
+    var checkClass = 'etapa-check';
+    var checkStyle = '';
+    if (isMarcado) {
+      checkClass += ' marcado';
+      checkStyle = 'background:' + int.cor + '; border-color:' + int.cor + ';';
+    } else if (isBloqueada) {
+      checkClass += ' bloqueado';
+    } else if (isProxima) {
+      checkClass += ' proximo';
+      checkStyle = 'border-color:' + int.cor + ';';
+    }
+
+    var checkAction = '';
+    if (isMarcado) {
+      checkAction = 'desmarcarEtapa(\'' + int.id + '\', ' + etapa.ordem + ')';
+    } else if (!isBloqueada) {
+      checkAction = 'marcarEtapa(\'' + int.id + '\', ' + etapa.ordem + ')';
+    }
 
     html += ''
-      + '<div class="etapa-row">'
+      + '<div class="' + rowClass + '">'
+      +   '<div class="etapa-path" style="background:' + hexToRgba(int.cor, isMarcado ? 0.3 : 0.08) + '"></div>'
       +   '<div class="' + checkClass + '" style="' + checkStyle + '" '
-      +     'onclick="event.stopPropagation(); ' + (isMarcado ? 'desmarcarEtapa' : 'marcarEtapa') + '(\'' + int.id + '\', ' + etapa.ordem + ')" '
+      +     (checkAction ? 'onclick="event.stopPropagation(); ' + checkAction + '" ' : '')
       +     'role="checkbox" aria-checked="' + isMarcado + '" tabindex="0">'
       +   '</div>'
       +   '<div class="etapa-num" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '">' + etapa.ordem + '</div>'
       +   '<div class="etapa-corpo">'
       +     '<div class="etapa-titulo">' + etapa.titulo + '</div>'
       +     '<div class="etapa-ref">' + etapa.livro + ' ' + etapa.capitulo + '</div>'
-      +   '</div>'
-      +   '<button class="etapa-ler" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '" '
-      +     'onclick="event.stopPropagation(); irParaLeitura(\'' + etapa.livro + '\', ' + etapa.capitulo + ')">'
-      +     'Ler'
-      +   '</button>'
-      + '</div>';
+      +     (etapa.reflexao ? '<div class="etapa-reflexao" style="border-color:' + int.cor + '; background:' + hexToRgba(int.cor, 0.04) + '">💭 ' + etapa.reflexao + '</div>' : '')
+      +   '</div>';
+
+    if (!isBloqueada) {
+      html += '<button class="etapa-ler" style="background:' + hexToRgba(int.cor, 0.10) + '; color:' + int.cor + '" '
+        + 'onclick="event.stopPropagation(); irParaLeitura(\'' + int.id + '\', ' + etapa.ordem + ', \'' + etapa.livro + '\', ' + etapa.capitulo + ')">'
+        + 'Ler'
+        + '</button>';
+    }
+
+    html += '</div>';
   });
   html += '</div>';
 
@@ -574,7 +993,11 @@ function renderizarDetalhe() {
       +   '<div class="congrats-icone">🎉</div>'
       +   '<div class="congrats-titulo">Intensiva concluída!</div>'
       +   '<div class="congrats-texto">Você completou todos os ' + int.totalEtapas + ' capítulos sobre ' + int.tema + '.</div>'
-      +   '<button class="congrats-btn" style="background:' + int.cor + '" onclick="voltarParaLista()">Explorar outras trilhas</button>'
+      +   '<div class="congrats-xp" style="color:' + int.cor + '">+' + (int.totalEtapas * 25 + 100) + ' XP ganhos</div>'
+      +   '<div class="congrats-btns">'
+      +     '<button class="congrats-btn" style="background:' + int.cor + '" onclick="compartilharTrilha(\'' + int.tema + '\', \'' + int.icone + '\')">📤 Compartilhar conquista</button>'
+      +     '<button class="congrats-btn-secondary" onclick="voltarParaLista()">Explorar outras trilhas</button>'
+      +   '</div>'
       + '</div>';
   }
 
@@ -591,10 +1014,10 @@ function hexToRgba(hex, alpha) {
 
 /* ━━━━━━━━━ INIT ━━━━━━━━━ */
 document.addEventListener('DOMContentLoaded', function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const idParam = urlParams.get('id');
+  var urlParams = new URLSearchParams(window.location.search);
+  var idParam = urlParams.get('id');
   if (idParam) {
-    const found = intensivas.find(function(i) { return i.id === idParam; });
+    var found = intensivas.find(function(i) { return i.id === idParam; });
     if (found) {
       intensivaAtiva = found;
       viewAtual = 'detalhe';
