@@ -4103,6 +4103,24 @@
     });
 
     async function initApp() {
+      // Parse query parameters for deep linking (e.g. from intensive reading plan)
+      const urlParams = new URLSearchParams(window.location.search);
+      const livroParam = urlParams.get('livro');
+      const capituloParam = urlParams.get('capitulo');
+      let redirectedFromQuery = false;
+
+      if (livroParam) {
+        currentBook = livroParam;
+        if (capituloParam) {
+          currentChapter = parseInt(capituloParam, 10) || 1;
+        }
+        redirectedFromQuery = true;
+        saveReadingState();
+
+        // Clear query parameters from URL to avoid reloading on the same chapter
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       await loadUserStats();
       await loadQuests();
       await loadChatHistory();
@@ -4118,6 +4136,10 @@
       // Prefetch quiz for the default active book
       if (currentBook) {
         prefetchQuizForBook(currentBook);
+      }
+
+      if (redirectedFromQuery) {
+        switchPage('leitura');
       }
     }
 
