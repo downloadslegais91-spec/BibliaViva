@@ -207,6 +207,11 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 export const getRanking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await prisma.user.findMany({
+      where: {
+        name: {
+          notIn: ['Jobimlaves', 'Discípulo Fiel']
+        }
+      },
       orderBy: [
         { xp: 'desc' },
         { level: 'desc' }
