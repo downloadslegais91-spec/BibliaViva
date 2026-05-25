@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api" },
+    { "source": "/sw.js", "destination": "https://biblia-viva-six.vercel.app/sw.js" },
     { "source": "/sitemap.xml", "destination": "/landing/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/landing/robots.txt" },
     { "source": "/google96d44f065870e053.html", "destination": "/landing/google96d44f065870e053.html" },
