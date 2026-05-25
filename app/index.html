@@ -279,6 +279,29 @@
       animation-delay: 75ms;
     }
 
+    /* ━━━━━━━━━ SKELETON LOADING ━━━━━━━━━ */
+    .skeleton-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 0;
+    }
+    .skeleton-line {
+      height: 18px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(120, 120, 120, 0.08) 25%, rgba(120, 120, 120, 0.16) 50%, rgba(120, 120, 120, 0.08) 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.4s infinite linear;
+    }
+    .skeleton-line.short { width: 45%; }
+    .skeleton-line.medium { width: 75%; }
+    .skeleton-line.long { width: 95%; }
+
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     /* SECTION HEADERS */
     .section {
       margin: 24px 16px 0;
@@ -4292,9 +4315,37 @@
 
       if (!titleDisplay || !textDiv) return;
 
-      textDiv.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--label2);">Carregando capítulo bíblico...</div>';
+      // Update book title and category immediately to avoid showing old/default book details
+      titleDisplay.textContent = `${currentBook} ${currentChapter}`;
+      const bookObj = bibleBooks.find(b => b.name === currentBook);
+      if (bookObj && catDisplay) {
+        catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
+      }
+
+      // Render a beautiful skeleton loader for the reading text
+      textDiv.innerHTML = `
+        <div class="skeleton-container">
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line long" style="margin-top: 16px;"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line long" style="margin-top: 16px;"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      `;
+
       if (sumTitle) sumTitle.textContent = `Resumo da IA · Carregando...`;
-      if (sumText) sumText.innerHTML = '<span style="color: var(--label2);">Gerando insights divinos...</span>';
+      if (sumText) {
+        sumText.innerHTML = `
+          <div class="skeleton-container" style="gap: 8px;">
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        `;
+      }
 
       const activeTransName = AVAILABLE_TRANSLATIONS.find(t => t.id === currentTranslation)?.name || currentTranslation;
       const translationQuery = currentTranslation ? `?translation=${currentTranslation}` : '';
