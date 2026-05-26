@@ -7,6 +7,10 @@
   --prayer-bg: rgba(175,82,222,0.08);
   --victory-bg: rgba(255,149,0,0.08);
   --challenge-bg: rgba(74,108,247,0.08);
+  --r-xl: 16px;
+  --r-lg: 12px;
+  --r-md: 8px;
+  --r-sm: 6px;
 }
 
 /* ==========================================================================
@@ -375,32 +379,33 @@
 
 .leaderboard-filter {
   display: flex;
-  background: var(--bg);
-  border-radius: var(--r-md);
-  padding: 4px;
+  background: rgba(120, 120, 128, 0.12); /* Cor padrão do iOS para backgrounds de segmented controls */
+  border-radius: 9px;
+  padding: 2px;
   margin-bottom: 16px;
-  gap: 4px;
+  gap: 2px;
 }
 
 .lb-filter-btn {
   flex: 1;
-  padding: 8px;
+  padding: 6px 8px;
   border: none;
-  background: none;
-  border-radius: var(--r-sm);
+  background: transparent;
+  border-radius: 7px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--label2);
+  color: var(--label);
+  opacity: 0.7;
   cursor: pointer;
   font-family: var(--sans);
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .lb-filter-btn.active {
-  background: white;
-  color: var(--label);
+  background: var(--bg-card, white);
+  opacity: 1;
   font-weight: 600;
-  box-shadow: var(--shadow);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
 }
 
 .lb-row {
