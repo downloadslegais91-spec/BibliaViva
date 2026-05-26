@@ -396,10 +396,10 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
         .replace(/>/g, '&gt;');
       
       // Restauramos os marcadores transformando em tags de voz do Google TTS SSML
-      // Usaremos o modelo Chirp 3 HD (motor ultra-realista estilo Gemini TTS) para a voz de Jesus
+      // Usaremos a voz Masculina (Neural2-B) com um tom (pitch) mais grave e leitura ligeiramente mais lenta
       textToRead = textToRead
-        .replace(/\[\[JESUS_START\]\]/g, '<voice name="pt-BR-Chirp3-HD-Fenrir">')
-        .replace(/\[\[JESUS_END\]\]/g, '</voice>');
+        .replace(/\[\[JESUS_START\]\]/g, '<voice name="pt-BR-Neural2-B"><prosody pitch="-4st" rate="90%">')
+        .replace(/\[\[JESUS_END\]\]/g, '</prosody></voice>');
 
       textToRead = `<speak>${textToRead}</speak>`;
     }
