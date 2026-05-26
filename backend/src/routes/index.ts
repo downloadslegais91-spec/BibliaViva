@@ -9,6 +9,7 @@ import { saveChat, getChatHistory, getChatTts } from '../controllers/chat.contro
 import { getBooks, getChapter, getChapterAudio, getTranslations } from '../controllers/bible.controller';
 import { getQuizForBook } from '../controllers/quiz.controller';
 import { getSermons, refreshBookSermons, updateUserPlan } from '../controllers/sermon.controller';
+import { getBackgroundMusic } from '../controllers/media.controller';
 import { z } from 'zod';
 import { validate } from '../middlewares/validate';
 
@@ -61,7 +62,7 @@ router.post('/users/me/plan', validate(z.object({
 })), updateUserPlan);
 
 router.get('/quiz/:book', getQuizForBook);
-
+router.get('/media/music/:book', getBackgroundMusic);
 // Sermon routes
 router.get('/sermons/:book', getSermons);
 router.post('/sermons/:book/refresh', refreshBookSermons);

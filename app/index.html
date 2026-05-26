@@ -3052,6 +3052,64 @@
 
 <body>
 
+  <!-- WHAT'S NEW MODAL (APPLE HIG) -->
+  <style>
+    @keyframes slideUpModal {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+  <div id="whats-new-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:99999; align-items:flex-end; justify-content:center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+    <div style="background:var(--bg-primary); width:100%; max-width:500px; border-radius:32px 32px 0 0; padding:40px 24px 32px; box-shadow:0 -10px 40px rgba(0,0,0,0.15); animation: slideUpModal 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+      <h2 style="font-size:28px; font-weight:800; margin-bottom:32px; text-align:center; color:var(--text-primary); letter-spacing:-0.5px;">Novidades nas<br><span style="color:var(--accent-purple);">Trilhas Intensivas</span></h2>
+      
+      <div style="display:flex; flex-direction:column; gap:28px; margin-bottom:40px;">
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <div style="background:rgba(255,59,48,0.1); color:#FF3B30; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;">🎯</div>
+          <div>
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:4px; color:var(--text-primary);">Quizzes de Conhecimento</h3>
+            <p style="font-size:15px; color:var(--label); line-height:1.4;">Teste seu aprendizado ao final de cada trilha com um Quiz exclusivo gerado por IA para cada livro.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <div style="background:rgba(88,86,214,0.1); color:var(--accent-purple); width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;">🎵</div>
+          <div>
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:4px; color:var(--text-primary);">Música Ambiente (IA)</h3>
+            <p style="font-size:15px; color:var(--label); line-height:1.4;">Trilhas sonoras contextuais e relaxantes que tocam no fundo para aumentar seu foco e imersão na leitura.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <div style="background:rgba(52,199,89,0.1); color:#34C759; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;">⏩</div>
+          <div>
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:4px; color:var(--text-primary);">Avanço Automático</h3>
+            <p style="font-size:15px; color:var(--label); line-height:1.4;">A narrativa das trilhas agora flui sozinha de um capítulo para o outro, com autoplay no áudio inteligente!</p>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="closeWhatsNewModal()" style="width:100%; background:var(--accent-purple); color:white; font-size:17px; font-weight:600; padding:16px; border-radius:16px; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(88,86,214,0.3); transition:transform 0.2s;">Continuar</button>
+    </div>
+  </div>
+  <script>
+    function showWhatsNewModal() {
+      const hasSeen = localStorage.getItem('seenWhatsNew_v2');
+      if (!hasSeen) {
+        const modal = document.getElementById('whats-new-modal');
+        if (modal) modal.style.display = 'flex';
+      }
+    }
+    function closeWhatsNewModal() {
+      const modal = document.getElementById('whats-new-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        localStorage.setItem('seenWhatsNew_v2', 'true');
+      }
+    }
+  </script>
+
+
 
 
   <!-- NAV HEADER -->
@@ -3579,6 +3637,18 @@
           <span style="font-size:13px; color:var(--label2)"
             onclick="if(window.currentAudio) window.currentAudio.currentTime += 10;">▷▷</span>
         </div>
+      </div>
+
+      <!-- BGM PLAYER (Background Music) -->
+      <div class="audio-player" style="margin-top: 10px; background: rgba(142, 142, 147, 0.08); display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 16px;">🎵</span>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 13px; font-weight: 600; color: var(--label);">Música de Fundo (IA)</span>
+            <span style="font-size: 11px; color: var(--label2);">Trilha sonora gerada para este livro</span>
+          </div>
+        </div>
+        <button id="btn-bgm-play" onclick="toggleBgm()" style="background: var(--accent-purple); color: white; border: none; border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer;">Tocar</button>
       </div>
 
       <!-- APPLE SEGMENTED CONTROL TABS -->
@@ -4188,6 +4258,10 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Highlight What's new modal
+      showWhatsNewModal();
+      
+      initTheme();
       initApp();
 
       // Register Service Worker for offline PWA capabilities
@@ -4417,6 +4491,20 @@
       const chatInput = document.getElementById('chatInput');
 
       saveReadingState();
+
+      if (window.currentBgmBook && window.currentBgmBook !== currentBook) {
+        if (window.currentBgmAudio) {
+          window.currentBgmAudio.pause();
+          window.currentBgmAudio = null;
+        }
+        let isBgmPlaying = false;
+        const btnBgm = document.getElementById('btn-bgm-play');
+        if (btnBgm) {
+          btnBgm.textContent = 'Tocar';
+          btnBgm.style.background = 'var(--accent-purple)';
+        }
+      }
+      window.currentBgmBook = currentBook;
 
       if (!titleDisplay || !textDiv) return;
 
@@ -6384,6 +6472,47 @@
       }
     }
     window.currentAudio = null;
+    window.currentBgmAudio = null;
+    let isBgmPlaying = false;
+
+    async function toggleBgm() {
+      const btn = document.getElementById('btn-bgm-play');
+      if (isBgmPlaying && window.currentBgmAudio) {
+        window.currentBgmAudio.pause();
+        isBgmPlaying = false;
+        btn.textContent = 'Tocar';
+        btn.style.background = 'var(--accent-purple)';
+        return;
+      }
+
+      btn.textContent = 'Carregando...';
+      btn.style.opacity = '0.7';
+
+      try {
+        if (!window.currentBgmAudio) {
+          const res = await fetch(`${API_URL}/media/music/${currentBook}`);
+          const json = await res.json();
+          if (json.status === 'success' && json.data.audioUrl) {
+            window.currentBgmAudio = new Audio(json.data.audioUrl);
+            window.currentBgmAudio.loop = true; // Ambient music should loop
+            window.currentBgmAudio.volume = 0.4; // Soft background volume
+          } else {
+            throw new Error('Falha ao obter áudio do backend');
+          }
+        }
+        
+        await window.currentBgmAudio.play();
+        isBgmPlaying = true;
+        btn.textContent = 'Pausar';
+        btn.style.opacity = '1';
+        btn.style.background = 'var(--accent-blue)';
+      } catch (err) {
+        console.error('Erro ao tocar BGM:', err);
+        btn.textContent = 'Erro';
+        setTimeout(() => { btn.textContent = 'Tocar'; btn.style.opacity = '1'; }, 2000);
+      }
+    }
+
     async function playChapterAudio() {
       // Pausar áudio do chat se estiver tocando
       if (window.chatAudio) {
