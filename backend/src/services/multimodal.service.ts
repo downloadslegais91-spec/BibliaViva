@@ -61,20 +61,41 @@ export async function generateBackgroundMusic(book: string): Promise<string> {
     
     // FALLBACK DE SEGURANÇA:
     // Se a API Lyria ainda não estiver disponível publicamente via generateContent ou a cota esgotar, 
-    // nós retornamos trilhas instrumentais estáticas de domínio público hospedadas online
-    // de acordo com a "vibe" do livro.
-    let fallbackAudio = 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_a1501b8e8f.mp3?filename=ambient-piano-amp-strings-10711.mp3'; // Padrão relaxante
+    // nós retornamos trilhas instrumentais estáticas hospedadas online de acordo com a "vibe" do livro.
+    let fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3'; // Padrão relaxante
 
     const bookLower = book.toLowerCase();
     if (bookLower.includes('apocalipse') || bookLower.includes('daniel')) {
-      fallbackAudio = 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91b3cb39e9.mp3?filename=epic-cinematic-trailer-103892.mp3'; // Épico
+      fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3'; // Épico / Intenso
     } else if (bookLower.includes('salmos') || bookLower.includes('provérbios')) {
-      fallbackAudio = 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_277c0879f8.mp3?filename=acoustic-guitar-background-music-124898.mp3'; // Acústico / Calmo
+      fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3'; // Acústico / Calmo
     } else if (bookLower.includes('êxodo') || bookLower.includes('josué')) {
-      fallbackAudio = 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=desert-voices-11468.mp3'; // Deserto / Épico
+      fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3'; // Deserto / Atmosférico
     }
     
-    // Salvamos no cache para não processar novamente
+    // Baixamos o áudio no backend para evitar o erro 403 (Forbidden/CORS) no frontend
+    try {
+      console.log(`Baixando áudio de fallback no backend para evitar bloqueios...`);
+      const audioRes = await fetch(fallbackAudio, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
+      
+      if (audioRes.ok) {
+        const buffer = await audioRes.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        const dataUri = `data:audio/mp3;base64,${base64}`;
+        MUSIC_CACHE[book] = dataUri;
+        return dataUri;
+      } else {
+        console.warn(`Fallback retornou status HTTP ${audioRes.status}`);
+      }
+    } catch (fetchErr) {
+      console.error('Falha ao fazer download do áudio de fallback', fetchErr);
+    }
+    
+    // Se falhar o download, retornamos a URL direta (poderá dar erro 403 no frontend, mas é o último recurso)
     MUSIC_CACHE[book] = fallbackAudio;
     return fallbackAudio;
   }
