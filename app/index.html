@@ -4491,18 +4491,33 @@
       saveReadingState();
 
       if (window.currentBgmBook && window.currentBgmBook !== currentBook) {
+        // If music was playing, we should auto-play the new track for the new book
+        const wasPlaying = isBgmPlaying;
+        
         if (window.currentBgmAudio) {
           window.currentBgmAudio.pause();
           window.currentBgmAudio = null;
         }
-        let isBgmPlaying = false;
-        const btnBgm = document.getElementById('btn-bgm-play');
-        if (btnBgm) {
-          btnBgm.textContent = 'Tocar';
-          btnBgm.style.background = 'var(--accent-purple)';
+        
+        window.currentBgmBook = currentBook;
+        
+        if (wasPlaying) {
+           isBgmPlaying = false; // force toggleBgm to treat it as a new play
+           setTimeout(() => {
+             toggleBgm();
+           }, 100);
+        } else {
+          isBgmPlaying = false;
+          const btnBgm = document.getElementById('btn-bgm-play');
+          if (btnBgm) {
+            btnBgm.textContent = 'Tocar';
+            btnBgm.style.background = 'var(--accent-purple)';
+          }
         }
+      } else {
+        window.currentBgmBook = currentBook;
       }
-      window.currentBgmBook = currentBook;
+
 
       if (!titleDisplay || !textDiv) return;
 
