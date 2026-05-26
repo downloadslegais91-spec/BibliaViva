@@ -82,11 +82,37 @@ export const CommunityAPI = {
           const quests = json.data;
           const weeklyQuest = quests.find(q => q.type && q.type.toLowerCase() === 'weekly');
           
+          let participantsCount = 1240;
+          let avatars = [
+            { bg: '#AF52DE', initial: 'M' },
+            { bg: '#34C759', initial: 'J' },
+            { bg: '#FF9500', initial: 'S' }
+          ];
+
+          try {
+            const rankingRes = await fetch(`${window.API_URL}/users/ranking`);
+            const rankingJson = await rankingRes.json();
+            if (rankingJson.status === 'success' && rankingJson.data) {
+              const realUsers = rankingJson.data;
+              participantsCount = realUsers.length;
+              if (realUsers.length > 0) {
+                const colors = ['#AF52DE', '#34C759', '#FF9500', '#3B82F6', '#EC4899'];
+                avatars = realUsers.slice(0, 3).map((u, i) => ({
+                  bg: colors[i % colors.length],
+                  initial: u.name ? u.name.charAt(0).toUpperCase() : 'U'
+                }));
+              }
+            }
+          } catch(err) {
+            console.warn("Could not fetch real participants for challenges banner");
+          }
+
           let community = {
             title: weeklyQuest ? weeklyQuest.title : "Desafio da Semana",
             desc: weeklyQuest ? (weeklyQuest.description || "Bata sua meta da semana!") : "Lermos juntos todo o livro de Salmos. Faltam 3 dias!",
             progress: weeklyQuest && weeklyQuest.progress ? Math.min(Math.round((weeklyQuest.progress.current / weeklyQuest.progress.target) * 100), 100) : (weeklyQuest && weeklyQuest.completed ? 100 : 0),
-            participants: 1240,
+            participants: participantsCount,
+            avatars: avatars,
             reward: "Badge de Adorador"
           };
 

@@ -41,9 +41,13 @@ export const ChallengesTab = {
         
         <div class="wc-participants">
           <div class="wc-avatars">
-            <div class="wc-avatar" style="background:#AF52DE; z-index:3">M</div>
-            <div class="wc-avatar" style="background:#34C759; z-index:2">J</div>
-            <div class="wc-avatar" style="background:#FF9500; z-index:1">S</div>
+            ${community.avatars ? community.avatars.map((av, index) => 
+              `<div class="wc-avatar" style="background:${av.bg}; z-index:${3 - index}">${av.initial}</div>`
+            ).join('') : `
+              <div class="wc-avatar" style="background:#AF52DE; z-index:3">M</div>
+              <div class="wc-avatar" style="background:#34C759; z-index:2">J</div>
+              <div class="wc-avatar" style="background:#FF9500; z-index:1">S</div>
+            `}
           </div>
           <span class="wc-participant-count">+${community.participants} participando</span>
         </div>
