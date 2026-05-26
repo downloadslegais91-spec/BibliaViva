@@ -57,11 +57,34 @@ export const GroupsTab = {
           <span class="group-name">${g.name}</span>
           <span class="group-meta">${g.members} membros</span>
         </div>
-        <button class="group-join-btn">Entrar</button>
+        <button class="group-join-btn" data-id="${g.id}">Entrar</button>
       </div>
     `).join('');
     
     container.innerHTML = html;
+
+    // Adicionar eventos
+    const createBtn = container.querySelector('.create-group-btn');
+    if (createBtn) {
+      createBtn.addEventListener('click', async () => {
+        const name = prompt("Qual o nome do novo grupo?");
+        if (name && name.trim()) {
+          createBtn.textContent = "Criando...";
+          const newData = await CommunityAPI.createGroup(name.trim());
+          communityState.setGroups(newData);
+        }
+      });
+    }
+
+    const joinBtns = container.querySelectorAll('.group-join-btn');
+    joinBtns.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = parseInt(e.target.getAttribute('data-id'), 10);
+        e.target.textContent = "Entrando...";
+        const newData = await CommunityAPI.joinGroup(id);
+        communityState.setGroups(newData);
+      });
+    });
   },
 
   destroy() {

@@ -150,8 +150,12 @@ export const CommunityAPI = {
   },
 
   async fetchGroups() {
-    await this.delay(700);
-    return {
+    await this.delay(300);
+    const stored = localStorage.getItem('bibliaviva_groups');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    const defaultGroups = {
       myGroups: [
         { id: 1, name: "Jovens Firmes", activity: "Última msg há 5 min", unread: 3, icon: "🔥", color: "#FF9500" },
         { id: 2, name: "Leitura Anual 2026", activity: "Última msg há 2h", unread: 0, icon: "📖", color: "#34C759" }
@@ -161,6 +165,38 @@ export const CommunityAPI = {
         { id: 4, name: "Estudo de Apocalipse", members: 45, icon: "⚔️", color: "#4A6CF7" }
       ]
     };
+    localStorage.setItem('bibliaviva_groups', JSON.stringify(defaultGroups));
+    return defaultGroups;
+  },
+
+  async createGroup(name) {
+    const data = await this.fetchGroups();
+    const icons = ["🙌","🙏","🕊️","📖","🔥","✨"];
+    const colors = ["#AF52DE", "#34C759", "#FF9500", "#3B82F6", "#EC4899", "#EAB308"];
+    const newGroup = {
+      id: Date.now(),
+      name: name,
+      activity: "Criado agora",
+      unread: 0,
+      icon: icons[Math.floor(Math.random()*icons.length)],
+      color: colors[Math.floor(Math.random()*colors.length)]
+    };
+    data.myGroups.push(newGroup);
+    localStorage.setItem('bibliaviva_groups', JSON.stringify(data));
+    return data;
+  },
+
+  async joinGroup(groupId) {
+    const data = await this.fetchGroups();
+    const groupIndex = data.discover.findIndex(g => g.id === groupId);
+    if (groupIndex > -1) {
+      const group = data.discover.splice(groupIndex, 1)[0];
+      group.activity = "Você entrou no grupo";
+      group.unread = 0;
+      data.myGroups.push(group);
+      localStorage.setItem('bibliaviva_groups', JSON.stringify(data));
+    }
+    return data;
   },
 
   async createPost(content, type) {
