@@ -4186,7 +4186,8 @@
         },
         events: {
           'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
+          'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError
         }
       });
     }
@@ -4205,6 +4206,15 @@
       if (event.data === YT.PlayerState.ENDED) {
         window.ytBgmPlayer.seekTo(0);
         window.ytBgmPlayer.playVideo();
+      }
+    }
+
+    function onPlayerError(event) {
+      console.error("Erro no player do YouTube. Código:", event.data);
+      // Se der erro de vídeo bloqueado/indisponível, volta pro padrão Yeshua
+      if (event.data === 100 || event.data === 101 || event.data === 150) {
+         console.warn("Vídeo indisponível ou bloqueado. Voltando ao padrão.");
+         playYtVideo('0igy6bQN0hI');
       }
     }
 
@@ -4231,7 +4241,7 @@
       }
       
       // Smooth fade in
-      window.ytBgmPlayer.setVolume(0);
+      try { window.ytBgmPlayer.setVolume(0); } catch(e) {}
       let vol = 0;
       if (window.bgmFadeInInterval) clearInterval(window.bgmFadeInInterval);
       window.bgmFadeInInterval = setInterval(() => {
