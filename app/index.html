@@ -4243,6 +4243,40 @@
     let preloadedQuizzes = {};
     let preloadedPromises = {};
 
+    document.addEventListener('DOMContentLoaded', () => {
+      populateBooks();
+      populateChapters();
+      loadUserStats();
+      loadIntensivaProgress();
+      
+      const theme = localStorage.getItem('bibliaVivaTheme');
+      if (theme === 'dark') document.body.classList.add('dark-mode');
+
+      // Restaura a música de fundo se o usuário não pausou na sessão anterior
+      if (localStorage.getItem('bgmAutoPlay') === 'true') {
+        setTimeout(() => {
+           if (!isBgmPlaying) {
+             toggleBgm().catch(e => {
+               console.warn("Autoplay bloqueado pelo navegador:", e);
+               localStorage.setItem('bgmAutoPlay', 'false');
+               // Silently fails, user needs to click again
+             });
+           }
+        }, 1500); // 1.5s delay to ensure DOM is ready and reduce autoplay block chance
+      }
+      
+      // Highlight What's new modal
+      showWhatsNewModal();
+      initApp();
+
+      // Register Service Worker for offline PWA capabilities
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registrado com sucesso:', reg.scope))
+          .catch(err => console.error('Erro ao registrar o Service Worker:', err));
+      }
+    });
+    
     const categoryIcons = {
       'Pentateuco': '📜',
       'Históricos (AT)': '🛡️',
@@ -4256,19 +4290,6 @@
       'Profecia (NT)': '👑',
       'Apócrifos (Não Canônico)': '🔍'
     };
-
-    window.addEventListener('DOMContentLoaded', () => {
-      // Highlight What's new modal
-      showWhatsNewModal();
-      initApp();
-
-      // Register Service Worker for offline PWA capabilities
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service Worker registrado com sucesso:', reg.scope))
-          .catch(err => console.error('Erro ao registrar o Service Worker:', err));
-      }
-    });
 
     function switchPageInstant(name) {
       if (window.chatAudio) {
@@ -4496,17 +4517,17 @@
         
         if (window.currentBgmAudio) {
           const oldAudio = window.currentBgmAudio;
-          window.currentBgmAudio = null;
-          
-          // Smooth fade out
-          const fadeOutInterval = setInterval(() => {
-            if (oldAudio.volume > 0.05) {
-              oldAudio.volume -= 0.05;
+          let vol = oldAudio.volume;
+          const fadeOut = setInterval(() => {
+            if (vol > 0.05) {
+              vol -= 0.05;
+              try { oldAudio.volume = vol; } catch(e){}
             } else {
-              clearInterval(fadeOutInterval);
+              clearInterval(fadeOut);
               oldAudio.pause();
             }
-          }, 200);
+          }, 50);
+          window.currentBgmAudio = null;
         }
         
         window.currentBgmBook = currentBook;
@@ -6500,9 +6521,12 @@
 
     async function toggleBgm() {
       const btn = document.getElementById('btn-bgm-play');
-      if (isBgmPlaying && window.currentBgmAudio) {
-        window.currentBgmAudio.pause();
+      if (isBgmPlaying) {
+        if (window.currentBgmAudio) {
+            window.currentBgmAudio.pause();
+        }
         isBgmPlaying = false;
+        localStorage.setItem('bgmAutoPlay', 'false');
         btn.textContent = 'Tocar';
         btn.style.background = 'var(--accent-purple)';
         return;
@@ -6518,7 +6542,7 @@
           if (json.status === 'success' && json.data.audioUrl) {
             window.currentBgmAudio = new Audio(json.data.audioUrl);
             window.currentBgmAudio.loop = true; // Ambient music should loop
-            window.currentBgmAudio.volume = 0; // Start at 0 for fade in
+            window.currentBgmAudio.volume = 0.4; // Soft background volume
           } else {
             throw new Error('Falha ao obter áudio do backend');
           }
@@ -6526,22 +6550,28 @@
         
         await window.currentBgmAudio.play();
         isBgmPlaying = true;
+        localStorage.setItem('bgmAutoPlay', 'true');
+        
+        // Smooth fade in
+        window.currentBgmAudio.volume = 0;
+        let vol = 0;
+        const fadeIn = setInterval(() => {
+          if (vol < 0.4) {
+            vol += 0.05;
+            try { window.currentBgmAudio.volume = vol; } catch(e){}
+          } else {
+            clearInterval(fadeIn);
+          }
+        }, 50);
+
         btn.textContent = 'Pausar';
         btn.style.opacity = '1';
         btn.style.background = 'var(--accent-blue)';
-
-        // Smooth fade in
-        const targetVolume = 0.4;
-        const fadeInInterval = setInterval(() => {
-          if (window.currentBgmAudio && window.currentBgmAudio.volume < targetVolume) {
-            window.currentBgmAudio.volume = Math.min(targetVolume, window.currentBgmAudio.volume + 0.05);
-          } else {
-            clearInterval(fadeInInterval);
-          }
-        }, 200);
       } catch (err) {
         console.error('Erro ao tocar BGM:', err);
         btn.textContent = 'Erro';
+        isBgmPlaying = false;
+        localStorage.setItem('bgmAutoPlay', 'false');
         setTimeout(() => { btn.textContent = 'Tocar'; btn.style.opacity = '1'; }, 2000);
       }
     }
