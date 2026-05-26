@@ -74,6 +74,38 @@ export const CommunityAPI = {
   },
 
   async fetchChallenges() {
+    try {
+      if (window.API_URL) {
+        const res = await fetch(`${window.API_URL}/quests`);
+        const json = await res.json();
+        if (json.status === 'success' && json.data) {
+          const quests = json.data;
+          const weeklyQuest = quests.find(q => q.type && q.type.toLowerCase() === 'weekly');
+          
+          let community = {
+            title: weeklyQuest ? weeklyQuest.title : "Desafio da Semana",
+            desc: weeklyQuest ? (weeklyQuest.description || "Bata sua meta da semana!") : "Lermos juntos todo o livro de Salmos. Faltam 3 dias!",
+            progress: weeklyQuest && weeklyQuest.progress ? Math.min(Math.round((weeklyQuest.progress.current / weeklyQuest.progress.target) * 100), 100) : (weeklyQuest && weeklyQuest.completed ? 100 : 0),
+            participants: 1240,
+            reward: "Badge de Adorador"
+          };
+
+          const personal = quests.filter(q => !q.type || q.type.toLowerCase() !== 'weekly').map(q => ({
+            id: q.id || Math.random(),
+            title: q.title,
+            xp: q.xp || 50,
+            progress: q.progress ? q.progress.current : (q.completed ? 1 : 0),
+            total: q.progress ? q.progress.target : 1,
+            completed: q.completed
+          }));
+
+          return { community, personal };
+        }
+      }
+    } catch (e) {
+      console.warn("Erro ao buscar desafios reais:", e);
+    }
+
     await this.delay(500);
     return {
       community: {

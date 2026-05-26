@@ -61,8 +61,15 @@ export const ChallengesTab = {
       const pct = Math.round((c.progress / c.total) * 100);
       const isComplete = c.completed || pct >= 100;
       
+      let onClickAction = `window.switchPage && window.switchPage('leitura')`;
+      if (!isComplete && c.title && c.title.startsWith('Estudo: ')) {
+        const targetBook = c.title.replace('Estudo: ', '').trim();
+        const nextCh = c.progress ? (c.progress + 1) : 1;
+        onClickAction = `window.continueReading && window.continueReading('${targetBook}', ${nextCh})`;
+      }
+
       return `
-        <div class="post-card" style="margin-bottom: 10px; display:flex; align-items:center; gap:16px;">
+        <div class="post-card" style="margin-bottom: 10px; display:flex; align-items:center; gap:16px; cursor:${isComplete ? 'default' : 'pointer'}" ${isComplete ? '' : `onclick="${onClickAction}"`}>
           <div style="flex-shrink:0; width:48px; height:48px; border-radius:50%; background:${isComplete ? 'var(--community-green)' : 'var(--bg)'}; display:flex; align-items:center; justify-content:center; font-size:20px;">
             ${isComplete ? '✅' : '🎯'}
           </div>

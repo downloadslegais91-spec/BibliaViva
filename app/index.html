@@ -4839,6 +4839,7 @@
       prefetchQuizForBook(currentBook);
     }
 
+    window.continueReading = continueReading;
     function continueReading(bookName, chapter) {
       currentBook = bookName;
       currentChapter = chapter;
@@ -6296,6 +6297,7 @@
       }
     }
 
+    window.switchPage = switchPage;
     function switchPage(name) {
       if (isSwitchingPage) return;
 
