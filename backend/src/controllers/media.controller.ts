@@ -10,7 +10,7 @@ export const getBackgroundMusic = async (req: Request, res: Response, next: Next
       return;
     }
 
-    const audioUrl = await generateBackgroundMusic(book);
+    const audioUrl = await generateBackgroundMusic(book as string);
 
     res.json({
       status: 'success',

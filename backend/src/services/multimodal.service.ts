@@ -61,16 +61,16 @@ export async function generateBackgroundMusic(book: string): Promise<string> {
     
     // FALLBACK DE SEGURANÇA:
     // Se a API Lyria ainda não estiver disponível publicamente via generateContent ou a cota esgotar, 
-    // nós retornamos trilhas instrumentais estáticas hospedadas online de acordo com a "vibe" do livro.
-    let fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3'; // Padrão relaxante
+    // nós retornamos trilhas instrumentais clássicas hospedadas no Internet Archive de acordo com a "vibe" do livro.
+    let fallbackAudio = 'https://archive.org/download/100ClassicalMusicMasterpieces/1698%20Pachelbel%20%2C%20Canon%20in%20D.mp3'; // Padrão relaxante (Canon in D)
 
     const bookLower = book.toLowerCase();
     if (bookLower.includes('apocalipse') || bookLower.includes('daniel')) {
-      fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3'; // Épico / Intenso
-    } else if (bookLower.includes('salmos') || bookLower.includes('provérbios')) {
-      fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3'; // Acústico / Calmo
-    } else if (bookLower.includes('êxodo') || bookLower.includes('josué')) {
-      fallbackAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3'; // Deserto / Atmosférico
+      fallbackAudio = 'https://archive.org/download/100ClassicalMusicMasterpieces/1808%20Beethoven-%20Symphony%20No.%205%2C%201st%20movement.mp3'; // Épico / Intenso (Beethoven 5th)
+    } else if (bookLower.includes('salmos') || bookLower.includes('provérbios') || bookLower.includes('cantares')) {
+      fallbackAudio = 'https://archive.org/download/100ClassicalMusicMasterpieces/1801%20Beethoven-%20%27Moonlight%27%20Sonata%2C%201st%20movement.mp3'; // Acústico / Calmo (Moonlight Sonata)
+    } else if (bookLower.includes('êxodo') || bookLower.includes('josué') || bookLower.includes('isaías')) {
+      fallbackAudio = 'https://archive.org/download/100ClassicalMusicMasterpieces/1730%20Albinoni%20%2C%20Adagio.mp3'; // Deserto / Atmosférico / Profético (Albinoni Adagio)
     }
     
     // Baixamos o áudio no backend para evitar o erro 403 (Forbidden/CORS) no frontend
