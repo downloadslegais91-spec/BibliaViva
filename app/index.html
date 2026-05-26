@@ -4159,7 +4159,7 @@
     </div>
   </div>
 
-  <div id="yt-bgm-player" style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
+  <div id="yt-bgm-player" style="position: fixed; bottom: 0; right: 0; width: 300px; height: 200px; opacity: 0.01; z-index: -9999; pointer-events: none;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
@@ -4172,8 +4172,8 @@
 
     function onYouTubeIframeAPIReady() {
       window.ytBgmPlayer = new YT.Player('yt-bgm-player', {
-        height: '1',
-        width: '1',
+        height: '200',
+        width: '300',
         playerVars: {
           'autoplay': 0,
           'controls': 0,
