@@ -3717,6 +3717,15 @@
       position: relative;
       overflow: hidden;
     }
+    @keyframes cascadeFadeIn {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #page-quests .q-card.cascading {
+      animation: cascadeFadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      opacity: 0;
+    }
 
     #page-quests .q-card.diaria {
       border-left: 3px solid var(--accent-blue);
@@ -4012,6 +4021,19 @@
                   }
                });
             }
+
+            requestAnimationFrame(() => {
+              let cascadeDelay = 0;
+              document.querySelectorAll('#page-quests .q-card').forEach(card => {
+                if (card.offsetParent !== null) {
+                  card.classList.remove('cascading');
+                  void card.offsetWidth; // Trigger reflow
+                  card.style.animationDelay = `${cascadeDelay}ms`;
+                  card.classList.add('cascading');
+                  cascadeDelay += 50;
+                }
+              });
+            });
           });
         });
       }, 500);
