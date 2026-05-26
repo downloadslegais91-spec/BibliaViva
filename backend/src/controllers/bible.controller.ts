@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { generateChapterSummary } from '../services/gemini.service';
+import { generateChapterSummary, detectJesusWords } from '../services/gemini.service';
 export const BIBLE_BOOKS = [
   // Antigo Testamento - Pentateuco
   { name: 'Gênesis', key: 'genesis', chapters: 50, category: 'Pentateuco' },
@@ -280,6 +280,10 @@ export const getChapter = async (req: Request, res: Response, next: NextFunction
       summary = generateSummary(bookConfig.name, chapter);
     }
 
+    if (req.query.redLetter === 'true') {
+      verses = await detectJesusWords(bookConfig.name, chapter, verses);
+    }
+
     res.json({
       status: 'success',
       data: {
@@ -368,11 +372,23 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
       return;
     }
     
+    if (req.query.redLetter === 'true') {
+      verses = await detectJesusWords(bookConfig.name, chapterNum, verses);
+    }
+
     // Introdução do livro e capítulo
     let textToRead = `Livro de ${bookConfig.name}, capítulo ${chapterNum}. `;
     
     // Concatena todos os textos dos versículos, SEM citar o número do versículo
     textToRead += verses.map(v => v.text).join(' ');
+
+    let isSsml = false;
+    if (textToRead.includes('<jesus>')) {
+      isSsml = true;
+      // Transform <jesus> to Google Cloud SSML voice tag
+      // Usaremos uma voz masculina profunda para Jesus, ex: pt-BR-Neural2-B
+      textToRead = `<speak>${textToRead.replace(/<jesus>/g, '<voice name="pt-BR-Neural2-B">').replace(/<\/jesus>/g, '</voice>')}</speak>`;
+    }
 
     const speedParam = req.query.speed;
     const voiceParam = req.query.voice as string | undefined;
@@ -384,7 +400,7 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
       }
     }
 
-    const audioBase64 = await generateAudio(textToRead, speakingRate, voiceParam);
+    const audioBase64 = await generateAudio(textToRead, speakingRate, voiceParam, isSsml);
     
     res.json({
       status: 'success',

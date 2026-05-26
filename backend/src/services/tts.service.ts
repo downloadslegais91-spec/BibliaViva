@@ -1,6 +1,6 @@
 import '../env';
 
-export async function generateAudio(text: string, speakingRate?: number, voiceName?: string): Promise<string> {
+export async function generateAudio(text: string, speakingRate?: number, voiceName?: string, isSsml?: boolean): Promise<string> {
   const apiKey = process.env.GOOGLE_TTS_API_KEY;
   if (!apiKey) {
     throw new Error('GOOGLE_TTS_API_KEY não configurada no ambiente.');
@@ -11,9 +11,9 @@ export async function generateAudio(text: string, speakingRate?: number, voiceNa
 
   const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
   const payload = {
-    input: { text: safeText },
+    input: isSsml ? { ssml: safeText } : { text: safeText },
     // Permite escolha da voz padrão
-    voice: { languageCode: 'pt-BR', name: voiceName || 'pt-BR-Neural2-B' },
+    voice: { languageCode: 'pt-BR', name: voiceName || 'pt-BR-Neural2-C' }, // Usando C ou B (masculino/feminino)
     audioConfig: { 
       audioEncoding: 'MP3' as const,
       speakingRate: speakingRate || 1.0

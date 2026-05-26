@@ -4218,6 +4218,8 @@
       </div>
 
       <div style="padding: 0 16px 20px; display:flex; flex-direction:column; gap:10px;">
+        <button class="pill-btn" id="btn-red-letters" onclick="toggleRedLetters()"
+          style="font-size:15px; padding:12px 16px; background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); transition: all 0.3s;">✨ Revelar Palavras de Jesus (IA)</button>
         <button class="pill-btn" id="btn-concluir-leitura" onclick="concluirLeitura()"
           style="font-size:15px; padding:12px 16px;">✓ Concluir Leitura (+50 XP)</button>
         <div style="display:flex; gap:10px;">
@@ -5218,7 +5220,10 @@
       }
 
       const activeTransName = AVAILABLE_TRANSLATIONS.find(t => t.id === currentTranslation)?.name || currentTranslation;
-      const translationQuery = currentTranslation ? `?translation=${currentTranslation}` : '';
+      const params = new URLSearchParams();
+      if (currentTranslation) params.append('translation', currentTranslation);
+      if (window.redLetterEnabled) params.append('redLetter', 'true');
+      const translationQuery = params.toString() ? `?${params.toString()}` : '';
 
       try {
         const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}${translationQuery}`);
@@ -5249,7 +5254,8 @@
 
           let versesHtml = data.verses.map(v => {
             const isHighlighted = (v.number % 4 === 0) ? ' highlight' : '';
-            return `<p class="verse${isHighlighted}"><span class="verse-num">${v.number}</span>${v.text}</p>`;
+            const textWithTags = v.text.replace(/<jesus>/g, '<span class="jesus-words">').replace(/<\/jesus>/g, '</span>');
+            return `<p class="verse${isHighlighted}"><span class="verse-num">${v.number}</span>${textWithTags}</p>`;
           }).join('');
 
           if (currentTranslation === 'BLIVRE') {
@@ -5484,6 +5490,23 @@
       renderExploreBooks();
 
       updateReadingButton();
+    }
+
+    window.redLetterEnabled = false;
+    
+    function toggleRedLetters() {
+      const btn = document.getElementById('btn-red-letters');
+      if (!window.redLetterEnabled) {
+        window.redLetterEnabled = true;
+        if(btn) btn.style.background = 'rgba(255, 77, 77, 0.2)';
+        if(btn) btn.innerHTML = '✨ Ocultar Palavras de Jesus';
+      } else {
+        window.redLetterEnabled = false;
+        if(btn) btn.style.background = 'rgba(255, 77, 77, 0.1)';
+        if(btn) btn.innerHTML = '✨ Revelar Palavras de Jesus (IA)';
+      }
+      // Recarrega o capítulo atual com a nova preferência
+      loadActiveChapter();
     }
 
     function updateReadingButton() {
@@ -7407,7 +7430,8 @@
         const voiceSpeed = localStorage.getItem('voiceSpeed') || '1.0';
         const defaultVoice = localStorage.getItem('profile_default_voice') || 'pt-BR-Neural2-B';
         const transParam = currentTranslation ? `&translation=${currentTranslation}` : '';
-        const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}&voice=${defaultVoice}${transParam}`);
+        const redLetterParam = window.redLetterEnabled ? `&redLetter=true` : '';
+        const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}&voice=${defaultVoice}${transParam}${redLetterParam}`);
         const json = await res.json();
 
         if (json.status !== 'success' || !json.data.audioBase64) {

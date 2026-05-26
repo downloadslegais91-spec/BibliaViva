@@ -242,3 +242,60 @@ export async function generateQuizForBook(book: string): Promise<Array<any>> {
   }
 }
 
+export async function detectJesusWords(
+  book: string,
+  chapter: number,
+  verses: Array<{ number: number; text: string }>
+): Promise<Array<{ number: number; text: string }>> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return verses; // fallback
+  }
+
+  const systemInstruction =
+    `Você é um assistente teológico especializado no texto bíblico (Red Letter Edition). ` +
+    `Sua única tarefa é receber um array JSON de versículos e devolver O MESMO ARRAY JSON EXATAMENTE. ` +
+    `No entanto, você deve modificar o campo "text" de cada versículo para envolver AS FALAS DIRETAS DE JESUS CRISTO com a tag <jesus>...</jesus>. ` +
+    `Se Jesus não falar no versículo, retorne-o inalterado. ` +
+    `Seja muito preciso. Não altere os números dos versículos, apenas insira as tags <jesus> e </jesus> ao redor das palavras Dele. ` +
+    `RETORNE APENAS O ARRAY JSON, sem formatação markdown ou explicações.`;
+
+  const payload = {
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: `Analise e aplique as tags <jesus> nas falas de Jesus no livro de ${book}, capítulo ${chapter}:\n\n` + JSON.stringify(verses) }]
+      }
+    ],
+    systemInstruction: {
+      parts: [{ text: systemInstruction }]
+    },
+    generationConfig: {
+      temperature: 0.1,
+      maxOutputTokens: 8000,
+      responseMimeType: "application/json"
+    }
+  };
+
+  try {
+    const json = (await fetchGeminiWithFallback(payload, apiKey)) as any;
+    let textReply = json.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!textReply) {
+      return verses;
+    }
+    
+    textReply = textReply.trim();
+    if (textReply.startsWith('```json')) textReply = textReply.substring(7);
+    else if (textReply.startsWith('```')) textReply = textReply.substring(3);
+    if (textReply.endsWith('```')) textReply = textReply.substring(0, textReply.length - 3);
+    
+    const parsed = JSON.parse(textReply.trim());
+    if (Array.isArray(parsed) && parsed.length === verses.length) {
+      return parsed;
+    }
+    return verses;
+  } catch (error) {
+    console.error(`Erro ao detectar palavras de Jesus para ${book} ${chapter}:`, error);
+    return verses;
+  }
+}
