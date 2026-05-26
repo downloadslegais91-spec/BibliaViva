@@ -924,6 +924,35 @@ var intensivas = [
       this.fases.forEach(function(f) { all = all.concat(f.etapas); });
       return all;
     }
+  },
+  {
+    id: "cronograma-01",
+    tema: "Bíblia em 6 Meses",
+    descricao: "Leia toda a Palavra de Deus em um ritmo acelerado. Um mergulho profundo diário nos livros sagrados, cobrindo Antigo e Novo Testamento.",
+    icone: "📖",
+    cor: "#8B5CF6",
+    dificuldade: "Mestre",
+    tipo: "odisseia",
+    totalEtapas: 6,
+    fases: [
+      {
+        nome: "O Início da Jornada",
+        subtitulo: "Semana 1",
+        etapas: [
+          { ordem: 1, livro: "Gênesis", capitulo: 1, titulo: "A Criação", reflexao: "Tudo começa pela Palavra." },
+          { ordem: 2, livro: "Gênesis", capitulo: 2, titulo: "O Éden", reflexao: "A perfeição original." },
+          { ordem: 3, livro: "Gênesis", capitulo: 3, titulo: "A Queda", reflexao: "A entrada do pecado e a promessa de redenção." },
+          { ordem: 4, livro: "Gênesis", capitulo: 4, titulo: "Caim e Abel", reflexao: "O primeiro assassinato." },
+          { ordem: 5, livro: "Gênesis", capitulo: 5, titulo: "A descendência de Adão", reflexao: "O caminho até Noé." },
+          { ordem: 6, livro: "Mateus", capitulo: 1, titulo: "A linhagem de Jesus", reflexao: "O Rei prometido chega." }
+        ]
+      }
+    ],
+    get etapas() {
+      var all = [];
+      this.fases.forEach(function(f) { all = all.concat(f.etapas); });
+      return all;
+    }
   }
 ];
 

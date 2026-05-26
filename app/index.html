@@ -3599,6 +3599,19 @@
     }
 
     /* MISSÃO DESTAQUE */
+    #page-quests .q-destaques-carousel {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #page-quests .q-destaques-carousel::-webkit-scrollbar {
+      display: none;
+    }
     #page-quests .q-destaque {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -3606,8 +3619,9 @@
       padding: 16px;
       display: flex;
       gap: 16px;
-      margin-bottom: 24px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      flex: 0 0 calc(90% - 16px);
+      scroll-snap-align: start;
     }
 
     #page-quests .q-destaque-img {
@@ -3861,15 +3875,29 @@
     </div>
 
     <div class="quests-container">
-      <!-- DESTAQUE -->
-      <div class="q-destaque" onclick="window.location.href='Intensiva.html?id=odisseia-01'">
-        <div class="q-destaque-img">🐑</div>
-        <div class="q-destaque-info">
-          <div class="q-destaque-lbl">Continue de onde parou</div>
-          <div class="q-destaque-title">Odisseia pela Bíblia</div>
-          <div class="q-destaque-sub">Gênesis — Capítulo 24/50</div>
-          <div>
-            <div class="q-destaque-btn">Continuar leitura →</div>
+      <!-- DESTAQUES CAROUSEL -->
+      <div class="q-destaques-carousel">
+        <div class="q-destaque" onclick="window.location.href='Intensiva.html?id=odisseia-01'">
+          <div class="q-destaque-img">🐑</div>
+          <div class="q-destaque-info">
+            <div class="q-destaque-lbl">Continue de onde parou</div>
+            <div class="q-destaque-title">Odisseia pela Bíblia</div>
+            <div class="q-destaque-sub">Gênesis — Capítulo 24/50</div>
+            <div>
+              <div class="q-destaque-btn">Continuar leitura →</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-destaque" onclick="window.location.href='Intensiva.html?id=cronograma-01'">
+          <div class="q-destaque-img" style="background: linear-gradient(135deg, var(--accent-purple) 0%, #8B5CF6 100%); font-size: 28px;">📖</div>
+          <div class="q-destaque-info">
+            <div class="q-destaque-lbl">Plano de 6 Meses</div>
+            <div class="q-destaque-title">Bíblia Toda</div>
+            <div class="q-destaque-sub">Cronograma de Leitura</div>
+            <div>
+              <div class="q-destaque-btn">Iniciar plano →</div>
+            </div>
           </div>
         </div>
       </div>
