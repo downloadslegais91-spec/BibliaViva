@@ -3487,269 +3487,408 @@
 
   <style>
     #page-quests {
-      background: #F2F2F7;
-      padding: 0 16px;
+      background: var(--bg);
+      padding: 0 0;
       padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
-    #page-quests .methodology-selector-wrapper {
-      margin-left: -16px;
-      margin-right: -16px;
+    #page-quests .quests-container {
+      padding: 0 16px;
     }
 
-    #page-quests .section-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: #6C6C70;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin: 22px 0 8px 4px;
+    /* HERO SECTION */
+    #page-quests .q-hero {
+      background: linear-gradient(135deg, #1A1A2E 0%, #10101C 100%);
+      padding: 24px 20px;
+      position: relative;
+      overflow: hidden;
+      border-bottom-left-radius: var(--radius-xl);
+      border-bottom-right-radius: var(--radius-xl);
+      margin-bottom: 24px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+    
+    #page-quests .q-hero::after {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(124,111,224,0.15) 0%, transparent 70%);
+      filter: blur(20px);
+      pointer-events: none;
     }
 
-    #page-quests .xp-resumo-card {
-      background: #ffffff;
-      border-radius: 16px;
-      border: 0.5px solid rgba(0, 0, 0, 0.07);
-      padding: 14px 16px;
+    #page-quests .q-hero-top {
       display: flex;
-      margin-bottom: 4px;
-      margin-top: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
     }
 
-    #page-quests .xp-stat {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      flex: 1;
-    }
-
-    #page-quests .xp-stat-val {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    #page-quests .xp-stat-lbl {
-      font-size: 11px;
+    #page-quests .q-user {
+      font-size: 15px;
+      color: var(--text-secondary);
       font-weight: 500;
-      color: #8E8E93;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 3px;
     }
 
-    #page-quests .xp-divisor {
-      width: 0.5px;
-      background: rgba(0, 0, 0, 0.08);
-      height: 36px;
-      align-self: center;
-      margin: 0 16px;
-    }
-
-    #page-quests .missao-card {
-      background: #ffffff;
-      border-radius: 16px;
-      border: 0.5px solid rgba(0, 0, 0, 0.07);
-      padding: 14px 16px;
-      margin-bottom: 10px;
-    }
-
-    #page-quests .tipo-pill {
-      display: inline-flex;
+    #page-quests .q-streak {
+      background: rgba(245, 166, 35, 0.15);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+      color: var(--accent-gold);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
       align-items: center;
       gap: 4px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      margin-bottom: 8px;
     }
 
-    #page-quests .missao-titulo {
-      font-size: 16px;
+    #page-quests .q-xp-total {
+      font-size: 36px;
       font-weight: 700;
-      color: #000000;
-      letter-spacing: -0.3px;
-      margin-bottom: 4px;
-    }
-
-    #page-quests .missao-desc {
-      font-size: 13px;
-      font-weight: 400;
-      color: #6C6C70;
-      line-height: 1.45;
+      color: var(--text-primary);
+      line-height: 1.1;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
       margin-bottom: 12px;
     }
 
-    #page-quests .missao-prog-track {
-      height: 5px;
-      border-radius: 3px;
-      background: #F2F2F7;
+    #page-quests .q-progress-bg {
+      background: rgba(255, 255, 255, 0.1);
+      height: 6px;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    #page-quests .q-progress-fill {
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+      height: 100%;
+      border-radius: 99px;
+    }
+    
+    #page-quests .q-progress-lbl {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+    }
+
+    #page-quests .q-hero-chips {
+      display: flex;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    #page-quests .q-hero-chip {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* MISSÃO DESTAQUE */
+    #page-quests .q-destaque {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    #page-quests .q-destaque-img {
+      width: 70px;
+      height: 90px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-gold) 0%, #D4AF37 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    #page-quests .q-destaque-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #page-quests .q-destaque-lbl {
+      font-size: 11px;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    #page-quests .q-destaque-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    #page-quests .q-destaque-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    #page-quests .q-destaque-btn {
+      background: var(--text-primary);
+      color: var(--bg);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      text-align: center;
+    }
+
+    /* FILTROS DESLIZÁVEIS */
+    #page-quests .q-filtros-wrap {
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+      display: flex;
+      gap: 8px;
+    }
+    #page-quests .q-filtros-wrap::-webkit-scrollbar {
+      display: none;
+    }
+
+    #page-quests .q-filtro {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    #page-quests .q-filtro.active {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      color: white;
+    }
+
+    /* SECTION TITLES */
+    #page-quests .q-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 24px 0 12px 4px;
+    }
+
+    /* TRILHAS CARDS */
+    #page-quests .q-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
       margin-bottom: 10px;
+      position: relative;
       overflow: hidden;
     }
 
-    #page-quests .missao-prog-fill {
-      height: 100%;
-      border-radius: 3px;
-      background: #3B82F6;
-      transition: width .4s ease;
+    #page-quests .q-card.diaria {
+      border-left: 3px solid var(--accent-blue);
+      background: rgba(79, 142, 247, 0.05);
     }
 
-    #page-quests .missao-footer {
+    #page-quests .q-card.completed {
+      opacity: 0.7;
+    }
+
+    #page-quests .q-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
     }
 
-    #page-quests .missao-xp {
-      font-size: 13px;
-      font-weight: 700;
+    #page-quests .q-card-content {
+      flex: 1;
+      min-width: 0;
     }
 
-    #page-quests .missao-frac {
-      font-size: 13px;
-      font-weight: 500;
-      color: #8E8E93;
-    }
-
-    #page-quests .intensiva-card {
-      background: #ffffff;
-      border-radius: 16px;
-      border: 0.5px solid rgba(0, 0, 0, 0.07);
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .15s;
-      text-decoration: none;
-      display: block;
-    }
-
-    #page-quests .intensiva-card:active {
-      transform: scale(0.98);
-    }
-
-    #page-quests .int-linha1 {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #page-quests .int-tema {
-      font-size: 15px;
-      font-weight: 700;
-      color: #000;
+    #page-quests .q-card-header {
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 4px;
     }
 
-    #page-quests .int-pill {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-
-    #page-quests .int-desc {
-      font-size: 13px;
-      color: #6C6C70;
-      margin: 4px 0 10px;
-    }
-
-    #page-quests .int-prog-track {
-      height: 4px;
-      border-radius: 2px;
-      background: #F2F2F7;
+    #page-quests .q-card-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    #page-quests .int-prog-fill {
-      height: 100%;
-      border-radius: 2px;
+    #page-quests .q-card-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-weight: 600;
     }
 
-    #page-quests .int-footer {
+    #page-quests .q-card-badge.nova { background: rgba(124, 111, 224, 0.2); color: var(--accent-purple); }
+    #page-quests .q-card-badge.especial { background: rgba(245, 166, 35, 0.2); color: var(--accent-gold); }
+    #page-quests .q-card-badge.desafio { background: rgba(255, 59, 48, 0.2); color: var(--red); }
+    #page-quests .q-card-badge.done { background: rgba(52, 199, 89, 0.2); color: var(--green); }
+
+    #page-quests .q-card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 8px;
+    }
+
+    #page-quests .q-card-meta {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 6px;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-tertiary);
     }
 
-    #page-quests .int-frac {
+    #page-quests .q-xp-badge {
       font-size: 11px;
-      color: #8E8E93;
-    }
-
-    #page-quests .int-badges {
-      display: flex;
-      gap: 6px;
-      margin: 4px 0 8px;
-      flex-wrap: wrap;
-    }
-
-    #page-quests .int-badge {
+      font-weight: 600;
+      color: var(--accent-gold);
+      background: rgba(245, 166, 35, 0.1);
+      padding: 2px 6px;
+      border-radius: 8px;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #8E8E93;
-      background: #F2F2F7;
-      padding: 2px 7px;
-      border-radius: 6px;
+      gap: 4px;
+    }
+
+    #page-quests .q-card-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 100%;
+    }
+    
+    #page-quests .q-card-fill {
+      height: 100%;
+      background: var(--accent-purple);
+      border-radius: 0 4px 4px 0;
+    }
+
+    #page-quests .q-card-chevron {
+      color: var(--text-tertiary);
+      font-size: 16px;
+      padding-left: 8px;
+    }
+    
+    .tab-dot.active {
+      display: block;
+      width: 6px;
+      height: 6px;
+      background-color: var(--red);
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      right: 20px;
     }
   </style>
 
   <div class="page" id="page-quests">
-    <!-- APPLE PREMIUM METHODOLOGY SELECTOR (Header) -->
-    <div class="methodology-selector-wrapper">
-      <div class="methodology-selector">
-        <div class="methodology-slider" id="methodology-slider"></div>
-        <button class="methodology-btn active" id="methodology-btn-canon" onclick="setMethodology('canon')">
-          <span class="btn-icon">📜</span> Cânone Tradicional
-        </button>
-        <button class="methodology-btn" id="methodology-btn-chronological" onclick="setMethodology('chronological')">
-          <span class="btn-icon">⏳</span> Ordem Cronológica
-        </button>
+    <!-- HERO SECTION -->
+    <div class="q-hero">
+      <div class="q-hero-top">
+        <div class="q-user">Olá, Explorador</div>
+        <div class="q-streak">🔥 <span id="quests-streak-days">0</span> dias</div>
+      </div>
+      <div class="q-xp-total"><span id="quests-xp-total">0</span> XP</div>
+      <div class="q-progress-bg">
+        <div class="q-progress-fill" style="width: 45%;"></div>
+      </div>
+      <div class="q-progress-lbl">Faltam 540 XP para o Nível 2</div>
+      <div class="q-hero-chips">
+        <div class="q-hero-chip">2 missões hoje</div>
+        <div class="q-hero-chip">1 desafio ativo</div>
       </div>
     </div>
 
-    <!-- RESUMO DE XP -->
-    <div class="xp-resumo-card">
-      <div class="xp-stat">
-        <div class="xp-stat-val" id="quests-xp-total" style="color: #F59E0B;">0</div>
-        <div class="xp-stat-lbl">XP Total</div>
+    <div class="quests-container">
+      <!-- DESTAQUE -->
+      <div class="q-destaque" onclick="switchPage('leitura')">
+        <div class="q-destaque-img">🐑</div>
+        <div class="q-destaque-info">
+          <div class="q-destaque-lbl">Continue de onde parou</div>
+          <div class="q-destaque-title">Odisseia pela Bíblia</div>
+          <div class="q-destaque-sub">Gênesis — Capítulo 24/50</div>
+          <div>
+            <div class="q-destaque-btn">Continuar leitura →</div>
+          </div>
+        </div>
       </div>
-      <div class="xp-divisor"></div>
-      <div class="xp-stat">
-        <div class="xp-stat-val" id="quests-streak-days" style="color: #EF4444;">0</div>
-        <div class="xp-stat-lbl">Dias seguidos</div>
+
+      <!-- FILTROS -->
+      <div class="q-filtros-wrap">
+        <div class="q-filtro active">Todos</div>
+        <div class="q-filtro">Hoje</div>
+        <div class="q-filtro">Temáticos</div>
+        <div class="q-filtro">Desafios</div>
+        <div class="q-filtro">Concluídas</div>
       </div>
-    </div>
 
-    <div class="section-label">Hoje</div>
-    <div id="quests-daily-container">
-      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
-    </div>
+      <!-- HOJE -->
+      <div class="q-section-title">HOJE</div>
+      <div id="quests-daily-container">
+        <div style="padding: 16px; text-align: center; color: var(--text-tertiary);">Carregando missões diárias...</div>
+      </div>
 
-    <div class="section-label">Especiais</div>
-    <div id="quests-challenge-container">
-      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
-    </div>
-
-    <div class="section-label">Intensivas</div>
-    <div id="quests-intensivas-container">
-      <div style="padding: 16px; text-align: center; color: var(--label2);">Carregando...</div>
+      <!-- INTENSIVAS / TEMÁTICAS -->
+      <div class="q-section-title">TEMÁTICAS E INTENSIVAS</div>
+      <div id="quests-intensivas-container">
+        <div style="padding: 16px; text-align: center; color: var(--text-tertiary);">Carregando trilhas...</div>
+      </div>
     </div>
 
     <script>
-      // Render Intensivas inline without breaking global logic
+      // Atualizar a renderização das Intensivas (Trilhas)
       setTimeout(() => {
-        // Odyssey - premium hero entry
-        const odisseiaData = { id: "odisseia-01", tema: "Odisseia pela Bíblia", desc: "A jornada completa do Cordeiro — de Gênesis a Apocalipse.", icone: "🐑", cor: "#D4AF37", total: 30, fases: 6 };
-
         const intensivasData = [
           { id: "promessas-01", tema: "Promessas de Deus", desc: "Descubra as promessas inabaláveis de Deus para a sua vida.", icone: "✨", cor: "#F97316", total: 7, dificuldade: "Avançado", sazonal: true },
           { id: "fe-01", tema: "Fé", desc: "Entenda o que é fé e como ela age na sua vida.", icone: "🙏", cor: "#3B82F6", total: 7, dificuldade: "Intermediário" },
@@ -3766,72 +3905,45 @@
         if (container) {
           let html = '';
 
-          // Render Odisseia as premium card
-          const oRaw = localStorage.getItem('intensiva_' + odisseiaData.id);
-          const oProg = oRaw ? JSON.parse(oRaw) : { etapasConcluidas: [] };
-          const oPct = Math.round((oProg.etapasConcluidas.length / odisseiaData.total) * 100);
-          let oPill = oPct === 0 ? `<span class="int-pill" style="background: linear-gradient(135deg, #D4AF37, #F5DEB3); color: #1a1200; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; font-size:9px">Iniciar Jornada</span>` :
-            oPct >= 100 ? `<span class="int-pill" style="background: #34C759; color: #fff">✓ Completa</span>` :
-              `<span class="int-pill" style="background: linear-gradient(135deg, #D4AF37, #F5DEB3); color: #1a1200; font-weight:800; font-size:10px">${oPct}%</span>`;
-
-          html += `
-          <a href="Intensiva.html?id=${odisseiaData.id}" class="intensiva-card" style="background: linear-gradient(145deg, #1a1200, #2d1f00); border-color: rgba(212,175,55,0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.3)">
-            <div class="int-linha1">
-              <div class="int-tema" style="color: #F5DEB3"><span style="font-size:24px">${odisseiaData.icone}</span> ${odisseiaData.tema}</div>
-              ${oPill}
-            </div>
-            <div class="int-desc" style="color: rgba(245,222,179,0.6)">${odisseiaData.desc}</div>
-            <div class="int-badges">
-              <span class="int-badge" style="background: rgba(212,175,55,0.15); color: #D4AF37">📜 ${odisseiaData.fases} fases</span>
-              <span class="int-badge" style="background: rgba(212,175,55,0.15); color: #D4AF37">📖 ${odisseiaData.total} capítulos</span>
-              <span class="int-badge" style="background: rgba(212,175,55,0.15); color: #D4AF37">🔴 Avançado</span>
-            </div>
-            <div class="int-prog-track" style="background: rgba(212,175,55,0.12)"><div class="int-prog-fill" style="width:${oPct}%; background: linear-gradient(90deg, #D4AF37, #F5DEB3)"></div></div>
-            <div class="int-footer">
-              <div class="int-frac" style="color: rgba(245,222,179,0.5)">${oProg.etapasConcluidas.length}/${odisseiaData.total} capítulos</div>
-              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(212,175,55,0.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><polyline points="2 12 8 6 2 0"></polyline></svg>
-            </div>
-          </a>
-          `;
-
-          // Render rest of intensivas
           intensivasData.forEach(int => {
             const raw = localStorage.getItem('intensiva_' + int.id);
             const prog = raw ? JSON.parse(raw) : { etapasConcluidas: [] };
             const pct = Math.round((prog.etapasConcluidas.length / int.total) * 100);
             const duracao = int.total * 3;
 
-            let pill = '';
-            if (int.sazonal) {
-              pill = `<span class="int-pill" style="background: linear-gradient(135deg, #F59E0B, #F97316); color: #fff">✨ Especial</span>`;
+            let badgeHtml = '';
+            let completedClass = pct >= 100 ? 'completed' : '';
+            
+            if (pct >= 100) {
+              badgeHtml = `<span class="q-card-badge done">Concluída ✓</span>`;
+            } else if (int.sazonal) {
+              badgeHtml = `<span class="q-card-badge especial">Especial</span>`;
             } else if (pct === 0) {
-              pill = `<span class="int-pill" style="background: rgba(${hexToRgb(int.cor)}, 0.12); color: ${int.cor}">Nova</span>`;
-            } else if (pct >= 100) {
-              pill = `<span class="int-pill" style="background: #34C759; color: #fff">✓ Concluída</span>`;
-            } else {
-              pill = `<span class="int-pill" style="background: #F2F2F7; color: #3C3C43">${pct}%</span>`;
+              badgeHtml = `<span class="q-card-badge nova">Nova</span>`;
             }
 
-            const difIcon = int.dificuldade === 'Avançado' ? '🔴' : int.dificuldade === 'Intermediário' ? '🟡' : '🟢';
-
             html += `
-            <a href="Intensiva.html?id=${int.id}" class="intensiva-card">
-              <div class="int-linha1">
-                <div class="int-tema"><span style="font-size:20px">${int.icone}</span> ${int.tema}</div>
-                ${pill}
-              </div>
-              <div class="int-desc">${int.desc}</div>
-              <div class="int-badges">
-                <span class="int-badge">${difIcon} ${int.dificuldade}</span>
-                <span class="int-badge">🕐 ~${duracao} min</span>
-              </div>
-              <div class="int-prog-track"><div class="int-prog-fill" style="width:${pct}%; background:${int.cor}"></div></div>
-              <div class="int-footer">
-                <div class="int-frac">${prog.etapasConcluidas.length}/${int.total} capítulos</div>
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><polyline points="2 12 8 6 2 0"></polyline></svg>
+            <a href="Intensiva.html?id=${int.id}" style="text-decoration: none;">
+              <div class="q-card ${completedClass}">
+                <div class="q-card-icon" style="background: rgba(${hexToRgb(int.cor)}, 0.15); color: ${int.cor}; border: 1px solid rgba(${hexToRgb(int.cor)}, 0.3);">
+                  ${int.icone}
+                </div>
+                <div class="q-card-content">
+                  <div class="q-card-header">
+                    <div class="q-card-title">${int.tema}</div>
+                    ${badgeHtml}
+                  </div>
+                  <div class="q-card-desc">${int.desc}</div>
+                  <div class="q-card-meta">
+                    <span>${int.dificuldade} · ~${duracao} min</span>
+                    <span class="q-xp-badge">+${int.total * 50} XP ⚡</span>
+                  </div>
+                </div>
+                <div class="q-card-chevron">›</div>
+                <div class="q-card-progress"><div class="q-card-fill" style="width: ${pct}%; background: ${int.cor};"></div></div>
               </div>
             </a>
-          `;
+            `;
           });
           container.innerHTML = html;
         }
@@ -3841,6 +3953,58 @@
           var g = parseInt(hex.slice(3, 5), 16);
           var b = parseInt(hex.slice(5, 7), 16);
           return r + ',' + g + ',' + b;
+        }
+      }, 500);
+
+      // Render Missões Diárias Exemplo
+      setTimeout(() => {
+        const dailyContainer = document.getElementById('quests-daily-container');
+        if (dailyContainer) {
+          dailyContainer.innerHTML = `
+            <div class="q-card diaria">
+              <div class="q-card-icon" style="background: rgba(79, 142, 247, 0.15); color: #4F8EF7; border: 1px solid rgba(79, 142, 247, 0.3);">
+                📖
+              </div>
+              <div class="q-card-content">
+                <div class="q-card-header">
+                  <div class="q-card-title">Leitura do Dia</div>
+                </div>
+                <div class="q-card-desc">Mateus 5 - O Sermão do Monte</div>
+                <div class="q-card-meta">
+                  <span style="color: var(--accent-blue); font-weight: 600;">0/1 Capítulos</span>
+                  <span class="q-xp-badge">+100 XP ⚡</span>
+                </div>
+              </div>
+              <div class="q-card-chevron">›</div>
+              <div class="q-card-progress"><div class="q-card-fill" style="width: 0%; background: var(--accent-blue);"></div></div>
+            </div>
+
+            <div class="q-card diaria completed">
+              <div class="q-card-icon" style="background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.3);">
+                ✅
+              </div>
+              <div class="q-card-content">
+                <div class="q-card-header">
+                  <div class="q-card-title">Quiz Diário</div>
+                  <span class="q-card-badge done">Concluída ✓</span>
+                </div>
+                <div class="q-card-desc">Você acertou todas as perguntas.</div>
+                <div class="q-card-meta">
+                  <span style="color: var(--green); font-weight: 600;">1/1 ✓</span>
+                  <span class="q-xp-badge">+50 XP ⚡</span>
+                </div>
+              </div>
+              <div class="q-card-chevron">›</div>
+              <div class="q-card-progress"><div class="q-card-fill" style="width: 100%; background: var(--green);"></div></div>
+            </div>
+          `;
+        }
+        
+        // Simular dot vermelho ativo
+        const tabQuests = document.getElementById('tab-quests');
+        if (tabQuests) {
+          const dot = tabQuests.querySelector('.tab-dot');
+          if (dot) dot.classList.add('active');
         }
       }, 500);
     </script>
