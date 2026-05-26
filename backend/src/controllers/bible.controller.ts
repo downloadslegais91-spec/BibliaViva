@@ -385,9 +385,22 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
     let isSsml = false;
     if (textToRead.includes('<jesus>')) {
       isSsml = true;
-      // Transform <jesus> to Google Cloud SSML voice tag
-      // Usaremos uma voz masculina profunda para Jesus, ex: pt-BR-Neural2-B
-      textToRead = `<speak>${textToRead.replace(/<jesus>/g, '<voice name="pt-BR-Neural2-B">').replace(/<\/jesus>/g, '</voice>')}</speak>`;
+      // Precisamos escapar os caracteres especiais do XML/SSML que possam quebrar a tag
+      // Primeiro trocamos as tags <jesus> por marcadores temporários seguros
+      textToRead = textToRead.replace(/<jesus>/g, '[[JESUS_START]]').replace(/<\/jesus>/g, '[[JESUS_END]]');
+      
+      // Escapamos os caracteres problemáticos do texto da Bíblia para SSML
+      textToRead = textToRead
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      
+      // Restauramos os marcadores transformando em tags de voz do Google TTS SSML
+      textToRead = textToRead
+        .replace(/\[\[JESUS_START\]\]/g, '<voice name="pt-BR-Neural2-C">')
+        .replace(/\[\[JESUS_END\]\]/g, '</voice>');
+
+      textToRead = `<speak>${textToRead}</speak>`;
     }
 
     const speedParam = req.query.speed;

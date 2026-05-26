@@ -6,8 +6,27 @@ export async function generateAudio(text: string, speakingRate?: number, voiceNa
     throw new Error('GOOGLE_TTS_API_KEY não configurada no ambiente.');
   }
 
-  // Limita o texto para evitar custos ou payload muito alto (max ~4800 caracteres)
-  const safeText = text.substring(0, 4800);
+  let safeText = text;
+  if (safeText.length > 4800) {
+    safeText = safeText.substring(0, 4800);
+    if (isSsml) {
+      // Find the last '<' to see if we cut inside a tag
+      const lastOpen = safeText.lastIndexOf('<');
+      const lastClose = safeText.lastIndexOf('>');
+      if (lastOpen > lastClose) {
+        safeText = safeText.substring(0, lastOpen);
+      }
+      
+      const voiceOpens = (safeText.match(/<voice/g) || []).length;
+      const voiceCloses = (safeText.match(/<\/voice>/g) || []).length;
+      if (voiceOpens > voiceCloses) {
+        safeText += '</voice>';
+      }
+      if (!safeText.endsWith('</speak>')) {
+        safeText += '</speak>';
+      }
+    }
+  }
 
   const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
   const payload = {
