@@ -71,6 +71,68 @@ const FALLBACK_QUIZZES: Record<string, QuizQuestion[]> = {
       explanation: "Mateus 28:19 — 'Portanto ide, fazei discípulos de todas as nações, batizando-os em nome do Pai, e do Filho, e do Espírito Santo.'"
     }
   ],
+  'juizes': [
+    {
+      question: "Qual foi o primeiro juiz levantado por Deus para libertar Israel, sendo ele sobrinho de Calebe?",
+      options: ["Otniel", "Eúde", "Gideão", "Jefté"],
+      answer: 0,
+      explanation: "Juízes 3:9 — 'O Senhor levantou-lhes um libertador, Otniel, filho de Quenaz, o irmão mais novo de Calebe.'"
+    },
+    {
+      question: "Qual juiz canhoto matou o rei Eglom de Moabe?",
+      options: ["Sangue", "Eúde", "Sansão", "Baraque"],
+      answer: 1,
+      explanation: "Juízes 3:15 — 'O Senhor lhes levantou um libertador: Eúde, filho de Gera, benjamita, homem canhoto.'"
+    },
+    {
+      question: "Qual juiz, junto com a profetisa Débora, liderou Israel contra os cananeus sob o comando de Jabim e seu general Sísera?",
+      options: ["Gideão", "Jefté", "Baraque", "Otniel"],
+      answer: 2,
+      explanation: "Juízes 4:6-9 — Débora chamou Baraque para liderar o exército de Israel contra Sísera."
+    },
+    {
+      question: "Que mulher matou o comandante Sísera com uma estaca de tenda?",
+      options: ["Jael", "Débora", "Rute", "Ester"],
+      answer: 0,
+      explanation: "Juízes 4:21 — 'Então Jael, mulher de Héber, tomou uma estaca da tenda, e lançou mão de um martelo, e chegou-se mansamente a ele, e lhe cravou a estaca na fonte...'"
+    },
+    {
+      question: "Como Deus reduziu o exército de Gideão antes da batalha contra os midianitas?",
+      options: ["Pelo número de armas que possuíam", "Pela forma como bebiam água", "Pela idade dos soldados", "Por um sorteio divino"],
+      answer: 1,
+      explanation: "Juízes 7:5-7 — Deus separou os que lamberam a água como cães daqueles que se ajoelharam para beber, reduzindo o exército a 300 homens."
+    },
+    {
+      question: "O que os 300 homens de Gideão seguravam nas mãos durante o ataque noturno?",
+      options: ["Espadas e escudos", "Arcos e flechas", "Trombetas, cântaros vazios e tochas", "Lanças e fundas"],
+      answer: 2,
+      explanation: "Juízes 7:16 — 'Deu a cada um deles trombetas e cântaros vazios, com tochas dentro dos cântaros.'"
+    },
+    {
+      question: "Qual juiz fez um voto imprudente de sacrificar o primeiro que saísse de sua casa ao voltar vitorioso, o que acabou sendo sua própria filha?",
+      options: ["Sansão", "Baraque", "Jefté", "Jair"],
+      answer: 2,
+      explanation: "Juízes 11:30-31, 34 — Jefté fez um voto ao Senhor, e sua filha única saiu ao seu encontro."
+    },
+    {
+      question: "Qual era a principal fonte da força sobre-humana de Sansão, relacionada ao seu voto de nazireu?",
+      options: ["O consumo de mel e vinho", "O seu cabelo, que nunca havia sido cortado", "Um manto especial dado por um anjo", "A mandíbula de um jumento"],
+      answer: 1,
+      explanation: "Juízes 16:17 — 'Nunca subiu navalha à minha cabeça, porque sou nazireu de Deus desde o ventre de minha mãe.'"
+    },
+    {
+      question: "Com o que Sansão matou mil filisteus?",
+      options: ["Uma espada de ferro", "Uma funda de pastor", "A queixada de um jumento", "O fogo do céu"],
+      answer: 2,
+      explanation: "Juízes 15:15 — 'Achou uma queixada fresca de um jumento, estendeu a mão, e tomou-a, e feriu com ela mil homens.'"
+    },
+    {
+      question: "Quem foi a mulher que enganou Sansão para descobrir o segredo de sua força?",
+      options: ["Jezabel", "Dalila", "Raabe", "Atalia"],
+      answer: 1,
+      explanation: "Juízes 16:4-6 — Sansão se apaixonou por uma mulher chamada Dalila, que foi subornada para descobrir o segredo de sua grande força."
+    }
+  ],
   'genesis': [
     {
       question: "O que Deus criou no primeiro dia, conforme Gênesis 1?",
