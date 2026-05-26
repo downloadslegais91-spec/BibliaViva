@@ -23,27 +23,3 @@ export const getBackgroundMusic = async (req: Request, res: Response, next: Next
     next(error);
   }
 };
-
-import { generateAudio } from '../services/tts.service';
-
-export const generateTTSAudio = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { text } = req.body;
-    
-    if (!text) {
-      res.status(400).json({ status: 'error', message: 'Text is required' });
-      return;
-    }
-
-    const audioUrl = await generateAudio(text);
-
-    res.json({
-      status: 'success',
-      data: {
-        audioUrl
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};

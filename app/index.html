@@ -4589,8 +4589,6 @@
             catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
           }
 
-          window.currentVerses = data.verses;
-
           // Dynamic reading meta calculations
           const verseCount = data.verses.length;
           const readTime = Math.ceil(verseCount * 0.125);
@@ -6578,23 +6576,13 @@
         const defaultVoice = localStorage.getItem('profile_default_voice') || 'pt-BR-Neural2-B';
         const transParam = currentTranslation ? `&translation=${currentTranslation}` : '';
         const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}&voice=${defaultVoice}${transParam}`);
-        
-        if (!res.ok) {
-           throw new Error(`API HTTP Error: ${res.status}`);
-        }
-        
         const json = await res.json();
 
         if (json.status !== 'success' || !json.data.audioBase64) {
           throw new Error(json.message || 'Erro ao gerar o áudio');
         }
 
-        // Se audioBase64 já começar com data:audio/, usamos diretamente
-        let audioUrl = json.data.audioBase64;
-        if (!audioUrl.startsWith('data:audio/')) {
-            audioUrl = `data:audio/mpeg;base64,${audioUrl}`;
-        }
-        
+        const audioUrl = `data:audio/mpeg;base64,${json.data.audioBase64}`;
         window.currentAudio = new Audio(audioUrl);
 
         window.currentAudio.addEventListener('timeupdate', () => {
@@ -6658,89 +6646,9 @@
         btn.innerText = '⏸';
 
       } catch (error) {
-        console.error('Erro de Áudio (API Gemini):', error);
-        
-        // Native window.speechSynthesis fallback
-        if ('speechSynthesis' in window && window.currentVerses) {
-            showFeedback('Usando narração offline/nativa...');
-            const textToRead = `Livro de ${currentBook}, capítulo ${currentChapter}. ` + window.currentVerses.map(v => v.text).join(' ');
-            
-            const utterance = new SpeechSynthesisUtterance(textToRead);
-            utterance.lang = 'pt-BR';
-            
-            const speed = localStorage.getItem('voiceSpeed') || '1.0';
-            utterance.rate = parseFloat(speed);
-            
-            utterance.onend = async () => {
-                btn.innerText = '▶';
-                if(document.getElementById('audio-progress')) {
-                  document.getElementById('audio-progress').style.width = '0%';
-                }
-                showFeedback('🔊 Áudio concluído! Salvando progresso e avançando...');
-
-                const isCompleted = currentUser && currentUser.readingProgress && currentUser.readingProgress.some(
-                  p => p.book === currentBook && p.chapter === currentChapter && p.completed
-                );
-
-                if (!isCompleted) {
-                  try {
-                    const res = await fetch(`${API_URL}/progress`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        book: currentBook,
-                        chapter: currentChapter,
-                        verses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                        completed: true
-                      })
-                    });
-                    const json = await res.json();
-                    if (json.status === 'success') {
-                      showFeedback(`📖 ${currentBook} ${currentChapter} Concluído! +50 XP obtido!`);
-                      await initApp();
-                    }
-                  } catch (err) {
-                    console.error('Erro ao registrar progresso automático:', err);
-                  }
-                }
-
-                if (window.activeIntensiva) {
-                  setTimeout(() => {
-                    window.location.href = `Intensiva.html?id=${window.activeIntensiva.id}&completedOrd=${window.activeIntensiva.ord}&autoNext=true`;
-                  }, 2000);
-                  return;
-                }
-
-                setTimeout(() => {
-                  goToNextChapter(true);
-                }, 2000);
-            };
-            
-            window.speechSynthesis.cancel(); // Parar se já estiver falando algo
-            window.speechSynthesis.speak(utterance);
-            
-            // Dummy audio object for the UI to be able to pause/play
-            window.currentAudio = {
-                paused: false,
-                play: () => {
-                    window.speechSynthesis.resume();
-                    window.currentAudio.paused = false;
-                    btn.innerText = '⏸';
-                },
-                pause: () => {
-                    window.speechSynthesis.pause();
-                    window.currentAudio.paused = true;
-                    btn.innerText = '▶';
-                },
-                currentTime: 0,
-                duration: 1
-            };
-            btn.innerText = '⏸';
-            
-        } else {
-            btn.innerText = '▶';
-            showFeedback('❌ Falha na geração do áudio (Verifique as credenciais)');
-        }
+        console.error('Erro de Áudio:', error);
+        btn.innerText = '▶';
+        showFeedback('❌ Falha na geração do áudio (Verifique as credenciais do Google Cloud)');
       }
     }
 
