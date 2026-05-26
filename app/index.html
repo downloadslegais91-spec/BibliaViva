@@ -4221,9 +4221,14 @@
     function getYoutubeIdForBook(book) {
       if (['Apocalipse', 'Daniel'].includes(book)) return 'kY31Wn5j7q8'; // Bleach OST
       if (['Salmos', 'Provérbios', 'Eclesiastes', 'Cânticos'].includes(book)) return 'CxN9DL54IEg'; // Uma Vez
-      if (['Mateus', 'Marcos', 'Lucas', 'João'].includes(book)) return 'SqtOKMjOHTY'; // Novo video (Evangelhos)
-      if (['Gênesis', 'Êxodo', 'Levítico', 'Números', 'Deuteronômio'].includes(book)) return 'ToNCsrK9C-U'; // Novo video (Pentateuco)
-      return '0igy6bQN0hI'; // Yeshua (Default)
+      if (['Mateus', 'Marcos', 'Lucas', 'João'].includes(book)) return 'SqtOKMjOHTY'; // Evangelhos
+      if (['Gênesis', 'Êxodo', 'Levítico', 'Números', 'Deuteronômio'].includes(book)) return 'ToNCsrK9C-U'; // Pentateuco
+      if (['Josué', 'Juízes', 'Rute', '1 Samuel', '2 Samuel', '1 Reis', '2 Reis', '1 Crônicas', '2 Crônicas', 'Esdras', 'Neemias', 'Ester'].includes(book)) return 'KQaKC_9s6mc'; // Históricos
+      if (['Isaías', 'Jeremias', 'Lamentações', 'Ezequiel'].includes(book)) return '6u_3d1CFCkk'; // Profetas Maiores
+      if (['Oseias', 'Joel', 'Amós', 'Obadias', 'Jonas', 'Miqueias', 'Naum', 'Habacuque', 'Sofonias', 'Ageu', 'Zacarias', 'Malaquias'].includes(book)) return 'IMfFexFlVR4'; // Profetas Menores
+      if (['Romanos', '1 Coríntios', '2 Coríntios', 'Gálatas', 'Efésios', 'Filipenses', 'Colossenses', '1 Tessalonicenses', '2 Tessalonicenses', '1 Timóteo', '2 Timóteo', 'Tito', 'Filemom', 'Hebreus', 'Tiago', '1 Pedro', '2 Pedro', '1 João', '2 João', '3 João', 'Judas'].includes(book)) return 'I_vNMmz2pKc'; // Epístolas
+      
+      return '0igy6bQN0hI'; // Yeshua (Default / Atos)
     }
 
     function playYtVideo(videoId) {
