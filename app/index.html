@@ -3498,6 +3498,7 @@
 
     /* HERO SECTION */
     #page-quests .q-hero {
+      color: #ffffff;
       background: linear-gradient(135deg, #1A1A2E 0%, #10101C 100%);
       padding: 24px 20px;
       position: relative;
@@ -3531,7 +3532,7 @@
 
     #page-quests .q-user {
       font-size: 15px;
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.7);
       font-weight: 500;
     }
 
@@ -3551,7 +3552,7 @@
     #page-quests .q-xp-total {
       font-size: 36px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #ffffff;
       line-height: 1.1;
       letter-spacing: -1px;
       position: relative;
@@ -3575,7 +3576,7 @@
     
     #page-quests .q-progress-lbl {
       font-size: 12px;
-      color: var(--text-tertiary);
+      color: rgba(255, 255, 255, 0.6);
       margin-bottom: 20px;
     }
 
@@ -3594,7 +3595,7 @@
       border-radius: 12px;
       font-size: 12px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.9);
     }
 
     /* MISSÃO DESTAQUE */
@@ -3878,6 +3879,8 @@
       <div id="quests-daily-container">
         <div style="padding: 16px; text-align: center; color: var(--text-tertiary);">Carregando missões diárias...</div>
       </div>
+      <div id="quests-challenge-container"></div>
+      <div id="quests-weekly-container"></div>
 
       <!-- INTENSIVAS / TEMÁTICAS -->
       <div class="q-section-title">TEMÁTICAS E INTENSIVAS</div>
@@ -3956,51 +3959,7 @@
         }
       }, 500);
 
-      // Render Missões Diárias Exemplo
-      setTimeout(() => {
-        const dailyContainer = document.getElementById('quests-daily-container');
-        if (dailyContainer) {
-          dailyContainer.innerHTML = `
-            <div class="q-card diaria">
-              <div class="q-card-icon" style="background: rgba(79, 142, 247, 0.15); color: #4F8EF7; border: 1px solid rgba(79, 142, 247, 0.3);">
-                📖
-              </div>
-              <div class="q-card-content">
-                <div class="q-card-header">
-                  <div class="q-card-title">Leitura do Dia</div>
-                </div>
-                <div class="q-card-desc">Mateus 5 - O Sermão do Monte</div>
-                <div class="q-card-meta">
-                  <span style="color: var(--accent-blue); font-weight: 600;">0/1 Capítulos</span>
-                  <span class="q-xp-badge">+100 XP ⚡</span>
-                </div>
-              </div>
-              <div class="q-card-chevron">›</div>
-              <div class="q-card-progress"><div class="q-card-fill" style="width: 0%; background: var(--accent-blue);"></div></div>
-            </div>
-
-            <div class="q-card diaria completed">
-              <div class="q-card-icon" style="background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.3);">
-                ✅
-              </div>
-              <div class="q-card-content">
-                <div class="q-card-header">
-                  <div class="q-card-title">Quiz Diário</div>
-                  <span class="q-card-badge done">Concluída ✓</span>
-                </div>
-                <div class="q-card-desc">Você acertou todas as perguntas.</div>
-                <div class="q-card-meta">
-                  <span style="color: var(--green); font-weight: 600;">1/1 ✓</span>
-                  <span class="q-xp-badge">+50 XP ⚡</span>
-                </div>
-              </div>
-              <div class="q-card-chevron">›</div>
-              <div class="q-card-progress"><div class="q-card-fill" style="width: 100%; background: var(--green);"></div></div>
-            </div>
-          `;
-        }
-        
-        // Simular dot vermelho ativo
+      // Simular dot vermelho ativo
         const tabQuests = document.getElementById('tab-quests');
         if (tabQuests) {
           const dot = tabQuests.querySelector('.tab-dot');
@@ -5963,22 +5922,33 @@
         let tipoColor = badgeClass === 'challenge' ? '#BE123C' : '#C2410C';
         let xpColor = badgeClass === 'challenge' ? '#EF4444' : '#F59E0B';
 
+        let cardIcon = badgeClass === 'challenge' ? '🔥' : '📖';
+        let iconBg = badgeClass === 'challenge' ? 'rgba(255, 59, 48, 0.15)' : 'rgba(79, 142, 247, 0.15)';
+        let iconColor = badgeClass === 'challenge' ? 'var(--red)' : '#4F8EF7';
+        let barColor = badgeClass === 'challenge' ? 'var(--red)' : 'var(--accent-blue)';
+        let badgeHtml = isCompleted ? `<span class="q-card-badge done">Concluída ✓</span>` : '';
+        let completedClass = isCompleted ? 'completed' : '';
+
         const missaoCardHTML = `
-      <div class="missao-card" ${isCompleted ? '' : `onclick="${onClickAction}"`} style="cursor:${isCompleted ? 'default' : 'pointer'}; -webkit-tap-highlight-color: transparent;">
-        <div class="tipo-pill" style="background:${tipoBg}; color:${tipoColor}">
-          ${badgeClass === 'challenge' ? '🔥' : '⚡'} ${badgeClass === 'challenge' ? 'Desafio' : 'Diária'}
-        </div>
-        <div class="missao-titulo">${q.title}</div>
-        <div class="missao-desc">${q.description}</div>
-        <div class="missao-prog-track">
-          <div class="missao-prog-fill" style="width:${progressWidth}%;"></div>
-        </div>
-        <div class="missao-footer">
-          <div class="missao-xp" style="color:${xpColor}">+${q.xpReward} XP</div>
-          <div class="missao-frac">${progressText}</div>
-        </div>
-      </div>
-    `;
+          <div class="q-card diaria ${completedClass}" ${isCompleted ? '' : `onclick="${onClickAction}"`} style="cursor:${isCompleted ? 'default' : 'pointer'}; border-left-color: ${barColor};">
+            <div class="q-card-icon" style="background: ${iconBg}; color: ${iconColor}; border: 1px solid ${iconBg};">
+              ${isCompleted ? '✅' : cardIcon}
+            </div>
+            <div class="q-card-content">
+              <div class="q-card-header">
+                <div class="q-card-title">${q.title}</div>
+                ${badgeHtml}
+              </div>
+              <div class="q-card-desc">${q.description}</div>
+              <div class="q-card-meta">
+                <span style="color: ${isCompleted ? 'var(--green)' : barColor}; font-weight: 600;">${progressText}</span>
+                <span class="q-xp-badge">+${q.xpReward} XP ⚡</span>
+              </div>
+            </div>
+            <div class="q-card-chevron">›</div>
+            <div class="q-card-progress"><div class="q-card-fill" style="width: ${progressWidth}%; background: ${isCompleted ? 'var(--green)' : barColor};"></div></div>
+          </div>
+        `;
 
         if (q.type.toLowerCase() === 'weekly' && weeklyContainer) {
           weeklyContainer.innerHTML += missaoCardHTML;
