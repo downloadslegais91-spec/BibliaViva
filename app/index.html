@@ -4159,7 +4159,90 @@
     </div>
   </div>
 
+  <div id="yt-bgm-player" style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
+    window.ytBgmPlayer = null;
+    window.isYtReady = false;
+    window.pendingYtPlay = false;
+    window.pendingYtVideoId = null;
+    window.currentBgmBook = null;
+
+    function onYouTubeIframeAPIReady() {
+      window.ytBgmPlayer = new YT.Player('yt-bgm-player', {
+        height: '1',
+        width: '1',
+        playerVars: {
+          'autoplay': 0,
+          'controls': 0,
+          'disablekb': 1,
+          'fs': 0,
+          'rel': 0,
+          'modestbranding': 1,
+          'playsinline': 1,
+          'loop': 1
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      window.isYtReady = true;
+      event.target.setVolume(40);
+      if (window.pendingYtPlay) {
+         playYtVideo(window.pendingYtVideoId);
+         window.pendingYtPlay = false;
+      }
+    }
+
+    function onPlayerStateChange(event) {
+      // Forçar loop caso a variável de loop falhe
+      if (event.data === YT.PlayerState.ENDED) {
+        window.ytBgmPlayer.playVideo();
+      }
+    }
+
+    function getYoutubeIdForBook(book) {
+      if (['Apocalipse', 'Daniel'].includes(book)) return 'kY31Wn5j7q8'; // Bleach OST
+      if (['Salmos', 'Provérbios', 'Eclesiastes', 'Cânticos'].includes(book)) return 'CxN9DL54IEg'; // Uma Vez
+      return '0igy6bQN0hI'; // Yeshua (Default)
+    }
+
+    function playYtVideo(videoId) {
+      const btn = document.getElementById('btn-bgm-play');
+      if (window.currentBgmBook !== videoId) {
+        window.ytBgmPlayer.loadVideoById(videoId);
+        window.currentBgmBook = videoId;
+      } else {
+        window.ytBgmPlayer.playVideo();
+      }
+      
+      // Smooth fade in
+      window.ytBgmPlayer.setVolume(0);
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        if (vol < 40) {
+          vol += 5;
+          try { window.ytBgmPlayer.setVolume(vol); } catch(e){}
+        } else {
+          clearInterval(fadeIn);
+        }
+      }, 100);
+
+      isBgmPlaying = true;
+      localStorage.setItem('bgmAutoPlay', 'true');
+      if(btn) {
+        btn.textContent = 'Pausar';
+        btn.style.opacity = '1';
+        btn.style.background = 'var(--accent-blue)';
+      }
+    }
+
     // URL de Login dinâmica para suportar tanto localhost quanto a URL de produção da Vercel
     const LOGIN_URL = (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
@@ -4497,7 +4580,7 @@
     async function loadActiveChapter() {
       const titleDisplay = document.getElementById('reading-title-display');
       const catDisplay = document.getElementById('reading-category-display');
-      const metaDisplay = document.getElementById('reading-meta-display');
+      const metaDisplay = document.getElementById('reading-reading-meta-display');
       const textDiv = document.querySelector('.reading-text');
       const sumTitle = document.querySelector('.ai-sum-title');
       const sumText = document.querySelector('.ai-sum-text');
@@ -4506,32 +4589,31 @@
 
       saveReadingState();
 
-      if (window.currentBgmBook && window.currentBgmBook !== currentBook) {
-        // If music was playing, we should auto-play the new track for the new book
+      const newYtId = getYoutubeIdForBook(currentBook);
+      if (window.currentBgmBook && window.currentBgmBook !== newYtId) {
         const wasPlaying = isBgmPlaying;
         
-        if (window.currentBgmAudio) {
-          const oldAudio = window.currentBgmAudio;
-          let vol = oldAudio.volume;
+        if (window.isYtReady && window.ytBgmPlayer) {
+          let vol = 40;
+          try { vol = window.ytBgmPlayer.getVolume(); } catch(e) {}
           const fadeOut = setInterval(() => {
-            if (vol > 0.05) {
-              vol -= 0.05;
-              try { oldAudio.volume = vol; } catch(e){}
+            if (vol > 5) {
+              vol -= 5;
+              try { window.ytBgmPlayer.setVolume(vol); } catch(e){}
             } else {
               clearInterval(fadeOut);
-              oldAudio.pause();
+              window.ytBgmPlayer.pauseVideo();
             }
           }, 50);
-          window.currentBgmAudio = null;
         }
         
-        window.currentBgmBook = currentBook;
+        window.currentBgmBook = newYtId;
         
         if (wasPlaying) {
-           isBgmPlaying = false; // force toggleBgm to treat it as a new play
+           isBgmPlaying = false; 
            setTimeout(() => {
              toggleBgm();
-           }, 100);
+           }, 500); 
         } else {
           isBgmPlaying = false;
           const btnBgm = document.getElementById('btn-bgm-play');
@@ -4541,13 +4623,12 @@
           }
         }
       } else {
-        window.currentBgmBook = currentBook;
+        window.currentBgmBook = newYtId;
       }
 
 
       if (!titleDisplay || !textDiv) return;
 
-      // Update book title and category immediately to avoid showing old/default book details
       let skeletonTagHtml = '';
       if (window.activeIntensiva) {
         skeletonTagHtml = `<div style="font-size: 11px; font-weight: 700; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📍 Trilha: ${window.activeIntensiva.nome}</div>`;
@@ -4559,7 +4640,6 @@
         catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
       }
 
-      // Render a beautiful skeleton loader for the reading text
       textDiv.innerHTML = `
         <div class="skeleton-container">
           <div class="skeleton-line long"></div>
@@ -4593,7 +4673,6 @@
         if (json.status === 'success') {
           const data = json.data;
 
-          // Update book title and category
           let intensivaTagHtml = '';
           if (window.activeIntensiva) {
             intensivaTagHtml = `<div style="font-size: 11px; font-weight: 700; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📍 Trilha: ${window.activeIntensiva.nome}</div>`;
@@ -4605,7 +4684,6 @@
             catDisplay.textContent = bookObj.category || 'Escrituras Sagradas';
           }
 
-          // Dynamic reading meta calculations
           const verseCount = data.verses.length;
           const readTime = Math.ceil(verseCount * 0.125);
           if (metaDisplay) {
@@ -4616,51 +4694,41 @@
         `;
           }
 
-          // Render verses beautifully
           textDiv.innerHTML = data.verses.map(v => {
-            // Apply random premium highlighting for selected verses to feel elegant
             const isHighlighted = (v.number % 4 === 0) ? ' highlight' : '';
             return `<p class="verse${isHighlighted}"><span class="verse-num">${v.number}</span>${v.text}</p>`;
           }).join('');
 
-          // Update AI summary card dynamically
           if (sumTitle) sumTitle.textContent = `Resumo da IA · ${data.book} ${data.chapter}`;
           if (sumText) {
-            // Fallback for empty summary
             let summaryHtml = data.summary || "Nenhum resumo disponível para este capítulo.";
-            // Sanitize broken HTML brackets while keeping strong tags
             summaryHtml = summaryHtml.replace(/<(?!\/?strong\b)/gi, '&lt;');
             sumText.innerHTML = summaryHtml;
           }
 
-          // Update Chat context label and input placeholder automatically!
           if (chatLabel) chatLabel.textContent = `Assistente Bíblico · ${data.book} ${data.chapter}`;
           if (chatInput) chatInput.placeholder = `Faça uma pergunta sobre ${data.book} ${data.chapter}…`;
 
-          // Toggle warning banner if apocryphal
           const warningBanner = document.getElementById('canonical-warning-banner');
           if (warningBanner) {
             warningBanner.style.display = data.isCanonical ? 'none' : 'flex';
           }
 
-          // Update "Concluir Leitura" button status
           updateReadingButton();
 
-          // Update custom select triggers in sync
           updateCustomSelectTriggers();
 
-          // Reset reading tab back to biblical text
           if (typeof switchReadingTab === 'function') {
             switchReadingTab('text');
           }
 
           if (window.pendingAutoplay) {
-            window.pendingAutoplay = false; // consume it
+            window.pendingAutoplay = false; 
             setTimeout(() => {
               if (typeof playChapterAudio === 'function') {
                 playChapterAudio();
               }
-            }, 500); // small delay for UI to settle
+            }, 500); 
           }
         }
       } catch (error) {
@@ -4670,7 +4738,6 @@
     }
 
     function onBookChange() {
-      // Manual navigation breaks out of the track
       window.activeIntensiva = null;
       sessionStorage.removeItem('activeIntensiva');
 
@@ -4680,9 +4747,8 @@
         if (window.activeTtsButton) window.activeTtsButton.innerText = '🔊';
         window.activeTtsButton = null;
       }
-      if (window.currentAudio) {
-        window.currentAudio.pause();
-        window.currentAudio = null;
+      if (window.isYtReady && window.ytChapterPlayer) {
+        window.ytChapterPlayer.stopVideo();
         const btn = document.getElementById('btn-audio-play');
         if (btn) btn.innerText = '▶';
         const prog = document.getElementById('audio-progress');
@@ -4693,16 +4759,14 @@
       const selectBook = document.getElementById('select-book');
       if (!selectBook) return;
       currentBook = selectBook.value;
-      currentChapter = 1; // reset to chapter 1
+      currentChapter = 1; 
       populateChapters();
       loadActiveChapter();
 
-      // Prefetch quiz in background for new book selection
       prefetchQuizForBook(currentBook);
     }
 
     function onChapterChange() {
-      // Manual navigation breaks out of the track
       window.activeIntensiva = null;
       sessionStorage.removeItem('activeIntensiva');
 
@@ -4712,9 +4776,8 @@
         if (window.activeTtsButton) window.activeTtsButton.innerText = '🔊';
         window.activeTtsButton = null;
       }
-      if (window.currentAudio) {
-        window.currentAudio.pause();
-        window.currentAudio = null;
+      if (window.isYtReady && window.ytChapterPlayer) {
+        window.ytChapterPlayer.stopVideo();
         const btn = document.getElementById('btn-audio-play');
         if (btn) btn.innerText = '▶';
         const prog = document.getElementById('audio-progress');
@@ -4735,7 +4798,6 @@
         if (json.status === 'success') {
           currentUser = json.data;
 
-          // Override values for Google/Apple/custom registration mock login
           const isSocial = localStorage.getItem('isLoggedIn') === 'true';
           if (isSocial) {
             currentUser.name = localStorage.getItem('userName') || currentUser.name;
@@ -4744,7 +4806,6 @@
 
           updateUserUI(currentUser);
 
-          // Dynamic profile trigger avatar updates
           const triggerEl = document.getElementById('profile-trigger');
           if (triggerEl) {
             const userAvatarUrl = localStorage.getItem('userAvatarUrl');
@@ -4774,18 +4835,15 @@
     }
 
     function updateUserUI(user) {
-      // Update methodology selector UI
       const currentTemplate = user.questTemplate || 'canon';
       updateMethodologyUI(currentTemplate);
 
-      // Streak
       const streakEl = document.getElementById('home-streak');
       if (streakEl) streakEl.textContent = `🔥 ${user.streakDays} ${user.streakDays === 1 ? 'dia' : 'dias'} ${user.streakDays === 1 ? 'seguido' : 'seguidos'}`;
 
       const statStreak = document.getElementById('stat-streak-days');
       if (statStreak) statStreak.textContent = user.streakDays;
 
-      // Level & XP
       const xpLabel = document.getElementById('home-xp-label');
       const xpLevel = document.getElementById('home-xp-level');
       const xpBar = document.getElementById('home-xp-bar');
@@ -4798,7 +4856,6 @@
         xpBar.style.width = `${percentage}%`;
       }
 
-      // Stats row
       const capReadEl = document.getElementById('stat-chapters-read');
       if (capReadEl) capReadEl.textContent = user.totalChaptersRead !== undefined ? user.totalChaptersRead : (user.readingProgress ? user.readingProgress.length : 0);
 
@@ -4811,7 +4868,6 @@
       const questsStreakEl = document.getElementById('quests-streak-days');
       if (questsStreakEl) questsStreakEl.textContent = user.streakDays;
 
-      // Continue reading uses the current active book/chapter
       const progressList = user.readingProgress || [];
       const targetBook = currentBook;
       const nextChapter = currentChapter;
@@ -4837,7 +4893,6 @@
         heroBtn.setAttribute('onclick', `continueReading('${targetBook}', ${nextChapter})`);
       }
 
-      // Book default items logic (just to feel premium and updated)
       const bookProgSalmos = document.getElementById('book-progress-salmos');
       if (bookProgSalmos) {
         const salmosCompleted = progressList.filter(p => p.book === 'Salmos' && p.completed).length;
@@ -4851,10 +4906,8 @@
         bookProgProverbios.style.width = `${percentage}%`;
       }
 
-      // Refresh explore books container dynamically!
       renderExploreBooks();
 
-      // Update Concluir Leitura button status on the reading screen
       updateReadingButton();
     }
 
@@ -4902,7 +4955,6 @@
           showFeedback(`📖 ${currentBook} ${currentChapter} Concluído! +50 XP obtido!`);
           await initApp();
 
-          // Automatically advance to the next chapter after a brief delay
           setTimeout(() => {
             if (window.activeIntensiva) {
                window.location.href = `Intensiva.html?id=${window.activeIntensiva.id}&completedOrd=${window.activeIntensiva.ord}&autoNext=true`;
@@ -4923,16 +4975,12 @@
       }
     }
 
-    // ==================== FEATURES DE PREGAÇÕES (YOUTUBE API) ====================
-    // A chave API do YouTube fornecida pelo usuário
     const YOUTUBE_API_KEY = "AIzaSyD-HtcNGpQy3f6HSz_-tsHHTnx3Ku6abEA";
-    let currentReadingTab = 'text'; // 'text', 'sermons', 'summary'
+    let currentReadingTab = 'text';
 
-    // Trocador de abas da tela de leitura (Segmented Control)
     function switchReadingTab(tabId) {
       currentReadingTab = tabId;
 
-      // Atualizar botões do segmented control
       const segText = document.getElementById('segment-text');
       const segSermons = document.getElementById('segment-sermons');
       const segSummary = document.getElementById('segment-summary');
@@ -4941,7 +4989,6 @@
       if (segSermons) segSermons.classList.toggle('active', tabId === 'sermons');
       if (segSummary) segSummary.classList.toggle('active', tabId === 'summary');
 
-      // Atualizar exibições dos containers
       const divText = document.getElementById('reading-tab-text-content');
       const divSermons = document.getElementById('reading-tab-sermons-content');
       const divSummary = document.getElementById('reading-tab-summary-content');
@@ -4950,21 +4997,17 @@
       if (divSermons) divSermons.style.display = tabId === 'sermons' ? 'block' : 'none';
       if (divSummary) divSummary.style.display = tabId === 'summary' ? 'block' : 'none';
 
-      // Se for a aba de pregações, carregar as pregações do livro atual
       if (tabId === 'sermons') {
         loadSermonsForCurrentBook();
       }
     }
 
-    // Carregar pregações via YouTube Data API v3
-    // Carregar pregações via API segura do BíbliaViva
     async function loadSermonsForCurrentBook() {
       const container = document.getElementById('sermons-list-container');
       if (!container) return;
 
       const bookName = typeof currentBook !== 'undefined' ? currentBook : "Mateus";
 
-      // Renderizar feedback de carregamento
       container.innerHTML = `
     <div style="padding: 40px 20px; text-align: center; color: var(--label2);">
       <div class="sermon-loading-spinner" style="margin: 0 auto 16px;"></div>
@@ -5005,7 +5048,6 @@
       }
     }
 
-    // Renderizar os cards das pregações no container
     function renderSermonCards(items, plan) {
       const container = document.getElementById('sermons-list-container');
       if (!container) return;
@@ -5025,7 +5067,6 @@
         const viewsText = viewCount ? `${viewCount.toLocaleString('pt-BR')} views` : '';
         const metaText = [durationText, viewsText].filter(Boolean).join(' • ');
 
-        // Escapar strings para passar no evento onclick
         const escapedTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         const escapedChannel = channelTitle.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
@@ -5050,7 +5091,6 @@
         container.appendChild(card);
       });
 
-      // Exibir card de Upsell Premium se o usuário for FREE
       if (plan === 'FREE') {
         const upsellCard = document.createElement('div');
         upsellCard.className = 'sermon-premium-card';
@@ -5096,7 +5136,6 @@
       }
     }
 
-    // Atualizar plano do usuário para Premium automaticamente
     async function upgradeToPremiumPlan() {
       showFeedback("⚡ Ativando plano Premium...");
       try {
@@ -5111,10 +5150,10 @@
         const json = await res.json();
         if (json.status === 'success') {
           showFeedback("🎉 Plano Premium ativado com sucesso! Carregando todos os recursos...", "success");
-          await loadUserStats(); // Atualizar dados globais do usuário
-          loadSermonsForCurrentBook(); // Recarregar pregações na aba de leitura
+          await loadUserStats();
+          loadSermonsForCurrentBook();
           if (document.getElementById('sermons-page-list-container')) {
-            loadSermonsForBook(currentBook); // Recarregar pregações na aba dedicada
+            loadSermonsForBook(currentBook);
           }
         } else {
           showFeedback("❌ Não foi possível atualizar o plano: " + (json.message || "Erro desconhecido"));
@@ -5125,15 +5164,10 @@
       }
     }
 
-    // ==========================================
-    // DEDICATED SERMONS PAGE CORE LOGIC
-    // ==========================================
-
     async function loadSermonsForBook(bookName) {
       const container = document.getElementById('sermons-page-list-container');
       if (!container) return;
 
-      // Renderizar feedback de carregamento
       container.innerHTML = `
     <div style="padding: 40px 20px; text-align: center; color: var(--label2);">
       <div class="sermon-loading-spinner" style="margin: 0 auto 16px;"></div>
@@ -5193,7 +5227,6 @@
         const viewsText = viewCount ? `${viewCount.toLocaleString('pt-BR')} views` : '';
         const metaText = [durationText, viewsText].filter(Boolean).join(' • ');
 
-        // Escapar strings para passar no evento onclick
         const escapedTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         const escapedChannel = channelTitle.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
@@ -5218,7 +5251,6 @@
         container.appendChild(card);
       });
 
-      // Exibir card de Upsell Premium se o usuário for FREE
       if (plan === 'FREE') {
         const upsellCard = document.createElement('div');
         upsellCard.className = 'sermon-premium-card';
@@ -5315,9 +5347,6 @@
         activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
-
-    // A lógica do Player de Sermões (pregações) foi modularizada e reside em sermon-player.js
-
 
     function updateMethodologyUI(template) {
       const slider = document.getElementById('methodology-slider');
@@ -5567,7 +5596,6 @@
           btn.dataset.audioBase64 = json.data.audioBase64;
           btn.dataset.ttsStatus = 'ready';
 
-          // Se este botão estiver aguardando (o ícone é o de carregamento/ampulheta)
           if (window.activeTtsButton === btn && btn.innerText === '⏳') {
             playBase64Tts(btn, json.data.audioBase64);
           }
@@ -5593,7 +5621,6 @@
         window.chatAudio = new Audio();
       }
 
-      // Configurar manipuladores no singleton global para evitar acumular múltiplos listeners de eventos
       window.chatAudio.onended = () => {
         btn.innerText = '🔊';
         if (window.chatAudio && window.activeTtsButton === btn) {
@@ -5643,7 +5670,6 @@
       <div class="chat-bubble bubble-ai">${text}</div>
     `;
 
-        // Disparar pre-fetching do TTS em segundo plano imediatamente
         const btn = bubbleDiv.querySelector('.chat-tts-btn');
         if (btn) {
           preFetchBubbleTts(btn, text);
@@ -5662,15 +5688,13 @@
       if (!bubble) return;
       const text = bubble.innerHTML;
 
-      // Se já for o áudio do chat atual e estiver tocando/pausado
       if (window.chatAudio && window.activeTtsButton === btn) {
         if (!window.chatAudio.paused) {
           window.chatAudio.pause();
           btn.innerText = '🔊';
         } else {
-          // Pausar o áudio do capítulo se estiver tocando
-          if (window.currentAudio) {
-            window.currentAudio.pause();
+          if (window.isYtReady && window.ytChapterPlayer) {
+            window.ytChapterPlayer.pauseVideo();
             const playBtn = document.getElementById('btn-audio-play');
             if (playBtn) playBtn.innerText = '▶';
           }
@@ -5686,7 +5710,6 @@
         return;
       }
 
-      // Se houver outro áudio de chat tocando, pausá-lo e resetar o ícone
       if (window.chatAudio) {
         window.chatAudio.pause();
         if (window.activeTtsButton) {
@@ -5694,9 +5717,8 @@
         }
       }
 
-      // Pausar o áudio do capítulo principal se estiver tocando
-      if (window.currentAudio) {
-        window.currentAudio.pause();
+      if (window.isYtReady && window.ytChapterPlayer) {
+        window.ytChapterPlayer.pauseVideo();
         const playBtn = document.getElementById('btn-audio-play');
         if (playBtn) playBtn.innerText = '▶';
       }
@@ -5704,19 +5726,15 @@
       btn.innerText = '⏳';
       window.activeTtsButton = btn;
 
-      // Se já tivermos o áudio pré-carregado
       if (btn.dataset.audioBase64) {
         playBase64Tts(btn, btn.dataset.audioBase64);
       } else {
-        // "Abençoar" (Bless) o elemento de áudio de forma síncrona sob o gesto do usuário para contornar políticas de autoplay estritas
         if (!window.chatAudio) {
           window.chatAudio = new Audio();
         }
         window.chatAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
         window.chatAudio.play().catch(err => console.warn('Silence playback blessing failed:', err));
 
-        // Se já estiver em processo de carregamento secundário, preFetchBubbleTts cuidará de disparar o áudio ao concluir.
-        // Caso contrário (como bolhas históricas), disparamos o carregamento sob demanda agora.
         if (btn.dataset.ttsStatus !== 'loading') {
           preFetchBubbleTts(btn, text);
         }
@@ -5726,7 +5744,6 @@
     function toggleAutoTts(enabled) {
       localStorage.setItem('chatAutoTts', enabled);
       if (enabled) {
-        // Bless/ativar áudio síncrono no clique do toggle
         if (!window.chatAudio) {
           window.chatAudio = new Audio();
         }
@@ -5812,7 +5829,6 @@
 
         recognition.onend = () => {
           stopRecognitionState();
-          // Auto-send if there is text in the input
           if (chatInput.value.trim()) {
             sendChat();
           }
@@ -5838,7 +5854,6 @@
       const val = input.value.trim();
       if (!val) return;
 
-      // Abençoar/Ativar o elemento de áudio de forma síncrona sob o gesto de envio do usuário para contornar autoplay policy de navegadores estritos no auto-leitura
       if (localStorage.getItem('chatAutoTts') === 'true') {
         if (!window.chatAudio) {
           window.chatAudio = new Audio();
@@ -5849,7 +5864,6 @@
 
       const area = document.getElementById('chatArea');
 
-      // Remove suggestions chips if present
       const existing = document.getElementById('chat-suggestions-container');
       if (existing) existing.remove();
 
@@ -5864,7 +5878,6 @@
       scrollToBottom();
 
       try {
-        // Save user message and get AI reply from backend in a single request!
         const res = await fetch(`${API_URL}/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -5883,7 +5896,6 @@
           appendChatBubble(false, reply);
           scrollToBottom();
 
-          // Se a auto-leitura estiver ativa, iniciar automaticamente
           if (localStorage.getItem('chatAutoTts') === 'true') {
             const ttsBtns = area.querySelectorAll('.chat-tts-btn');
             if (ttsBtns.length > 0) {
@@ -6011,7 +6023,6 @@
         contentSermons.style.display = 'block';
         contentBible.style.display = 'none';
 
-        // Load sermons if not loaded
         if (!document.getElementById('sermons-page-list-container').innerHTML.includes('sermon-card')) {
           initSermonsPageBookChips();
           loadSermonsForBook(currentBook);
@@ -6039,7 +6050,6 @@
       const modal = document.getElementById('ranking-details-modal');
       if (!modal) return;
 
-      // Open the modal first and show loading state
       modal.classList.add('active');
 
       document.getElementById('ranking-detail-name').innerText = 'Carregando...';
@@ -6051,7 +6061,6 @@
       document.getElementById('ranking-detail-quests').innerText = '--';
       document.getElementById('ranking-detail-joined').innerText = '--';
 
-      // Set avatar initials or 👤 placeholder
       const avatarEl = document.getElementById('ranking-detail-avatar');
       avatarEl.innerText = '👤';
       avatarEl.style.background = 'linear-gradient(135deg, #3B82F6, #8B5CF6)';
@@ -6063,20 +6072,17 @@
 
         const u = json.data;
 
-        // Set text contents
         document.getElementById('ranking-detail-name').innerText = u.name || 'Discípulo';
         document.getElementById('ranking-detail-email').innerText = u.email || '';
         document.getElementById('ranking-detail-level').innerText = u.level || 1;
         document.getElementById('ranking-detail-xp').innerText = u.xp || 0;
 
-        // Streak with conditional icon styling
         const streak = u.streakDays || 0;
         document.getElementById('ranking-detail-streak').innerText = streak > 0 ? `${streak} ${streak === 1 ? 'dia' : 'dias'}` : '0 dias';
 
         document.getElementById('ranking-detail-chapters').innerText = u.chaptersRead || 0;
         document.getElementById('ranking-detail-quests').innerText = u.questsCompleted || 0;
 
-        // Member since date parsing
         if (u.createdAt) {
           const date = new Date(u.createdAt);
           const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -6085,18 +6091,16 @@
           document.getElementById('ranking-detail-joined').innerText = '--';
         }
 
-        // Set avatar initials
         if (u.name) {
           const initials = u.name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
           avatarEl.innerText = initials || '👤';
 
-          // Random/deterministic nice colors for different users
           const colors = [
-            'linear-gradient(135deg, #3B82F6, #8B5CF6)', // Blue violet
-            'linear-gradient(135deg, #EC4899, #8B5CF6)', // Pink purple
-            'linear-gradient(135deg, #10B981, #3B82F6)', // Green blue
-            'linear-gradient(135deg, #F59E0B, #EF4444)', // Amber red
-            'linear-gradient(135deg, #06B6D4, #3B82F6)'  // Cyan blue
+            'linear-gradient(135deg, #3B82F6, #8B5CF6)', 
+            'linear-gradient(135deg, #EC4899, #8B5CF6)', 
+            'linear-gradient(135deg, #10B981, #3B82F6)', 
+            'linear-gradient(135deg, #F59E0B, #EF4444)', 
+            'linear-gradient(135deg, #06B6D4, #3B82F6)'  
           ];
           const colorIndex = userId % colors.length;
           avatarEl.style.background = colors[colorIndex];
@@ -6134,7 +6138,6 @@
         if (position === 2) badge = '🥈';
         if (position === 3) badge = '🥉';
 
-        // Generate initials for the avatar on the card
         let initials = '👤';
         if (u.name) {
           initials = u.name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -6183,9 +6186,6 @@
       setTimeout(() => el.classList.remove('show'), 2200);
     }
 
-    // ==========================================
-    // DYNAMIC QUIZ WIZARD ENGINE
-    // ==========================================
     let quizQuestions = [];
     let currentQuestionIndex = 0;
     let correctAnswersCount = 0;
@@ -6232,7 +6232,6 @@
       const wizardState = document.getElementById('quiz-wizard-state');
       const summaryState = document.getElementById('quiz-summary-state');
 
-      // Set initial UI panel states
       if (loadingState) loadingState.style.display = 'flex';
       if (errorState) errorState.style.display = 'none';
       if (wizardState) wizardState.style.display = 'none';
@@ -6243,19 +6242,13 @@
       try {
         let quizData = null;
 
-        // Check if we have preloaded data
         if (preloadedQuizzes[bookKey] && Array.isArray(preloadedQuizzes[bookKey])) {
-          console.log(`[Quiz UI] Usando quiz pré-carregado instantaneamente para: ${quizCurrentBook}`);
           quizData = preloadedQuizzes[bookKey];
         } else if (preloadedPromises[bookKey]) {
-          // If it is currently loading, wait for the existing background promise to resolve!
-          console.log(`[Quiz UI] Aguardando término do pré-carregamento em andamento para: ${quizCurrentBook}...`);
           quizData = await preloadedPromises[bookKey];
         }
 
-        // If it wasn't preloaded, or the prefetch promise resolved to null/failed, let's fetch it now
         if (!quizData || quizData.length !== 10) {
-          console.log(`[Quiz UI] Quiz não estava em cache. Buscando agora para: ${quizCurrentBook}`);
           const promise = prefetchQuizForBook(quizCurrentBook);
           quizData = await promise;
         }
@@ -6289,7 +6282,6 @@
 
       const currentQuestion = quizQuestions[currentQuestionIndex];
 
-      // Update header descriptions
       const titleInfo = document.getElementById('quiz-title-info');
       if (titleInfo) titleInfo.textContent = `${quizCurrentTitle} · 10 perguntas`;
 
@@ -6302,7 +6294,6 @@
       const questionText = document.getElementById('quiz-question-text');
       if (questionText) questionText.textContent = currentQuestion.question;
 
-      // Generate 10 progress dots
       const dotsContainer = document.getElementById('quiz-progress-dots');
       if (dotsContainer) {
         dotsContainer.innerHTML = '';
@@ -6318,7 +6309,6 @@
         }
       }
 
-      // Generate options A, B, C, D
       const optionsContainer = document.getElementById('quizOptions');
       if (optionsContainer) {
         optionsContainer.innerHTML = '';
@@ -6337,7 +6327,6 @@
         });
       }
 
-      // Hide the result card
       const resultCard = document.getElementById('quizResult');
       if (resultCard) resultCard.classList.remove('show');
     }
@@ -6351,7 +6340,6 @@
       const optionsContainer = document.getElementById('quizOptions');
       const btns = optionsContainer.querySelectorAll('.quiz-option');
 
-      // Disable all option buttons
       btns.forEach(b => b.disabled = true);
 
       const resultEmoji = document.getElementById('quiz-result-emoji');
@@ -6372,7 +6360,6 @@
         optionBtn.classList.add('wrong');
         optionBtn.querySelector('.option-letter').textContent = '✗';
 
-        // Highlight the correct answer option too
         if (btns[correctIndex]) {
           btns[correctIndex].classList.add('correct');
           btns[correctIndex].querySelector('.option-letter').textContent = '✓';
@@ -6387,11 +6374,9 @@
         resultExplanation.textContent = currentQuestion.explanation;
       }
 
-      // Show the explanation card
       const resultCard = document.getElementById('quizResult');
       if (resultCard) {
         resultCard.classList.add('show');
-        // Scroll automatically into view so player can read explanation comfortably
         resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
@@ -6424,11 +6409,9 @@
       const xpEarned = document.getElementById('summary-xp-earned');
       if (xpEarned) xpEarned.textContent = `+${quizXpGained} XP`;
 
-      // Initially hide the level up badge
       const levelUpBadge = document.getElementById('summary-level-up-badge');
       if (levelUpBadge) levelUpBadge.style.display = 'none';
 
-      // Enable the claim rewards button
       const claimBtn = document.getElementById('btn-claim-rewards');
       if (claimBtn) {
         claimBtn.disabled = false;
@@ -6464,7 +6447,6 @@
             claimBtn.style.background = 'var(--green)';
           }
 
-          // Check if user leveled up and show the gorgeous golden badge
           if (json.data.leveledUp) {
             const levelUpBadge = document.getElementById('summary-level-up-badge');
             if (levelUpBadge) {
@@ -6473,10 +6455,8 @@
             }
           }
 
-          // Reload user statistics in the background to update progress bars
           await loadUserStats();
 
-          // Se for o quiz de Mateus, marca a missão correspondente como concluída no banco!
           if (currentBook === 'Mateus') {
             try {
               await fetch(`${API_URL}/quests/complete`, {
@@ -6493,7 +6473,6 @@
             }
           }
 
-          // Gracefully redirect the user to Home after 3.5 seconds so they can admire their level-up badge
           setTimeout(() => {
             switchPage('home');
           }, 3500);
@@ -6510,15 +6489,15 @@
         }
       }
     }
+
     window.currentAudio = null;
-    window.currentBgmAudio = null;
     let isBgmPlaying = false;
 
     async function toggleBgm() {
       const btn = document.getElementById('btn-bgm-play');
       if (isBgmPlaying) {
-        if (window.currentBgmAudio) {
-            window.currentBgmAudio.pause();
+        if (window.isYtReady && window.ytBgmPlayer) {
+            window.ytBgmPlayer.pauseVideo();
         }
         isBgmPlaying = false;
         localStorage.setItem('bgmAutoPlay', 'false');
@@ -6531,37 +6510,13 @@
       btn.style.opacity = '0.7';
 
       try {
-        if (!window.currentBgmAudio) {
-          const res = await fetch(`${API_URL}/media/music/${currentBook}`);
-          const json = await res.json();
-          if (json.status === 'success' && json.data.audioUrl) {
-            window.currentBgmAudio = new Audio(json.data.audioUrl);
-            window.currentBgmAudio.loop = true; // Ambient music should loop
-            window.currentBgmAudio.volume = 0.4; // Soft background volume
-          } else {
-            throw new Error('Falha ao obter áudio do backend');
-          }
+        const videoId = getYoutubeIdForBook(currentBook);
+        if (!window.isYtReady) {
+           window.pendingYtPlay = true;
+           window.pendingYtVideoId = videoId;
+           return;
         }
-        
-        await window.currentBgmAudio.play();
-        isBgmPlaying = true;
-        localStorage.setItem('bgmAutoPlay', 'true');
-        
-        // Smooth fade in
-        window.currentBgmAudio.volume = 0;
-        let vol = 0;
-        const fadeIn = setInterval(() => {
-          if (vol < 0.4) {
-            vol += 0.05;
-            try { window.currentBgmAudio.volume = vol; } catch(e){}
-          } else {
-            clearInterval(fadeIn);
-          }
-        }, 50);
-
-        btn.textContent = 'Pausar';
-        btn.style.opacity = '1';
-        btn.style.background = 'var(--accent-blue)';
+        playYtVideo(videoId);
       } catch (err) {
         console.error('Erro ao tocar BGM:', err);
         btn.textContent = 'Erro';
@@ -6572,7 +6527,6 @@
     }
 
     async function playChapterAudio() {
-      // Pausar áudio do chat se estiver tocando
       if (window.chatAudio) {
         window.chatAudio.pause();
         if (window.activeTtsButton) {
