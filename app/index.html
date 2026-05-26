@@ -5490,21 +5490,27 @@
       renderExploreBooks();
 
       updateReadingButton();
+      updateRedLetterButton();
     }
 
-    window.redLetterEnabled = false;
+    window.redLetterEnabled = localStorage.getItem('redLetterEnabled') === 'true';
     
-    function toggleRedLetters() {
+    function updateRedLetterButton() {
       const btn = document.getElementById('btn-red-letters');
-      if (!window.redLetterEnabled) {
-        window.redLetterEnabled = true;
-        if(btn) btn.style.background = 'rgba(255, 77, 77, 0.2)';
-        if(btn) btn.innerHTML = '✨ Ocultar Palavras de Jesus';
+      if (!btn) return;
+      if (window.redLetterEnabled) {
+        btn.style.background = 'rgba(255, 77, 77, 0.2)';
+        btn.innerHTML = '✨ Ocultar Palavras de Jesus';
       } else {
-        window.redLetterEnabled = false;
-        if(btn) btn.style.background = 'rgba(255, 77, 77, 0.1)';
-        if(btn) btn.innerHTML = '✨ Revelar Palavras de Jesus (IA)';
+        btn.style.background = 'rgba(255, 77, 77, 0.1)';
+        btn.innerHTML = '✨ Revelar Palavras de Jesus (IA)';
       }
+    }
+
+    function toggleRedLetters() {
+      window.redLetterEnabled = !window.redLetterEnabled;
+      localStorage.setItem('redLetterEnabled', window.redLetterEnabled.toString());
+      updateRedLetterButton();
       // Recarrega o capítulo atual com a nova preferência
       loadActiveChapter();
     }
