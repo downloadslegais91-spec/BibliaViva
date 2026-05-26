@@ -3959,6 +3959,63 @@
         }
       }, 500);
 
+
+      // Filtros da Aba Missões
+      setTimeout(() => {
+        const filtros = document.querySelectorAll('#page-quests .q-filtro');
+        const containers = {
+          hoje: document.getElementById('quests-daily-container'),
+          weekly: document.getElementById('quests-weekly-container'),
+          challenge: document.getElementById('quests-challenge-container'),
+          intensivas: document.getElementById('quests-intensivas-container'),
+        };
+        const titulos = document.querySelectorAll('#page-quests .q-section-title');
+
+        filtros.forEach(btn => {
+          btn.addEventListener('click', () => {
+            filtros.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const texto = btn.innerText.trim().toLowerCase();
+
+            // Reseta visualização das seções
+            if(titulos[0]) titulos[0].style.display = 'block'; // HOJE
+            if(titulos[1]) titulos[1].style.display = 'block'; // TEMATICAS
+
+            if(containers.hoje) containers.hoje.style.display = 'block';
+            if(containers.weekly) containers.weekly.style.display = 'block';
+            if(containers.challenge) containers.challenge.style.display = 'block';
+            if(containers.intensivas) containers.intensivas.style.display = 'block';
+            
+            // Exibe todos os cards
+            document.querySelectorAll('#page-quests .q-card').forEach(card => card.style.display = 'flex');
+
+            if (texto === 'hoje') {
+              if(titulos[1]) titulos[1].style.display = 'none';
+              if(containers.challenge) containers.challenge.style.display = 'none';
+              if(containers.intensivas) containers.intensivas.style.display = 'none';
+            } else if (texto === 'temáticos' || texto === 'temáticas') {
+              if(titulos[0]) titulos[0].style.display = 'none';
+              if(containers.hoje) containers.hoje.style.display = 'none';
+              if(containers.weekly) containers.weekly.style.display = 'none';
+              if(containers.challenge) containers.challenge.style.display = 'none';
+            } else if (texto === 'desafios') {
+              if(titulos[0]) titulos[0].style.display = 'none';
+              if(titulos[1]) titulos[1].style.display = 'none';
+              if(containers.hoje) containers.hoje.style.display = 'none';
+              if(containers.weekly) containers.weekly.style.display = 'none';
+              if(containers.intensivas) containers.intensivas.style.display = 'none';
+            } else if (texto === 'concluídas' || texto === 'concluídas') {
+               // esconde secoes vazias se necessario, e filtra cards
+               document.querySelectorAll('#page-quests .q-card').forEach(card => {
+                  if(!card.classList.contains('completed')) {
+                     card.style.display = 'none';
+                  }
+               });
+            }
+          });
+        });
+      }, 500);
+
       // Simular dot vermelho ativo
         const tabQuests = document.getElementById('tab-quests');
         if (tabQuests) {
