@@ -1,0 +1,663 @@
+/* Variáveis específicas da comunidade */
+:root {
+  --community-green: #34C759;
+  --community-gold: #FFD60A;
+  --community-prayer: #AF52DE;
+  --community-victory: #FF9500;
+  --prayer-bg: rgba(175,82,222,0.08);
+  --victory-bg: rgba(255,149,0,0.08);
+  --challenge-bg: rgba(74,108,247,0.08);
+}
+
+/* ==========================================================================
+   HEADER E SISTEMA DE ABAS
+   ========================================================================== */
+.community-header {
+  background: white;
+  padding: 12px 20px 0;
+  border-bottom: 1px solid var(--sep);
+  position: sticky;
+  top: 60px; /* abaixo do nav principal */
+  z-index: 40;
+}
+
+.community-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.community-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.community-user-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 14px;
+}
+
+.user-stat { text-align: center; }
+.user-stat-num {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--blue);
+  display: block;
+}
+.user-stat-label {
+  font-size: 11px;
+  color: var(--label2);
+}
+.user-stat-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--sep);
+}
+
+.header-notif-btn {
+  position: relative;
+  background: var(--bg);
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.notif-badge {
+  position: absolute;
+  top: 0; right: 0;
+  background: var(--red);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.community-tabs-wrap {
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 -20px;
+  padding: 0 20px;
+}
+.community-tabs-wrap::-webkit-scrollbar { display: none; }
+
+.community-tabs {
+  display: flex;
+  gap: 4px;
+  padding-bottom: 1px;
+}
+
+.community-tab {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--label2);
+  cursor: pointer;
+  font-family: var(--sans);
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.community-tab.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   ABA MURAL DE ORAÇÃO
+   ========================================================================== */
+.community-fab {
+  position: fixed;
+  bottom: 90px; /* acima do tab bar */
+  right: 20px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: white;
+  border: none;
+  border-radius: 28px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(74,108,247,0.4);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-bottom: 3px solid rgba(0,0,0,0.2);
+}
+
+.community-fab:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+.post-card {
+  background: white;
+  border-radius: var(--r-xl);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease;
+}
+
+.post-card:active { transform: scale(0.99); }
+
+.post-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.post-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.post-author {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--label);
+  display: block;
+}
+
+.post-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+}
+
+.post-type-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.post-time {
+  font-size: 12px;
+  color: var(--label3);
+}
+
+.post-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--label);
+  margin-bottom: 14px;
+}
+
+.post-reactions-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.reaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg);
+  border: 1.5px solid var(--sep);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--sans);
+  color: var(--label2);
+  transition: all 0.15s ease;
+}
+
+.reaction-btn.active {
+  background: rgba(74,108,247,0.08);
+  border-color: var(--blue);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.reaction-btn:active {
+  transform: scale(0.92);
+}
+
+@keyframes reactionPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.reaction-btn.pop {
+  animation: reactionPop 0.35s ease;
+}
+
+.post-comment-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--label2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--sans);
+  padding: 6px 8px;
+}
+
+.post-skeleton {
+  background: white;
+  border-radius: var(--r-xl);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #F2F2F7 25%, #E5E5EA 50%, #F2F2F7 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   ABA CLASSIFICAÇÃO
+   ========================================================================== */
+.podium-section {
+  background: linear-gradient(180deg, rgba(74,108,247,0.05), transparent);
+  border-radius: var(--r-xl);
+  padding: 20px 16px 0;
+  margin-bottom: 20px;
+}
+
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+}
+
+.podium-place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.podium-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: white;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.podium-avatar.large {
+  width: 56px; height: 56px;
+  font-size: 20px;
+}
+
+.podium-crown {
+  font-size: 20px;
+  margin-bottom: 2px;
+  animation: crownFloat 2s ease-in-out infinite;
+}
+
+@keyframes crownFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+.podium-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--label);
+  text-align: center;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podium-xp {
+  font-size: 10px;
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.podium-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  padding: 8px 0;
+}
+
+.first-block  { background: linear-gradient(135deg, #FFD60A, #FF9500); height: 60px; }
+.second-block { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); height: 44px; }
+.third-block  { background: linear-gradient(135deg, #CD7F32, #A0522D); height: 32px; }
+
+.leaderboard-filter {
+  display: flex;
+  background: var(--bg);
+  border-radius: var(--r-md);
+  padding: 4px;
+  margin-bottom: 16px;
+  gap: 4px;
+}
+
+.lb-filter-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: none;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--label2);
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s ease;
+}
+
+.lb-filter-btn.active {
+  background: white;
+  color: var(--label);
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: white;
+  border-radius: var(--r-lg);
+  margin-bottom: 8px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease;
+}
+
+.lb-row-mine {
+  background: linear-gradient(135deg, rgba(74,108,247,0.06), rgba(124,92,252,0.06));
+  border: 1.5px solid rgba(74,108,247,0.2);
+}
+
+.lb-position {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--label2);
+  min-width: 28px;
+}
+
+.lb-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+
+.lb-info { flex: 1; }
+.lb-name { font-size: 14px; font-weight: 600; display: block; }
+.lb-level { font-size: 12px; color: var(--label2); }
+
+.lb-xp-col { text-align: right; }
+.lb-xp-num { font-size: 16px; font-weight: 700; color: var(--blue); display: block; }
+.lb-xp-label { font-size: 11px; color: var(--label2); }
+
+.lb-my-position-sticky {
+  position: sticky;
+  bottom: 90px;
+  margin: 0 -16px;
+  padding: 0 16px;
+  background: rgba(242,242,247,0.9);
+  backdrop-filter: blur(10px);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* ==========================================================================
+   ABA DESAFIOS
+   ========================================================================== */
+.weekly-challenge-banner {
+  background: linear-gradient(135deg, #1C1C1E, #2a2a40);
+  border-radius: var(--r-xl);
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.weekly-challenge-banner::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+}
+
+.wc-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.wc-timer {
+  font-size: 12px;
+  color: var(--orange);
+  font-weight: 600;
+}
+
+.wc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.wc-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: white;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.wc-desc { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
+
+.wc-progress-track {
+  background: rgba(255,255,255,0.12);
+  height: 10px;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.wc-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wc-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 14px;
+}
+
+.wc-avatars {
+  display: flex;
+}
+
+.wc-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 11px; font-weight: 700; color: white;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #1C1C1E;
+  margin-left: -6px;
+}
+
+.wc-avatar:first-child { margin-left: 0; }
+
+.wc-participants {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.wc-participant-count {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+}
+
+.wc-reward {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+}
+
+/* ==========================================================================
+   ABA GRUPOS
+   ========================================================================== */
+.group-card {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.group-card:active { transform: scale(0.98); }
+
+.group-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.group-info { flex: 1; }
+.group-name { font-size: 15px; font-weight: 600; display: block; margin-bottom: 3px; }
+.group-meta { font-size: 12px; color: var(--label2); display: block; }
+.group-activity { font-size: 11px; color: var(--label3); display: block; margin-top: 2px; }
+
+.group-join-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.group-unread {
+  min-width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  color: var(--label3);
+  flex-shrink: 0;
+}
+
+.group-unread.has-unread {
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.create-group-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--r-lg);
+  border: 2px dashed var(--sep);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+  cursor: pointer;
+  font-family: var(--sans);
+  margin-bottom: 20px;
+  transition: all 0.15s ease;
+}
+
+.create-group-btn:hover {
+  background: rgba(74,108,247,0.04);
+  border-color: var(--blue);
+}
+
+.groups-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--label2);
+  display: block;
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+/* Base tab styling */
+.tab-loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--label2);
+  font-size: 14px;
+}

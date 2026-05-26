@@ -1,0 +1,46 @@
+<!-- community.html - Base Template -->
+<div class="community-header">
+  <div class="community-header-top">
+    <h1 class="community-title">Comunidade</h1>
+    <button class="header-notif-btn" aria-label="Notificações">
+      🔔
+      <span class="notif-badge">3</span>
+    </button>
+  </div>
+  
+  <div class="community-user-stats">
+    <div class="user-stat">
+      <span class="user-stat-num">Nvl 5</span>
+      <span class="user-stat-label">Básico</span>
+    </div>
+    <div class="user-stat-divider"></div>
+    <div class="user-stat">
+      <span class="user-stat-num">4.2k</span>
+      <span class="user-stat-label">XP Total</span>
+    </div>
+    <div class="user-stat-divider"></div>
+    <div class="user-stat">
+      <span class="user-stat-num" style="color:var(--orange)">12 🔥</span>
+      <span class="user-stat-label">Ofensiva</span>
+    </div>
+  </div>
+
+  <div class="community-tabs-wrap">
+    <div class="community-tabs" id="communityTabList">
+      <button class="community-tab active" data-tab="prayer-wall">Oração</button>
+      <button class="community-tab" data-tab="leaderboard">Ranking</button>
+      <button class="community-tab" data-tab="challenges">Desafios</button>
+      <button class="community-tab" data-tab="groups">Grupos</button>
+    </div>
+  </div>
+</div>
+
+<div id="communityTabContent" style="padding: 16px 20px 100px;">
+  <!-- O conteúdo de cada aba será injetado aqui -->
+</div>
+
+<!-- O botão flutuante será injetado dependendo da aba ativa -->
+<div id="communityFabContainer"></div>
+
+<!-- Modal container para composição -->
+<div id="communityModalContainer"></div>

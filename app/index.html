@@ -3327,7 +3327,7 @@
       color: #1C1C1E !important;
     }
   </style>
-
+  <link rel="stylesheet" href="community/community.styles.css">
 </head>
 
 <body>
@@ -4138,62 +4138,7 @@
 
   <!-- ========== PAGE: COMUNIDADE ========== -->
   <div class="page" id="page-comunidade">
-    <!-- Segmented Control for Sub-tabs -->
-    <div class="ios-segmented-control" style="margin: 20px 16px 16px 16px; background: rgba(120, 120, 128, 0.12); border-radius: 8px; display: flex; padding: 2px;">
-      <div class="ios-segment active" id="subtab-mural" onclick="switchComunidadeSubTab('mural')" style="flex: 1; text-align: center; padding: 6px 0; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Mural de Oração</div>
-      <div class="ios-segment" id="subtab-ranking" onclick="switchComunidadeSubTab('ranking')" style="flex: 1; text-align: center; padding: 6px 0; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Classificação</div>
-    </div>
-
-    <!-- SUB-TAB: MURAL DE ORAÇÃO -->
-    <div id="comunidade-mural-container" style="padding: 0 16px;">
-      <!-- Share Card -->
-      <div class="ios-card" style="margin-bottom: 20px; padding: 16px; background: var(--bg-card, rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;">
-        <div style="font-weight: 600; font-size: 15px; margin-bottom: 8px; color: var(--text);">Compartilhe um pedido de oração ou vitória</div>
-        <textarea id="mural-input" placeholder="No que a comunidade pode orar por você hoje?" style="width: 100%; height: 80px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.15); color: var(--text); padding: 10px; font-size: 14px; font-family: inherit; resize: none; outline: none; margin-bottom: 10px;"></textarea>
-        <div style="display: flex; justify-content: flex-end;">
-          <button class="pill-btn" onclick="postToMural()" style="padding: 8px 18px; font-size: 13px; background: var(--accent-blue, #007aff); border: none; border-radius: 20px; color: white; font-weight: 600; cursor: pointer;">Publicar</button>
-        </div>
-      </div>
-
-      <!-- Feed List -->
-      <div class="section-label" style="margin-bottom: 12px; font-size: 15px; font-weight: 600; color: var(--text-secondary);">Pedidos e Conquistas Recentes</div>
-      <div id="mural-feed-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
-        <!-- Seeding a couple of beautiful community posts -->
-        <div class="ios-card" style="padding: 14px; background: var(--bg-card, rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; display: flex; flex-direction: column; gap: 6px;">
-          <div style="display: flex; align-items: center; justify-content: justify; gap: 8px;">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 14px;">👩‍🦰</div>
-            <div>
-              <div style="font-size: 14px; font-weight: 600; color: var(--text);">Larissa Sousa</div>
-              <div style="font-size: 11px; color: var(--text-secondary);">Há 10 min · Conquista</div>
-            </div>
-          </div>
-          <div style="font-size: 13px; color: var(--text); line-height: 1.4; margin-top: 4px;">
-            🎉 Completei toda a leitura do livro de <strong>Gênesis</strong> hoje! Muito feliz em iniciar essa caminhada diária com o BíbliaViva.
-          </div>
-        </div>
-
-        <div class="ios-card" style="padding: 14px; background: var(--bg-card, rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; display: flex; flex-direction: column; gap: 6px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #af52de, #007aff); display: flex; align-items: center; justify-content: center; font-size: 14px;">👨‍🦱</div>
-            <div>
-              <div style="font-size: 14px; font-weight: 600; color: var(--text);">Pastor Lucas</div>
-              <div style="font-size: 11px; color: var(--text-secondary);">Há 1 hora · Pedido de Oração</div>
-            </div>
-          </div>
-          <div style="font-size: 13px; color: var(--text); line-height: 1.4; margin-top: 4px;">
-            Meus irmãos, peço orações pela saúde da irmã Maria da nossa congregação, que está hospitalizada. Que o Senhor traga refrigério e cura completa sobre a vida dela. 🙏
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SUB-TAB: CLASSIFICAÇÃO (RANKING) -->
-    <div id="comunidade-ranking-container" style="display: none; padding: 0 16px;">
-      <div class="section-label" style="margin: 10px 0; font-size: 17px; font-weight: 600; color: var(--text);">Classificação Global</div>
-      <div id="ranking-list-container">
-        <div style="padding: 30px; text-align: center; color: var(--label2);">Carregando ranking...</div>
-      </div>
-    </div>
+    <div id="community-tab-container"></div>
   </div>
   <div class="chat-input-row">
     <input class="chat-input" placeholder="Faça uma pergunta sobre Mateus 5…" id="chatInput" />
@@ -6338,7 +6283,12 @@
         loadChatHistory();
       }
       if (name === 'comunidade') {
-        loadRanking();
+        if (!window.communityInitDone) {
+          window.CommunityModule.init(document.getElementById('community-tab-container'));
+          window.communityInitDone = true;
+        } else {
+          window.CommunityModule.loadTab(window.communityState?.activeTab || 'prayer-wall');
+        }
       }
     }
 
@@ -7753,84 +7703,7 @@
       }
     }
 
-    function switchComunidadeSubTab(tab) {
-      const subMural = document.getElementById('subtab-mural');
-      const subRanking = document.getElementById('subtab-ranking');
-      const muralContainer = document.getElementById('comunidade-mural-container');
-      const rankingContainer = document.getElementById('comunidade-ranking-container');
 
-      if (!subMural || !subRanking || !muralContainer || !rankingContainer) return;
-
-      if (tab === 'mural') {
-        subMural.classList.add('active');
-        subMural.style.background = 'rgba(255, 255, 255, 0.15)';
-        subMural.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-        
-        subRanking.classList.remove('active');
-        subRanking.style.background = 'transparent';
-        subRanking.style.boxShadow = 'none';
-
-        muralContainer.style.display = 'block';
-        rankingContainer.style.display = 'none';
-      } else if (tab === 'ranking') {
-        subRanking.classList.add('active');
-        subRanking.style.background = 'rgba(255, 255, 255, 0.15)';
-        subRanking.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-
-        subMural.classList.remove('active');
-        subMural.style.background = 'transparent';
-        subMural.style.boxShadow = 'none';
-
-        muralContainer.style.display = 'none';
-        rankingContainer.style.display = 'block';
-        loadRanking();
-      }
-    }
-
-    function postToMural() {
-      const input = document.getElementById('mural-input');
-      if (!input) return;
-
-      const text = input.value.trim();
-      if (text.length === 0) {
-        showFeedback('⚠️ Digite algo antes de publicar');
-        return;
-      }
-
-      const feed = document.getElementById('mural-feed-list');
-      if (!feed) return;
-
-      const userName = currentUser ? currentUser.name : 'Você';
-      
-      const newCard = document.createElement('div');
-      newCard.className = 'ios-card';
-      newCard.style.padding = '14px';
-      newCard.style.background = 'var(--bg-card, rgba(255,255,255,0.05))';
-      newCard.style.border = '1px solid rgba(255,255,255,0.08)';
-      newCard.style.borderColor = 'var(--accent-blue, #007aff)';
-      newCard.style.borderRadius = '12px';
-      newCard.style.display = 'flex';
-      newCard.style.flexDirection = 'column';
-      newCard.style.gap = '6px';
-      newCard.style.animation = 'slideIn 0.3s ease-out';
-
-      newCard.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #007aff, #af52de); display: flex; align-items: center; justify-content: center; font-size: 14px;">🤠</div>
-          <div>
-            <div style="font-size: 14px; font-weight: 600; color: var(--text);">${userName}</div>
-            <div style="font-size: 11px; color: var(--text-secondary);">Agora mesmo · Compartilhado</div>
-          </div>
-        </div>
-        <div style="font-size: 13px; color: var(--text); line-height: 1.4; margin-top: 4px;">
-          ${text}
-        </div>
-      `;
-
-      feed.insertBefore(newCard, feed.firstChild);
-      input.value = '';
-      showFeedback('✨ Publicação compartilhada no mural!');
-    }
 
     function triggerLogout(event) {
       if (event) event.stopPropagation();
@@ -8252,6 +8125,6 @@
   </script>
 
   <!-- Sermon player modal is dynamically injected from sermon-player.js -->
+  <script type="module" src="./community/community.module.js"></script>
 </body>
-
 </html>
