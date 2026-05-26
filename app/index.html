@@ -4243,6 +4243,9 @@
         window.pendingAutoplay = true;
       }
       
+      const quizIdParam = urlParams.get('quizId');
+      const quizTitleParam = urlParams.get('quizTitle');
+      
       if (intIdParam) {
         window.activeIntensiva = {
           id: intIdParam,
@@ -4269,6 +4272,12 @@
 
         // Instantly switch to the reading tab without transitions before any async fetches
         switchPageInstant('leitura');
+      } else if (quizIdParam) {
+        // Clear query parameters from URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        // Switch to quiz page and start flow
+        switchPageInstant('quiz');
+        startQuizFlow(quizIdParam, quizTitleParam || quizIdParam);
       }
 
       await loadUserStats();
