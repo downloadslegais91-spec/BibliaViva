@@ -137,24 +137,23 @@ const BOLLS_BOOKID_MAP: Record<string, number> = {
   '1joao': 62, '2joao': 63, '3joao': 64, 'judas': 65, 'apocalipse': 66
 };
 
-// Tradução padrão: Almeida Revista e Atualizada (ARA, 1993)
-const DEFAULT_TRANSLATION = 'ARA';
+// Tradução padrão: Tradução Brasileira (Edição de 1917)
+const DEFAULT_TRANSLATION = 'TB1917';
 
 // Traduções disponíveis para o seletor do frontend
 export const AVAILABLE_TRANSLATIONS = [
-  { id: 'ARA', name: 'Almeida Revista e Atualizada', shortName: 'ARA', year: 1993 },
-  { id: 'ARC09', name: 'Almeida Revista e Corrigida', shortName: 'ARC', year: 2009 },
-  { id: 'ACF11', name: 'Almeida Corrigida Fiel', shortName: 'ACF', year: 2011 },
-  { id: 'NAA', name: 'Nova Almeida Atualizada', shortName: 'NAA', year: 2017 },
-  { id: 'NVIPT', name: 'Nova Versão Internacional', shortName: 'NVI', year: 2001 },
-  { id: 'NVT', name: 'Nova Versão Transformadora', shortName: 'NVT', year: 2016 },
-  { id: 'NTLH', name: 'Nova Tradução na Linguagem de Hoje', shortName: 'NTLH', year: 2000 },
-  { id: 'KJA', name: 'King James Atualizada', shortName: 'KJA', year: 2001 },
-  { id: 'NBV07', name: 'Nova Bíblia Viva', shortName: 'NBV', year: 2007 },
-  { id: 'ALM21', name: 'Almeida Século 21', shortName: 'A21', year: 2021 },
+  { id: 'TB1917', name: 'Tradução Brasileira (Edição de 1917)', shortName: 'TB', year: 1917 },
+  { id: 'AA', name: 'João Ferreira de Almeida (Edições Antigas)', shortName: 'Almeida', year: 1898 },
+  { id: 'BLIVRE', name: 'A Bíblia Livre (BLIVRE)', shortName: 'BLivre', year: 2016 },
 ];
 
 const VALID_TRANSLATION_IDS = new Set(AVAILABLE_TRANSLATIONS.map(t => t.id));
+
+const BOLLS_TRANSLATION_MAP: Record<string, string> = {
+  'TB1917': 'TB10',
+  'AA': 'ACF11',
+  'BLIVRE': 'VFL'
+};
 
 export const getTranslations = async (req: Request, res: Response) => {
   res.json({
@@ -173,8 +172,9 @@ async function fetchChapterFromBolls(bookKey: string, chapter: number, translati
     throw new Error(`Book ID não encontrado para: ${bookKey}`);
   }
 
-  const trans = (translation && VALID_TRANSLATION_IDS.has(translation)) ? translation : DEFAULT_TRANSLATION;
-  const url = `https://bolls.life/get-text/${trans}/${bookId}/${chapter}/`;
+  const selectedTrans = (translation && VALID_TRANSLATION_IDS.has(translation)) ? translation : DEFAULT_TRANSLATION;
+  const bollsTrans = BOLLS_TRANSLATION_MAP[selectedTrans] || 'TB10';
+  const url = `https://bolls.life/get-text/${bollsTrans}/${bookId}/${chapter}/`;
   const response = await fetch(url);
 
   if (!response.ok) {

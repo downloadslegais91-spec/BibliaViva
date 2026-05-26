@@ -3591,7 +3591,7 @@
         <div class="selector-row" style="margin-top: 8px;">
           <div class="selector-field" style="flex: 1;" onclick="openAppleBibleSelectorModal('translation')">
             <label>Versão</label>
-            <div class="custom-select-trigger" id="custom-translation-trigger">ARA</div>
+            <div class="custom-select-trigger" id="custom-translation-trigger">TB1917</div>
           </div>
         </div>
         <!-- Hidden native inputs to maintain 100% logic integrity -->
@@ -4330,7 +4330,7 @@
     let bibleBooks = [];
     let currentBook = localStorage.getItem('lastReadBook') || 'Mateus';
     let currentChapter = parseInt(localStorage.getItem('lastReadChapter'), 10) || 1;
-    let currentTranslation = localStorage.getItem('lastReadTranslation') || 'ARA';
+    let currentTranslation = localStorage.getItem('lastReadTranslation') || 'TB1917';
 
     function saveReadingState() {
       localStorage.setItem('lastReadBook', currentBook);
@@ -4721,10 +4721,32 @@
         `;
           }
 
-          textDiv.innerHTML = data.verses.map(v => {
+          let versesHtml = data.verses.map(v => {
             const isHighlighted = (v.number % 4 === 0) ? ' highlight' : '';
             return `<p class="verse${isHighlighted}"><span class="verse-num">${v.number}</span>${v.text}</p>`;
           }).join('');
+
+          if (currentTranslation === 'BLIVRE') {
+            versesHtml += `
+              <div class="translation-attribution" style="margin-top: 32px; padding: 16px; background: rgba(0, 122, 255, 0.05); border-left: 4px solid #007aff; border-radius: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                <strong>Agradecimento e Licença:</strong> Este capítulo utiliza o texto do projeto <strong>Bíblia Livre (BLIVRE)</strong>, disponibilizado sob a licença <a href="https://creativecommons.org/licenses/by/3.0/br/" target="_blank" style="color: #007aff; text-decoration: underline; font-weight: 500;">Creative Commons Atribuição 3.0 Brasil (CC BY 3.0 BR)</a>. Agradecemos aos idealizadores e colaboradores do projeto Bíblia Livre pelo esforço de tornar a Palavra de Deus livre e acessível a todos.
+              </div>
+            `;
+          } else if (currentTranslation === 'TB1917') {
+            versesHtml += `
+              <div class="translation-attribution" style="margin-top: 32px; padding: 16px; background: rgba(175, 82, 222, 0.05); border-left: 4px solid #af52de; border-radius: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                <strong>Contexto Histórico:</strong> Este capítulo utiliza o texto histórico da <strong>Tradução Brasileira (Edição de 1917)</strong>, a famosa Bíblia "Tira-Teima", que contou com a colaboração do ilustre Rui Barbosa e está em pleno domínio público.
+              </div>
+            `;
+          } else if (currentTranslation === 'AA') {
+            versesHtml += `
+              <div class="translation-attribution" style="margin-top: 32px; padding: 16px; background: rgba(175, 82, 222, 0.05); border-left: 4px solid #af52de; border-radius: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                <strong>Tradição Clássica:</strong> Este capítulo utiliza edições históricas baseadas no reverenciado trabalho de <strong>João Ferreira de Almeida (século XVII)</strong>, cujo texto original e revisões clássicas estão consagrados em domínio público.
+              </div>
+            `;
+          }
+
+          textDiv.innerHTML = versesHtml;
 
           if (sumTitle) sumTitle.textContent = `Resumo da IA · ${data.book} ${data.chapter}`;
           if (sumText) {
@@ -6709,19 +6731,12 @@
     // ==========================================
     let tempBook = 'Mateus';
     let tempChapter = 5;
-    let tempTranslation = 'ARA';
+    let tempTranslation = 'TB1917';
 
     const AVAILABLE_TRANSLATIONS = [
-      { id: 'ARA', name: 'Almeida Revista e Atualizada' },
-      { id: 'ARC09', name: 'Almeida Revista e Corrigida' },
-      { id: 'ACF11', name: 'Almeida Corrigida Fiel' },
-      { id: 'NAA', name: 'Nova Almeida Atualizada' },
-      { id: 'NVIPT', name: 'Nova Versão Internacional' },
-      { id: 'NVT', name: 'Nova Versão Transformadora' },
-      { id: 'NTLH', name: 'Nova Tradução na Linguagem de Hoje' },
-      { id: 'KJA', name: 'King James Atualizada' },
-      { id: 'NBV07', name: 'Nova Bíblia Viva' },
-      { id: 'ALM21', name: 'Almeida Século 21' }
+      { id: 'TB1917', name: 'Tradução Brasileira (Edição de 1917)' },
+      { id: 'AA', name: 'João Ferreira de Almeida (Edições Antigas)' },
+      { id: 'BLIVRE', name: 'A Bíblia Livre (BLIVRE)' }
     ];
 
     function updateCustomSelectTriggers() {
