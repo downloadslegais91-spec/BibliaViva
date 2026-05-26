@@ -4203,6 +4203,7 @@
     function onPlayerStateChange(event) {
       // Forçar loop caso a variável de loop falhe
       if (event.data === YT.PlayerState.ENDED) {
+        window.ytBgmPlayer.seekTo(0);
         window.ytBgmPlayer.playVideo();
       }
     }
@@ -4217,6 +4218,11 @@
 
     function playYtVideo(videoId) {
       const btn = document.getElementById('btn-bgm-play');
+      if (window.bgmFadeOutInterval) {
+        clearInterval(window.bgmFadeOutInterval);
+        window.bgmFadeOutInterval = null;
+      }
+      
       if (window.currentBgmBook !== videoId) {
         window.ytBgmPlayer.loadVideoById(videoId);
         window.currentBgmBook = videoId;
@@ -4227,12 +4233,14 @@
       // Smooth fade in
       window.ytBgmPlayer.setVolume(0);
       let vol = 0;
-      const fadeIn = setInterval(() => {
+      if (window.bgmFadeInInterval) clearInterval(window.bgmFadeInInterval);
+      window.bgmFadeInInterval = setInterval(() => {
         if (vol < 40) {
           vol += 5;
           try { window.ytBgmPlayer.setVolume(vol); } catch(e){}
         } else {
-          clearInterval(fadeIn);
+          clearInterval(window.bgmFadeInInterval);
+          window.bgmFadeInInterval = null;
         }
       }, 100);
 
@@ -4598,12 +4606,14 @@
         if (window.isYtReady && window.ytBgmPlayer) {
           let vol = 40;
           try { vol = window.ytBgmPlayer.getVolume(); } catch(e) {}
-          const fadeOut = setInterval(() => {
+          if (window.bgmFadeOutInterval) clearInterval(window.bgmFadeOutInterval);
+          window.bgmFadeOutInterval = setInterval(() => {
             if (vol > 5) {
               vol -= 5;
               try { window.ytBgmPlayer.setVolume(vol); } catch(e){}
             } else {
-              clearInterval(fadeOut);
+              clearInterval(window.bgmFadeOutInterval);
+              window.bgmFadeOutInterval = null;
               window.ytBgmPlayer.pauseVideo();
             }
           }, 50);
