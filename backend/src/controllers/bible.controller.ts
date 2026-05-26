@@ -396,9 +396,10 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
         .replace(/>/g, '&gt;');
       
       // Restauramos os marcadores transformando em tags de voz do Google TTS SSML
-      // Usaremos a voz Masculina (Neural2-B) com um tom (pitch) mais grave e leitura ligeiramente mais lenta
+      // Para dar um contraste ÉPICO com o narrador padrão, vamos usar a voz de Portugal (pt-PT-Neural2-B)
+      // O sotaque de Portugal soa muito mais antigo, formal e nobre para ouvintes brasileiros.
       textToRead = textToRead
-        .replace(/\[\[JESUS_START\]\]/g, '<voice name="pt-BR-Neural2-B"><prosody pitch="-4st" rate="90%">')
+        .replace(/\[\[JESUS_START\]\]/g, '<voice name="pt-PT-Neural2-B"><prosody pitch="-3st" rate="90%">')
         .replace(/\[\[JESUS_END\]\]/g, '</prosody></voice>');
 
       textToRead = `<speak>${textToRead}</speak>`;
