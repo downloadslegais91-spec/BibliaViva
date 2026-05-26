@@ -4211,9 +4211,9 @@
 
     function onPlayerError(event) {
       console.error("Erro no player do YouTube. Código:", event.data);
-      // Se der erro de vídeo bloqueado/indisponível, volta pro padrão Yeshua
-      if (event.data === 100 || event.data === 101 || event.data === 150) {
-         console.warn("Vídeo indisponível ou bloqueado. Voltando ao padrão.");
+      // Se der erro de vídeo bloqueado/indisponível/inválido (2, 100, 101, 150), volta pro padrão Yeshua
+      if (event.data === 2 || event.data === 100 || event.data === 101 || event.data === 150) {
+         console.warn("Vídeo indisponível ou bloqueado. Voltando ao padrão (Yeshua).");
          playYtVideo('0igy6bQN0hI');
       }
     }
