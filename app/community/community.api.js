@@ -41,6 +41,27 @@ export const CommunityAPI = {
   },
 
   async fetchLeaderboard(filter = 'weekly') {
+    try {
+      if (window.API_URL) {
+        const url = filter !== 'weekly' ? `${window.API_URL}/users/ranking?filter=${filter}` : `${window.API_URL}/users/ranking`;
+        const res = await fetch(url);
+        const json = await res.json();
+        if (json.status === 'success' && json.data) {
+          const currentUser = window.currentUser || {};
+          return json.data.map((u, index) => ({
+            id: u.id,
+            name: u.name || 'Usuário',
+            xp: u.xp || u.total_xp || 0,
+            level: u.level || 1,
+            position: index + 1,
+            isMe: u.id === currentUser.id
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn("Erro ao buscar ranking real, usando dados falsos:", err);
+    }
+
     await this.delay(600);
     // Simula diferentes dados baseado no filtro
     return [

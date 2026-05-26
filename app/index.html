@@ -4613,6 +4613,10 @@
     const pages = ['home', 'quests', 'leitura', 'ia', 'quiz', 'comunidade'];
     const titles = { home: 'Início', quests: 'Missões', leitura: 'Leitura Bíblica', ia: 'Assistente IA', quiz: 'Quiz do Dia', comunidade: 'Comunidade' };
     let currentUser = null;
+    Object.defineProperty(window, 'currentUser', {
+      get: () => currentUser,
+      set: (val) => { currentUser = val; }
+    });
     let bibleBooks = [];
     let currentBook = localStorage.getItem('lastReadBook') || 'Mateus';
     let currentChapter = parseInt(localStorage.getItem('lastReadChapter'), 10) || 1;
