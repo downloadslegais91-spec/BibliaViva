@@ -4517,8 +4517,6 @@
               <span class="ios-row-name">Voz Padrão</span>
             </div>
             <select class="ios-select" id="profile-default-voice" onchange="updateDefaultVoice(this.value)">
-              <option value="pt-BR-Chirp3-HD-Fenrir">Masculina (Gemini / Chirp 3 HD Fenrir)</option>
-              <option value="pt-BR-Chirp3-HD-Charon">Masculina (Gemini / Chirp 3 HD Charon)</option>
               <option value="pt-BR-Neural2-B">Masculina (Neural2 B)</option>
               <option value="pt-BR-Neural2-A">Feminina (Neural2 A)</option>
               <option value="pt-BR-Neural2-C">Feminina (Neural2 C)</option>
@@ -6209,12 +6207,12 @@
         });
 
         const json = await res.json();
-        if (json.status === 'success' && json.data.audioBase64) {
-          btn.dataset.audioBase64 = json.data.audioBase64;
+        if (json.status === 'success' && json.data.url) {
+          btn.dataset.url = json.data.url;
           btn.dataset.ttsStatus = 'ready';
 
           if (window.activeTtsButton === btn && btn.innerText === '⏳') {
-            playBase64Tts(btn, json.data.audioBase64);
+            playUrlTts(btn, json.data.url);
           }
         } else {
           btn.dataset.ttsStatus = 'error';
@@ -6233,7 +6231,7 @@
       }
     }
 
-    function playBase64Tts(btn, base64) {
+    function playUrlTts(btn, url) {
       if (!window.chatAudio) {
         window.chatAudio = new Audio();
       }
@@ -6255,7 +6253,7 @@
       };
 
       try {
-        window.chatAudio.src = 'data:audio/mpeg;base64,' + base64;
+        window.chatAudio.src = url;
         window.chatAudio.play().catch(playErr => {
           console.error('Erro ao reproduzir áudio do chat:', playErr);
           showFeedback('🔊 Toque no botão para ouvir a resposta.');
@@ -6343,8 +6341,8 @@
       btn.innerText = '⏳';
       window.activeTtsButton = btn;
 
-      if (btn.dataset.audioBase64) {
-        playBase64Tts(btn, btn.dataset.audioBase64);
+      if (btn.dataset.url) {
+        playUrlTts(btn, btn.dataset.url);
       } else {
         if (!window.chatAudio) {
           window.chatAudio = new Audio();
@@ -7442,11 +7440,11 @@
         const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}&voice=${defaultVoice}${transParam}${redLetterParam}`);
         const json = await res.json();
 
-        if (json.status !== 'success' || !json.data.audioBase64) {
+        if (json.status !== 'success' || !json.data.url) {
           throw new Error(json.message || 'Erro ao gerar o áudio');
         }
 
-        const audioUrl = `data:audio/mpeg;base64,${json.data.audioBase64}`;
+        const audioUrl = json.data.url;
         window.currentAudio = new Audio(audioUrl);
 
         window.currentAudio.addEventListener('timeupdate', () => {

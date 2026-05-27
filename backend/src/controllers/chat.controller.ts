@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
 import { generateChatReply } from '../services/gemini.service';
 import { resolveUserId } from '../services/auth';
-import { generateAudio } from '../services/tts.service';
+import { generateGeminiTTS } from '../services/gemini-tts.service';
 
 export const saveChat = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -77,7 +77,7 @@ export const getChatHistory = async (req: Request, res: Response, next: NextFunc
 
 export const getChatTts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { text, voice } = req.body;
+    const { text } = req.body;
     if (!text || typeof text !== 'string') {
       res.status(400).json({ status: 'error', message: 'Texto inválido' });
       return;
@@ -86,10 +86,10 @@ export const getChatTts = async (req: Request, res: Response, next: NextFunction
     // Limpar o texto de tags HTML (como <strong>, etc.) antes de passar para o TTS
     const cleanText = text.replace(/<[^>]*>/g, '');
 
-    const audioBase64 = await generateAudio(cleanText, 1.0, voice);
+    const { url, duration_seconds } = await generateGeminiTTS(cleanText, 'oracao', 'flash');
     res.json({
       status: 'success',
-      data: { audioBase64 }
+      data: { url, duration_seconds }
     });
   } catch (error: any) {
     console.error("Audio generation for chat failed:", error.message);
