@@ -396,10 +396,11 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
         .replace(/>/g, '&gt;');
       
       // Restauramos os marcadores transformando em tags de voz do Google TTS SSML
-      // Usaremos a voz Masculina (Neural2-B) com um tom (pitch) mais grave e leitura ligeiramente mais lenta
+      // Aplicamos APENAS a tag <prosody> para deixar a voz mais grave e lenta.
+      // Sem usar a tag <voice>, herdamos a voz padrão escolhida pelo usuário (evitando erros de famílias de vozes incompatíveis).
       textToRead = textToRead
-        .replace(/\[\[JESUS_START\]\]/g, '<voice name="pt-BR-Neural2-B"><prosody pitch="-4st" rate="90%">')
-        .replace(/\[\[JESUS_END\]\]/g, '</prosody></voice>');
+        .replace(/\[\[JESUS_START\]\]/g, '<prosody pitch="-4st" rate="90%">')
+        .replace(/\[\[JESUS_END\]\]/g, '</prosody>');
 
       textToRead = `<speak>${textToRead}</speak>`;
     }

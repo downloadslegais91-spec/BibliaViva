@@ -22,6 +22,13 @@ export async function generateAudio(text: string, speakingRate?: number, voiceNa
       if (voiceOpens > voiceCloses) {
         safeText += '</voice>';
       }
+
+      const prosodyOpens = (safeText.match(/<prosody/g) || []).length;
+      const prosodyCloses = (safeText.match(/<\/prosody>/g) || []).length;
+      if (prosodyOpens > prosodyCloses) {
+        safeText += '</prosody>';
+      }
+
       if (!safeText.endsWith('</speak>')) {
         safeText += '</speak>';
       }
