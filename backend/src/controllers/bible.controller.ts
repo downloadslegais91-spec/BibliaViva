@@ -318,7 +318,7 @@ function generateSummary(book: string, chapter: number): string {
   return `Resumo do capítulo ${chapter} de ${book}: Uma passagem preciosa de edificação espiritual que nos convida a meditar na soberania divina, nos ensinamentos práticos para a vida diária e na fidelidade do Senhor ao Seu povo.`;
 }
 
-import { generateAudio } from '../services/tts.service';
+import { generateGeminiTTS } from '../services/gemini-tts.service';
 
 export const getChapterAudio = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -377,49 +377,17 @@ export const getChapterAudio = async (req: Request, res: Response, next: NextFun
     }
 
     // Introdução do livro e capítulo
-    let textToRead = `Livro de ${bookConfig.name}, capítulo ${chapterNum}. `;
-    
-    // Concatena todos os textos dos versículos, SEM citar o número do versículo
-    textToRead += verses.map(v => v.text).join(' ');
+    let textToRead = `Livro de ${bookConfig.name}, capítulo ${chapterNum}. [pause] `;
+    textToRead += verses.map(v => v.text).join(' [pause] ');
 
-    let isSsml = false;
-    if (textToRead.includes('<jesus>')) {
-      isSsml = true;
-      // Precisamos escapar os caracteres especiais do XML/SSML que possam quebrar a tag
-      // Primeiro trocamos as tags <jesus> por marcadores temporários seguros
-      textToRead = textToRead.replace(/<jesus>/g, '[[JESUS_START]]').replace(/<\/jesus>/g, '[[JESUS_END]]');
-      
-      // Escapamos os caracteres problemáticos do texto da Bíblia para SSML
-      textToRead = textToRead
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      
-      // Restauramos os marcadores transformando em tags de voz do Google TTS SSML
-      // Aplicamos APENAS a tag <prosody> para deixar a voz mais grave e lenta.
-      // Sem usar a tag <voice>, herdamos a voz padrão escolhida pelo usuário (evitando erros de famílias de vozes incompatíveis).
-      textToRead = textToRead
-        .replace(/\[\[JESUS_START\]\]/g, '<prosody pitch="-4st" rate="90%">')
-        .replace(/\[\[JESUS_END\]\]/g, '</prosody>');
+    const contextParam = (req.query.context as any) || 'leitura';
+    const qualityParam = (req.query.quality as any) || 'flash';
 
-      textToRead = `<speak>${textToRead}</speak>`;
-    }
-
-    const speedParam = req.query.speed;
-    const voiceParam = req.query.voice as string | undefined;
-    let speakingRate = 1.0;
-    if (typeof speedParam === 'string') {
-      const parsedSpeed = parseFloat(speedParam);
-      if (!isNaN(parsedSpeed) && parsedSpeed >= 0.25 && parsedSpeed <= 4.0) {
-        speakingRate = parsedSpeed;
-      }
-    }
-
-    const audioBase64 = await generateAudio(textToRead, speakingRate, voiceParam, isSsml);
+    const { audioBase64, duration_seconds } = await generateGeminiTTS(textToRead, contextParam, qualityParam);
     
     res.json({
       status: 'success',
-      data: { audioBase64 }
+      data: { audioBase64, duration_seconds }
     });
   } catch (error: any) {
     console.error("Audio generation failed:", error.message);

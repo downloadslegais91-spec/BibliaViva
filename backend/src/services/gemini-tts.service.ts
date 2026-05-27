@@ -8,7 +8,9 @@ import '../env';
 // Configura o ffmpeg com o binário instalado
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-const PUBLIC_AUDIO_DIR = path.join(__dirname, '..', '..', '..', 'app', 'audio');
+import os from 'os';
+
+const PUBLIC_AUDIO_DIR = '/tmp'; // Use tmp dir for Vercel Serverless
 
 // Cria o diretório de áudio se não existir
 if (!fs.existsSync(PUBLIC_AUDIO_DIR)) {
@@ -48,7 +50,7 @@ export async function generateGeminiTTS(
   text: string,
   context: TTSContext = 'leitura',
   quality: 'flash' | 'pro' = 'flash'
-): Promise<{ url: string; duration_seconds: number }> {
+): Promise<{ audioBase64: string; duration_seconds: number }> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY não configurada no ambiente.');
 
@@ -56,7 +58,6 @@ export async function generateGeminiTTS(
   const hash = crypto.createHash('sha256').update(`${text}_${context}_${quality}`).digest('hex');
   const filename = `${hash}.aac`;
   const filePath = path.join(PUBLIC_AUDIO_DIR, filename);
-  const publicUrl = `/app/audio/${filename}`;
 
   if (fs.existsSync(filePath)) {
     // Check TTL
@@ -64,8 +65,8 @@ export async function generateGeminiTTS(
     const age = Date.now() - stats.mtimeMs;
     const ttl = TTL_MAP[context];
     if (age < ttl) {
-      // Retorna em cache (duração mockada ou real, como é MVP retornamos 0 para o front calcular)
-      return { url: publicUrl, duration_seconds: 0 };
+      const b64 = fs.readFileSync(filePath, { encoding: 'base64' });
+      return { audioBase64: b64, duration_seconds: 0 };
     } else {
       fs.unlinkSync(filePath); // Expirado
     }
@@ -133,7 +134,8 @@ export async function generateGeminiTTS(
       .save(filePath)
       .on('end', () => {
         fs.unlinkSync(tempPcmPath); // limpa temp
-        resolve({ url: publicUrl, duration_seconds: 0 }); // Opcional: ffmpeg ffprobe para pegar a duração
+        const b64 = fs.readFileSync(filePath, { encoding: 'base64' });
+        resolve({ audioBase64: b64, duration_seconds: 0 }); // Opcional: ffmpeg ffprobe para pegar a duração
       })
       .on('error', (err) => {
         if (fs.existsSync(tempPcmPath)) fs.unlinkSync(tempPcmPath);

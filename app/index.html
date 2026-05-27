@@ -6207,12 +6207,12 @@
         });
 
         const json = await res.json();
-        if (json.status === 'success' && json.data.url) {
-          btn.dataset.url = json.data.url;
+        if (json.status === 'success' && json.data.audioBase64) {
+          btn.dataset.audioBase64 = json.data.audioBase64;
           btn.dataset.ttsStatus = 'ready';
 
           if (window.activeTtsButton === btn && btn.innerText === '⏳') {
-            playUrlTts(btn, json.data.url);
+            playUrlTts(btn, `data:audio/mpeg;base64,${json.data.audioBase64}`);
           }
         } else {
           btn.dataset.ttsStatus = 'error';
@@ -6341,8 +6341,8 @@
       btn.innerText = '⏳';
       window.activeTtsButton = btn;
 
-      if (btn.dataset.url) {
-        playUrlTts(btn, btn.dataset.url);
+      if (btn.dataset.audioBase64) {
+        playUrlTts(btn, `data:audio/mpeg;base64,${btn.dataset.audioBase64}`);
       } else {
         if (!window.chatAudio) {
           window.chatAudio = new Audio();
@@ -7440,11 +7440,11 @@
         const res = await fetch(`${API_URL}/bible/${currentBook}/${currentChapter}/audio?speed=${voiceSpeed}&voice=${defaultVoice}${transParam}${redLetterParam}`);
         const json = await res.json();
 
-        if (json.status !== 'success' || !json.data.url) {
+        if (json.status !== 'success' || !json.data.audioBase64) {
           throw new Error(json.message || 'Erro ao gerar o áudio');
         }
 
-        const audioUrl = json.data.url;
+        const audioUrl = `data:audio/mpeg;base64,${json.data.audioBase64}`;
         window.currentAudio = new Audio(audioUrl);
 
         window.currentAudio.addEventListener('timeupdate', () => {

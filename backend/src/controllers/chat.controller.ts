@@ -86,10 +86,10 @@ export const getChatTts = async (req: Request, res: Response, next: NextFunction
     // Limpar o texto de tags HTML (como <strong>, etc.) antes de passar para o TTS
     const cleanText = text.replace(/<[^>]*>/g, '');
 
-    const { url, duration_seconds } = await generateGeminiTTS(cleanText, 'oracao', 'flash');
+    const { audioBase64, duration_seconds } = await generateGeminiTTS(cleanText, 'oracao', 'flash');
     res.json({
       status: 'success',
-      data: { url, duration_seconds }
+      data: { audioBase64, duration_seconds }
     });
   } catch (error: any) {
     console.error("Audio generation for chat failed:", error.message);
